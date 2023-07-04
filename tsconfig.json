@@ -6,11 +6,8 @@
       "dom.iterable",
       "esnext"
     ],
-    "declaration": true,
-    "emitDeclarationOnly": true,
-    "declarationMap": true,
-    "outDir": "dist",
     "sourceMap": true,
+    "noEmit": true,
     "module": "commonjs",
     "allowJs": true,
     "skipLibCheck": true,

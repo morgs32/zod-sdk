@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig",
+  "compilerOptions": {
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "noEmit": false,
+  },
+  "include": [
+    "src/server"
+  ],
+  "exclude": [
+    "**/*.test.ts"
+  ]
+}
