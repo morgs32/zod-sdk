@@ -1,0 +1,74 @@
+{
+  "name": "okrs",
+  "author": "Morgan Intrator",
+  "version": "0.1.5",
+  "license": "MIT",
+  "main": "dist/index.cjs",
+  "module": "dist/index.mjs",
+  "typings": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=10"
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc && vite build",
+    "watch": "tsc --watch",
+    "test": "vitest test",
+    "lint": "eslint ./src/**",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pnpm lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "size-limit": [
+    {
+      "path": "dist/index.cjs",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/index.mjs",
+      "limit": "10 KB"
+    }
+  ],
+  "devDependencies": {
+    "@morgs32/eslint-config": "^1.0.4",
+    "@size-limit/preset-small-lib": "^8.2.4",
+    "@types/jest": "^29.5.2",
+    "@types/node": "^18.16.19",
+    "husky": "^8.0.3",
+    "next": "^13.4.8",
+    "react": "^18.2.0",
+    "size-limit": "^8.2.4",
+    "superjson": "^1.12.4",
+    "swr": "^2.2.0",
+    "typescript": "^5.1.3",
+    "vite": "^4.3.9",
+    "vitest": "^0.32.2",
+    "zod": "^3.21.4"
+  },
+  "dependencies": {
+    "raw-body": "^2.5.2"
+  },
+  "peerDependencies": {
+    "superjson": "^1.12.4",
+    "swr": "^2.2.0",
+    "zod": "^3.21.4"
+  }
+}
