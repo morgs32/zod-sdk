@@ -1,10 +1,10 @@
 import {
   IClientSDK,
-  IRoutes 
-} from '../types';
+} from './types';
 import { createInnerProxy } from './createInnerProxy';
 import { callRPC } from './callRPC';
 import { SWRConfiguration, preload } from 'swr';
+import { IRoutes } from '../server/types';
 
 interface IProps {
   baseUrl: string

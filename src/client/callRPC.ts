@@ -1,4 +1,4 @@
-import { IRemoteProcedureCall } from '../types';
+import { IRemoteProcedureCall } from './types';
 import { makeFetchArgs } from './makeFetchArgs';
 import SuperJSON from 'superjson';
 
