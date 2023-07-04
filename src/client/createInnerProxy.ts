@@ -1,4 +1,4 @@
-import { IRemoteProcedureCall } from '../types';
+import { IRemoteProcedureCall } from './types';
 
 const noop = () => {}
 

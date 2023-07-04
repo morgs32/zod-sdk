@@ -1,4 +1,4 @@
-import { IRemoteProcedureCall, IRequestOptions } from '../types';
+import { IRemoteProcedureCall, IRequestOptions } from './types';
 import SuperJSON from 'superjson';
 
 interface IProps {

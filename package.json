@@ -9,7 +9,6 @@
   "files": [
     "dist"
   ],
-  "types": "src/types.ts",
   "exports": {
     "./server": {
       "require": "./dist/server/index.cjs",
@@ -34,7 +33,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "vite build && tsc -p tsconfig.build.json",
+    "build": "vite build && tsc -p tsconfig.types.json && tsc -p tsconfig.server.json",
     "watch": "tsc --watch",
     "test": "vitest test",
     "lint": "eslint ./src/**",
