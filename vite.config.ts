@@ -11,11 +11,10 @@ const formats = Object.keys(fileName) as Array<keyof typeof fileName>;
 module.exports = defineConfig({
   base: './',
   build: {
-    emptyOutDir: false,
     lib: {
-      entry: 'src/index.ts',
+      entry: 'src/client/index.ts',
       formats,
-      fileName: (format) => fileName[format],
+      fileName: (format) => `client/${fileName[format]}`,
     },
   },
   test: {

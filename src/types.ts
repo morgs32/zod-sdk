@@ -2,8 +2,6 @@ import { ZodType } from 'zod'
 import { IncomingMessage } from 'http'
 import { SWRConfiguration } from 'swr'
 
-export type ICallType = 'query' | 'mutation'
-
 export type RequestType = IncomingMessage | Request
 
 export type Func = (input: any) => Promise<any>

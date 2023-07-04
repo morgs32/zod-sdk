@@ -6,20 +6,35 @@
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",
   "typings": "dist/index.d.ts",
-  "exports": {
-    ".": {
-      "require": "./dist/index.cjs",
-      "import": "./dist/index.mjs"
-    }
-  },
   "files": [
     "dist"
   ],
+  "types": "src/types.ts",
+  "exports": {
+    "./server": {
+      "require": "./dist/server/index.cjs",
+      "import": "./dist/server/index.mjs"
+    },
+    "./client": {
+      "require": "./dist/client/index.cjs",
+      "import": "./dist/client/index.mjs"
+    }
+  },
+  "typesVersions": {
+    "*": {
+      "server": [
+        "dist/server/index.js"
+      ],
+      "client/*": [
+        "dist/client/*.js"
+      ]
+    }
+  },
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc && vite build",
+    "build": "vite build && tsc -p tsconfig.build.json",
     "watch": "tsc --watch",
     "test": "vitest test",
     "lint": "eslint ./src/**",
