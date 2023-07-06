@@ -2,17 +2,13 @@ import {
   IHandler,
   IMiddlewareFn,
   IRoutes 
-} from '../server/types';
+} from '../types';
 import { asyncLocalStorage } from './asyncLocalStorage';
 import { IncomingMessage, OutgoingMessage } from 'http';
 import { parseBody } from './parseBody';
 import SuperJSON from 'superjson';
-import { NextResponse } from 'next/server'
 
-/**
- * If you want to wrap this response in NextResponse:
- * new NextResponse(response.body, response)
- */
+
 interface IOptions {
   onError?: (err: any) => Response
   middleware?: IMiddlewareFn
@@ -73,7 +69,7 @@ export function createServerRouter<R extends IRoutes>(routes: R, options: IOptio
       if (res) {
         return res.end(JSON.stringify(result))
       }
-      return NextResponse.json(result)
+      return new Response(JSON.stringify(result))
     }
     catch (e) {
       console.error(e)
@@ -82,7 +78,7 @@ export function createServerRouter<R extends IRoutes>(routes: R, options: IOptio
         // res.set
         return res.end(String(e))
       }
-      return NextResponse.json(e, { status: 500 })
+      return new Response(JSON.stringify(e), { status: 500 })
     }
   }
 

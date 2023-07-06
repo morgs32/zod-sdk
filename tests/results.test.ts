@@ -1,6 +1,6 @@
-import { createClientSDK } from '../client/createClientSDK';
-import { fetchAdapter } from '../client/fetchAdapter';
-import { createServerRouter } from '../server';
+import { createClientSDK } from '../src/client/createClientSDK';
+import { fetchAdapter } from '../src/client/fetchAdapter';
+import { createServerRouter } from '../src/server';
 import { makeServer } from './listen';
 
 const routes = {
