@@ -1,37 +1,22 @@
 {
-  "name": "okrs",
+  "name": "cqrpc",
   "author": "Morgan Intrator",
   "version": "0.1.5",
   "license": "MIT",
-  "typings": "dist/types.d.ts",
-  "files": [
-    "dist"
-  ],
+  "main": "index.cjs",
+  "module": "index.mjs",
+  "typings": "index.d.ts",
   "exports": {
-    "./server": {
-      "require": "./dist/server/index.cjs",
-      "import": "./dist/server/index.mjs"
-    },
-    "./client": {
-      "require": "./dist/client/index.cjs",
-      "import": "./dist/client/index.mjs"
-    }
-  },
-  "typesVersions": {
-    "*": {
-      "server": [
-        "dist/server/index.d.ts"
-      ],
-      "client": [
-        "dist/client/index.d.ts"
-      ]
+    ".": {
+      "require": "./index.cjs",
+      "import": "./index.mjs"
     }
   },
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "vite build && tsc -p tsconfig.types.json && tsc -p tsconfig.server.json",
+    "build": "vite build",
     "watch": "tsc --watch",
     "test": "vitest test",
     "lint": "eslint ./src/**",
