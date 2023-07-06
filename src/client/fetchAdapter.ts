@@ -3,12 +3,12 @@ import {
   IClientSDKInternal,
   IRemoteProcedureCall,
   IRequestOptions, 
-} from './types';
+} from '../types';
 import { createInnerProxy } from './createInnerProxy';
 import { isRPC } from './isRPC';
 import { parseRes } from './callRPC';
 import { makeFetchArgs } from './makeFetchArgs';
-import { IRoutes } from '../server/types';
+import { IRoutes } from '../types';
 
 export function fetchAdapter<R extends IRoutes, T>(sdk: IClientSDK<R>, options: IRequestOptions & {
   fn: (sdk: IClientSDK<R>) => T;

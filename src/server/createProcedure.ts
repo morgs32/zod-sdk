@@ -4,7 +4,7 @@ import {
   IContextFn,
   IHandler,
   IMiddlewareFn 
-} from '../server/types';
+} from '../types';
 import { asyncLocalStorage } from './asyncLocalStorage';
 import { ZodType } from 'zod';
 

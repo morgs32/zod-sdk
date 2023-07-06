@@ -1,8 +1,8 @@
 import { ZodType } from 'zod'
 import { IncomingMessage } from 'http'
+import { SWRConfiguration } from 'swr'
 
 export type Func = (input: any) => Promise<any>
-
 
 export type RequestType = IncomingMessage | Request
 
@@ -31,4 +31,30 @@ export interface IHandler<F extends Func = Func> {
 
 export interface IRoutes {
   [key: string]: IHandler | IRoutes | ((...args: any[]) => any);
+}
+
+export type IRequestOptions = Omit<RequestInit, 'headers'> & {
+  headers?: Record<string, string>
+}
+
+export type INextFunction = () => Promise<any>
+
+export type IClientSDK<R extends IRoutes> = {
+  [K in keyof R]: R[K] extends IHandler<infer F> 
+    ? F 
+    : R[K] extends (...args: any[]) => any
+      ? R[K]
+      : R[K] extends IRoutes 
+        ? IClientSDK<R[K]> 
+        : never;
+}
+
+export type IClientSDKInternal = IClientSDK<any> & {
+  _baseUrl: () => string;
+  _swrConfig: () => SWRConfiguration | undefined;
+}
+
+export interface IRemoteProcedureCall {
+  path: string[];
+  input: unknown[];
 }
