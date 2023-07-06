@@ -138,9 +138,15 @@ importers:
 
   server:
     dependencies:
+      buffer:
+        specifier: '*'
+        version: 2.1.1
       client-only:
         specifier: '*'
         version: 0.0.1
+      raw-body:
+        specifier: '*'
+        version: 2.5.2
       superjson:
         specifier: '*'
         version: 1.12.4
@@ -2790,6 +2796,11 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
 
+  /base64-js@0.0.8:
+    resolution: {integrity: sha512-3XSA2cR/h/73EzlXXdU6YNycmYI7+kicTxks4eJg2g39biHR84slg2+des+p7iHYhbRg/udIS4TD53WabcOUkw==}
+    engines: {node: '>= 0.4'}
+    dev: false
+
   /blueimp-md5@2.19.0:
     resolution: {integrity: sha512-DRQrD6gJyy8FbiE4s+bDoXS9hiW3Vbx5uCdwvcCf3zLHL+Iv7LtGHLpr+GZV8rHG8tK766FGYBwRbu8pELTt+w==}
     dev: true
@@ -2823,6 +2834,14 @@ packages:
       electron-to-chromium: 1.4.451
       node-releases: 2.0.12
       update-browserslist-db: 1.0.11(browserslist@4.21.9)
+
+  /buffer@2.1.1:
+    resolution: {integrity: sha512-XsOtTDYX7Dw8YCun5y8JkJ6mL49iI95mX2fLHV9UbzXIZeHCfa0Ay9Ni33cO3eTa71GeFSaPgFuLHARyw8Ck4A==}
+    deprecated: This version of 'buffer' is out-of-date. You must update to v2.8.3 or newer
+    dependencies:
+      base64-js: 0.0.8
+      ieee754: 1.1.13
+    dev: false
 
   /builtin-modules@3.3.0:
     resolution: {integrity: sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==}
@@ -3877,6 +3896,10 @@ packages:
     engines: {node: '>=0.10.0'}
     dependencies:
       safer-buffer: 2.1.2
+    dev: false
+
+  /ieee754@1.1.13:
+    resolution: {integrity: sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==}
     dev: false
 
   /ignore-walk@5.0.1:
@@ -5417,7 +5440,7 @@ packages:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
 
   file:okrpc-0.1.5.tgz(superjson@1.12.4)(swr@2.2.0)(zod@3.21.4):
-    resolution: {integrity: sha512-Lt3QjhMsO269/9BxPIpa6vSuJVy9JZMx/B3poh7/FwFXdYI8hpmaLoAEJx1pqNhN2yRu29Vg2rHBtV9Kc6bkyw==, tarball: file:okrpc-0.1.5.tgz}
+    resolution: {integrity: sha512-qrVXxPjf8k+UBM/AZo80lVvNv1zGVXLLAw/CA5xcOqZH1IP6XtISOdtSVGDxpOyCWn8Nt4cjWeYb8nMvKPjDzw==, tarball: file:okrpc-0.1.5.tgz}
     id: file:okrpc-0.1.5.tgz
     name: okrpc
     version: 0.1.5

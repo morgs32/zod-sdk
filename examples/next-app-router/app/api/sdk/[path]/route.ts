@@ -1,9 +1,8 @@
-import { NextResponse } from 'next/server'
-import * as foo from 'okrpc'
+import { routes } from '@/app/routes'
+import { createServerRouter } from 'okrpc/server'
 
-console.log('foo', foo)
-// const router = createServerRouter(routes)
+const router = createServerRouter(routes)
 
 export async function GET(req: Request) {
-  return NextResponse.json(foo)
+  return router(req)
 };
