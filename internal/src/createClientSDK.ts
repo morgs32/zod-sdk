@@ -1,12 +1,11 @@
 import {
   IClientSDK,
-} from '../types';
+  IRoutes,
+} from 'okrpc/internal';
 import { createInnerProxy } from './createInnerProxy';
 import { callRPC } from './callRPC';
 import { SWRConfiguration } from 'swr';
-import { IRoutes } from '../types';
 
-const { preload } = require('swr/_internal')
 interface IProps {
   baseUrl: string
   swrConfig?: SWRConfiguration
@@ -25,7 +24,7 @@ export function createClientSDK<R extends IRoutes>(props: IProps): IClientSDK<R>
     if (rpc.path.includes('_swrConfig')) return swrConfig 
     // --------------------------------------
 
-    return preload(rpc, () => callRPC(baseUrl, rpc))
+    return callRPC(baseUrl, rpc)
   }) as any as IClientSDK<R>
   
   return sdk

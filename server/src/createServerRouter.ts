@@ -2,7 +2,7 @@ import {
   IHandler,
   IMiddlewareFn,
   IRoutes 
-} from '../types';
+} from 'okrpc/internal';
 import { asyncLocalStorage } from './asyncLocalStorage';
 import { IncomingMessage, OutgoingMessage } from 'http';
 import { parseBody } from './parseBody';

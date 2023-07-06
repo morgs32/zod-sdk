@@ -1,4 +1,4 @@
-import { IRemoteProcedureCall, IRequestOptions } from '../types';
+import { IRemoteProcedureCall, IRequestOptions } from 'okrpc/internal';
 import SuperJSON from 'superjson';
 
 interface IProps {

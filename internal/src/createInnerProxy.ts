@@ -1,4 +1,4 @@
-import { IRemoteProcedureCall } from '../types';
+import { IRemoteProcedureCall } from 'okrpc/internal';
 
 const noop = () => {}
 

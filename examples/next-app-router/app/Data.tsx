@@ -1,6 +1,6 @@
 'use client';
 import styles from './page.module.css'
-import { createClientSDK, useRPC } from 'cqrpc'
+import { createClientSDK, useRPC } from 'okrpc'
 import { IRoutes } from './routes'
 
 const sdk = createClientSDK<IRoutes>({

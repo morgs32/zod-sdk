@@ -1,12 +1,11 @@
-// / <reference types="vitest" />
-import { defineConfig } from 'vite';
+const { defineConfig } = require('vitest/config')
 
 const fileName = {
   es: 'index.mjs',
   cjs: 'index.cjs',
 };
 
-const formats = Object.keys(fileName) as Array<keyof typeof fileName>;
+const formats = Object.keys(fileName)
 
 module.exports = defineConfig({
   base: './',

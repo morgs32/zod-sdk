@@ -6,5 +6,5 @@
   },
   "include": [
     "./**/*.ts"
-, "../internal/src/callRPC.ts"  ]
+  ]
 }

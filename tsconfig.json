@@ -22,21 +22,25 @@
     "noEmitOnError": true,
     "downlevelIteration": true,
     "paths": {
-      "swr": [
-        "./core/index.ts"
+      "okrpc": [
+        "./core/src/index.ts"
+      ],
+      "okrpc/internal": [
+        "./internal/src/index.ts"
       ],
       "okrpc/server": [
-        "./server/index.ts"
+        "./server/src/index.ts"
       ],
       "okrpc/client": [
-        "./client/index.ts"
+        "./client/src/index.ts"
       ]
     },
     "incremental": true
   },
   "exclude": [
     "./**/dist",
-    "examples"
+    "examples",
+    "node_modules"
   ],
   "watchOptions": {
     "watchFile": "useFsEvents",
