@@ -3,26 +3,34 @@
   "author": "Morgan Intrator",
   "version": "0.1.5",
   "license": "MIT",
-  "main": "index.cjs",
-  "module": "index.mjs",
-  "typings": "index.d.ts",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./index.cjs",
-      "import": "./index.mjs"
+      "types": "./dist/index.d.ts",
+      "react-server": "./dist/react-server.mjs",
+      "import": "./dist/index.mjs",
+      "module": "./dist/index.esm.js",
+      "require": "./dist/index.js"
+    },
+    "./server": {
+      "types": "./dist/server/index.d.ts",
+      "react-server": "./dist/server/react-server.mjs",
+      "import": "./dist/server/index.mjs",
+      "module": "./dist/server/index.esm.js",
+      "require": "./dist/server/index.js"
     }
   },
   "engines": {
     "node": ">=10"
   },
   "files": [
-    "dist",
-    "index.*",
-    "src"
+    "dist"
   ],
   "scripts": {
-    "build": "vite build",
-    "watch": "tsc --watch",
+    "build": "pnpm build-package client && pnpm build-package server",
+    "build-package": "bunchee --cwd",
+    "watch": "bunchee -w",
     "test": "vitest",
     "lint": "eslint ./src/**",
     "size": "size-limit",
@@ -54,6 +62,7 @@
     "@size-limit/preset-small-lib": "^8.2.4",
     "@types/jest": "^29.5.2",
     "@types/node": "^18.16.19",
+    "bunchee": "^3.5.0",
     "husky": "^8.0.3",
     "react": "^18.2.0",
     "size-limit": "^8.2.4",
