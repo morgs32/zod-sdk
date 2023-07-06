@@ -12,11 +12,13 @@
   "private": true,
   "scripts": {
     "watch": "bunchee -w",
-    "build": "bunchee",
+    "build": "bunchee --no-external",
     "types:check": "tsc --noEmit",
     "clean": "rimraf dist"
   },
   "peerDependencies": {
+    "raw-body": "*",
+    "buffer": "*",
     "client-only": "*",
     "swr": "*",
     "superjson": "*",
