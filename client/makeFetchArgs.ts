@@ -17,7 +17,7 @@ export function makeFetchArgs(props: IProps): [string, IRequestOptions] {
 
   const routePath = rpc.path.join('.');
 
-  if (routePath.match(/\.(query|queries)\./)) {
+  if (routePath.match(/(^|\.)(query|queries)\./)) {
     return [
       `${baseUrl}/${routePath + (
         rpc.input !== undefined
@@ -36,8 +36,14 @@ export function makeFetchArgs(props: IProps): [string, IRequestOptions] {
       {
         ...requestOptions,
         method: 'POST',
+        headers: {
+          ...requestOptions?.headers,
+          'Content-Type': 'application/json',
+        },
         body: rpc.input !== undefined 
-          ? `{"input":"${SuperJSON.stringify(rpc.input)}}"`
+          ? JSON.stringify({
+            input: SuperJSON.stringify(rpc.input)
+          })
           : undefined,
       }
     ];
