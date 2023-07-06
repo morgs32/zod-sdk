@@ -18,7 +18,6 @@ module.exports = defineConfig({
       ],
       formats,
       fileName: (format, entryName) => {
-        console.log('entryName', entryName)
         return `${entryName}/${fileName[format]}`
       },
     },
@@ -30,6 +29,8 @@ module.exports = defineConfig({
         'node:async_hooks',
         'string_decoder',
         'buffer',
+        'raw-body',
+        'http',
         'superjson',
         'zod',
         'swr'

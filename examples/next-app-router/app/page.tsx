@@ -1,9 +1,17 @@
 import Image from 'next/image'
 import styles from './page.module.css'
+import { createClientSDK, useRPC } from 'cqrpc'
+import { IRoutes } from './routes'
+
+const sdk = createClientSDK<IRoutes>({
+  baseUrl: 'http://localhost:3000/api/sdk',
+})
 
 export default function Home() {
 
-  
+  const { data } = useRPC(sdk, {
+    fn: sdk => sdk.queries.hello()
+  })
 
   return (
     <main className={styles.main}>
@@ -34,7 +42,7 @@ export default function Home() {
       <div className={styles.center}>
         <pre>
           <code className={styles.code}>
-            {JSON.stringify({ hello: 'world' }, null, 2)}
+            {JSON.stringify(data, null, 2)}
           </code>
         </pre>
       </div>
