@@ -3,11 +3,13 @@ import {
   IClientSDKInternal,
   IRemoteProcedureCall,
 } from '../types';
-import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
+import { SWRConfiguration, SWRResponse } from 'swr/_internal';
 import { createInnerProxy } from './createInnerProxy';
 import { callRPC } from './callRPC';
 import { isRPC } from './isRPC';
 import { IRoutes } from '../types';
+
+const useSWR = require('swr')
 
 export function useRPC<R extends IRoutes, T>(sdk: IClientSDK<R>, options: {
   fn: (sdk: IClientSDK<R>) => T;

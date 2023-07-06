@@ -15,10 +15,15 @@
   "engines": {
     "node": ">=10"
   },
+  "files": [
+    "dist",
+    "index.*",
+    "src"
+  ],
   "scripts": {
     "build": "vite build",
     "watch": "tsc --watch",
-    "test": "vitest test",
+    "test": "vitest",
     "lint": "eslint ./src/**",
     "size": "size-limit",
     "analyze": "size-limit --why"

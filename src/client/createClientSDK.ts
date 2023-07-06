@@ -3,7 +3,8 @@ import {
 } from '../types';
 import { createInnerProxy } from './createInnerProxy';
 import { callRPC } from './callRPC';
-import { SWRConfiguration, preload } from 'swr';
+import { SWRConfiguration } from 'swr/_internal';
+import { preload } from 'swr';
 import { IRoutes } from '../types';
 
 interface IProps {
