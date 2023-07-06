@@ -1,36 +1,60 @@
 {
-  "name": "cqrpc",
+  "name": "okrpc",
   "author": "Morgan Intrator",
   "version": "0.1.5",
   "license": "MIT",
-  "main": "dist/index.js",
-  "typings": "dist/index.d.ts",
+  "main": "./core/dist/index.js",
+  "module": "./core/dist/index.esm.js",
+  "types": "./core/dist/index.d.ts",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
-      "types": "./dist/index.d.ts",
-      "react-server": "./dist/react-server.mjs",
-      "import": "./dist/index.mjs",
-      "module": "./dist/index.esm.js",
-      "require": "./dist/index.js"
+      "types": "./core/dist/index.d.ts",
+      "react-server": "./core/dist/react-server.mjs",
+      "import": "./core/dist/index.mjs",
+      "module": "./core/dist/index.esm.js",
+      "require": "./core/dist/index.js"
+    },
+    "./internal": {
+      "types": "./internal/dist/index.d.ts",
+      "react-server": "./internal/dist/react-server.mjs",
+      "import": "./internal/dist/index.mjs",
+      "module": "./internal/dist/index.esm.js",
+      "require": "./internal/dist/index.js"
+    },
+    "./client": {
+      "types": "./client/dist/index.d.ts",
+      "react-server": "./client/dist/react-server.mjs",
+      "import": "./client/dist/index.mjs",
+      "module": "./client/dist/index.esm.js",
+      "require": "./client/dist/index.js"
     },
     "./server": {
-      "types": "./dist/server/index.d.ts",
-      "react-server": "./dist/server/react-server.mjs",
-      "import": "./dist/server/index.mjs",
-      "module": "./dist/server/index.esm.js",
-      "require": "./dist/server/index.js"
+      "types": "./server/dist/index.d.ts",
+      "react-server": "./server/dist/react-server.mjs",
+      "import": "./server/dist/index.mjs",
+      "module": "./server/dist/index.esm.js",
+      "require": "./server/dist/index.js"
     }
   },
+  "files": [
+    "core/dist/**/*.{js,d.ts,mjs}",
+    "client/dist/**/*.{js,d.ts,mjs}",
+    "server/dist/**/*.{js,d.ts,mjs}",
+    "internal/dist/**/*.{js,d.ts,mjs}",
+    "core/package.json",
+    "client/package.json",
+    "server/package.json",
+    "internal/package.json"
+  ],
   "engines": {
     "node": ">=10"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
-    "build": "pnpm build-package client && pnpm build-package server",
+    "build": "pnpm build-package client && pnpm build-package server && pnpm build-package core && pnpm build-package internal",
     "build-package": "bunchee --cwd",
     "watch": "bunchee -w",
+    "typecheck": "tsc",
     "test": "vitest",
     "lint": "eslint ./src/**",
     "size": "size-limit",
@@ -47,25 +71,14 @@
     "singleQuote": true,
     "trailingComma": "es5"
   },
-  "size-limit": [
-    {
-      "path": "dist/index.cjs",
-      "limit": "10 KB"
-    },
-    {
-      "path": "dist/index.mjs",
-      "limit": "10 KB"
-    }
-  ],
   "devDependencies": {
-    "@morgs32/eslint-config": "^1.0.4",
-    "@size-limit/preset-small-lib": "^8.2.4",
+    "@morgs32/eslint-config": "^1.0.5",
     "@types/jest": "^29.5.2",
     "@types/node": "^18.16.19",
+    "@types/react": "^18.2.14",
     "bunchee": "^3.5.0",
     "husky": "^8.0.3",
     "react": "^18.2.0",
-    "size-limit": "^8.2.4",
     "superjson": "^1.12.4",
     "swr": "^2.2.0",
     "typescript": "^5.1.3",

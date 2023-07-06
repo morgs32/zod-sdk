@@ -19,7 +19,7 @@
   "peerDependencies": {
     "client-only": "*",
     "swr": "*",
-    "react": "*",
-    "use-sync-external-store": "*"
+    "superjson": "*",
+    "zod": "*"
   }
 }

@@ -1,4 +1,4 @@
-import { IRemoteProcedureCall } from '../types';
+import { IRemoteProcedureCall } from './types';
 import { makeFetchArgs } from './makeFetchArgs';
 import SuperJSON from 'superjson';
 
@@ -24,7 +24,7 @@ export async function parseRes(res: Response) {
   }
   const {
     result,
-    included // TODO: handle included
+    // included // TODO: handle included
   } = SuperJSON.deserialize(await res.json()) as any
   return result
 }

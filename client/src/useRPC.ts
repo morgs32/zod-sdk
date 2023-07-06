@@ -2,14 +2,18 @@ import {
   IClientSDK,
   IClientSDKInternal,
   IRemoteProcedureCall,
-} from '../types';
-import { SWRConfiguration, SWRResponse } from 'swr';
-import { createInnerProxy } from './createInnerProxy';
-import { callRPC } from './callRPC';
-import { isRPC } from './isRPC';
-import { IRoutes } from '../types';
-
-const componentType = typeof window === 'undefined' ? 'server' : 'client';
+  IRoutes,
+} from 'okrpc/internal';
+import {
+  SWRConfiguration,
+  SWRResponse
+} from 'swr';
+import {
+  createInnerProxy,
+  callRPC,
+  isRPC 
+} from 'okrpc/internal';
+import useSWR from 'swr';
 
 export function useRPC<R extends IRoutes, T>(sdk: IClientSDK<R>, options: {
   fn: (sdk: IClientSDK<R>) => T;
@@ -33,11 +37,9 @@ export function useRPC<R extends IRoutes, T>(sdk: IClientSDK<R>, options: {
   const makeRPC = createInnerProxy((rpc) => rpc) as any as IClientSDK<R>;
   const maybeAnRPC = fn(makeRPC) as IRemoteProcedureCall | false | null | undefined;
 
-  if (componentType === 'server') {
-    throw new Error('useRPC can only be called in client components');
-  }
-
-  const useSWR = require('swr')
+  // if (componentType === 'server') {
+  //   throw new Error('useRPC can only be called in client components');
+  // }
 
   return useSWR(
     isRPC(maybeAnRPC) && maybeAnRPC,

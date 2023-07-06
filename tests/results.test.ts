@@ -1,6 +1,5 @@
-import { createClientSDK } from '../core/client/createClientSDK';
-import { fetchAdapter } from '../core/client/fetchAdapter';
-import { createServerRouter } from '../server/createServerRouter';
+import { createClientSDK, fetchAdapter } from 'okrpc/internal';
+import { createServerRouter } from 'okrpc/server';
 import { makeServer } from './listen';
 
 const routes = {
