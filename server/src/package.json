@@ -13,7 +13,7 @@
   "scripts": {
     "watch": "bunchee -w",
     "build": "bunchee --no-external",
-    "types:check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
   },
   "peerDependencies": {
