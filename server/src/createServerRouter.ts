@@ -2,12 +2,10 @@ import {
   IHandler,
   IMiddlewareFn,
   IRoutes 
-} from 'okrpc/internal';
+} from 'zod-sdk/internal';
 import { asyncLocalStorage } from './asyncLocalStorage';
 import { IncomingMessage, OutgoingMessage } from 'http';
 import { parseBody } from './parseBody';
-import SuperJSON from 'superjson';
-
 
 interface IOptions {
   onError?: (err: any) => Response
@@ -105,7 +103,7 @@ async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
         if (typeof input === 'string') {
           input = JSON.parse(input)
         }
-        input = SuperJSON.deserialize(input)
+        input = JSON.stringify(input)
         break
       }
       case 'POST': {

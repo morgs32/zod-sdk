@@ -1,5 +1,5 @@
-import { createClientSDK, fetchAdapter } from 'okrpc/internal';
-import { createServerRouter } from 'okrpc/server';
+import { createClientSDK, fetchAdapter } from 'zod-sdk/internal';
+import { createServerRouter } from 'zod-sdk/server';
 import { makeServer } from './listen';
 
 const routes = {

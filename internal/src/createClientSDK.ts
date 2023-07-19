@@ -1,7 +1,7 @@
 import {
   IClientSDK,
   IRoutes,
-} from 'okrpc/internal';
+} from 'zod-sdk/internal';
 import { createInnerProxy } from './createInnerProxy';
 import { callRPC } from './callRPC';
 import { SWRConfiguration } from 'swr';

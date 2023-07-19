@@ -4,7 +4,7 @@ import {
   IContextFn,
   IHandler,
   IMiddlewareFn 
-} from 'okrpc/internal';
+} from 'zod-sdk/internal';
 import { asyncLocalStorage } from './asyncLocalStorage';
 import { ZodType } from 'zod';
 
@@ -23,12 +23,12 @@ export function createProcedure<C extends {}, R extends IncomingMessage | Reques
   } = options
 
   return {
-    makeHandler: function makeHandler<F extends Func>(procedure: F, handlerOptions?: IHandlerOptions): IHandler<F> {
+    makeHandler: function makeHandler<F extends Func>(procedure: F, handlerOptions: IHandlerOptions): IHandler<F> {
       return {
         procedure,
         middleware,
         createContext: createContext as IContextFn<C>,
-        schema: handlerOptions?.schema,
+        schema: handlerOptions.schema,
       };
     },
     useCtx: function useCtx(): C {

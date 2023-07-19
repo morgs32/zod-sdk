@@ -18,8 +18,11 @@
   },
   "peerDependencies": {
     "client-only": "*",
-    "swr": "*",
     "superjson": "*",
+    "swr": "*",
     "zod": "*"
+  },
+  "dependencies": {
+    "json-schema-to-zod": "^1.1.1"
   }
 }
