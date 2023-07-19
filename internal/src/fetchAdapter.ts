@@ -4,7 +4,7 @@ import {
   IRemoteProcedureCall,
   IRequestOptions,
   IRoutes, 
-} from 'okrpc/internal';
+} from 'zod-sdk/internal';
 import { createInnerProxy } from './createInnerProxy';
 import { isRPC } from './isRPC';
 import { parseRes } from './callRPC';

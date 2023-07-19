@@ -22,16 +22,16 @@
     "noEmitOnError": true,
     "downlevelIteration": true,
     "paths": {
-      "okrpc": [
+      "zod-sdk": [
         "./core/src/index.ts"
       ],
-      "okrpc/internal": [
+      "zod-sdk/internal": [
         "./internal/src/index.ts"
       ],
-      "okrpc/server": [
+      "zod-sdk/server": [
         "./server/src/index.ts"
       ],
-      "okrpc/client": [
+      "zod-sdk/client": [
         "./client/src/index.ts"
       ]
     },

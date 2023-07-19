@@ -1,2 +1,2 @@
-export { createClientSDK, fetchAdapter } from 'okrpc/internal';
-export { createServerRouter } from 'okrpc/server';
+export { createClientSDK, fetchAdapter } from 'zod-sdk/internal';
+export { createServerRouter } from 'zod-sdk/server';

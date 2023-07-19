@@ -1,4 +1,4 @@
-import { IRemoteProcedureCall } from 'okrpc/internal';
+import { IRemoteProcedureCall } from 'zod-sdk/internal';
 
 const noop = () => {}
 

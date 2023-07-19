@@ -1,4 +1,4 @@
-import { IRemoteProcedureCall, IRequestOptions } from 'okrpc/internal';
+import { IRemoteProcedureCall, IRequestOptions } from 'zod-sdk/internal';
 import SuperJSON from 'superjson';
 
 interface IProps {

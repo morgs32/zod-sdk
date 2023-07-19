@@ -1,5 +1,5 @@
 import { routes } from '@/app/routes'
-import { createServerRouter } from 'okrpc/server'
+import { createServerRouter } from 'zod-sdk/server'
 
 const router = createServerRouter(routes)
 

@@ -3,7 +3,7 @@ import {
   IClientSDKInternal,
   IRemoteProcedureCall,
   IRoutes,
-} from 'okrpc/internal';
+} from 'zod-sdk/internal';
 import {
   SWRConfiguration,
   SWRResponse
@@ -12,7 +12,7 @@ import {
   createInnerProxy,
   callRPC,
   isRPC 
-} from 'okrpc/internal';
+} from 'zod-sdk/internal';
 import useSWR from 'swr';
 
 export function useRPC<R extends IRoutes, T>(sdk: IClientSDK<R>, options: {

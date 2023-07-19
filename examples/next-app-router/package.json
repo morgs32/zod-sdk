@@ -12,7 +12,7 @@
     "@types/node": "20.4.0",
     "@types/react": "18.2.14",
     "@types/react-dom": "18.2.6",
-    "okrpc": "file:../../okrpc-0.1.5.tgz",
+    "zod-sdk": "file:../../zod-sdk-0.1.5.tgz",
     "next": "13.4.8",
     "okrs": "^0.1.7",
     "react": "18.2.0",
