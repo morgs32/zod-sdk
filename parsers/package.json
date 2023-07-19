@@ -16,7 +16,7 @@
     "build": "bunchee --no-external",
     "lint": "eslint .",
     "test": "vitest",
-    "types:check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
   },
   "dependencies": {
