@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "parsers",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
@@ -13,14 +13,18 @@
   "private": true,
   "scripts": {
     "watch": "bunchee -w",
-    "build": "bunchee",
+    "build": "bunchee --no-external",
+    "lint": "eslint .",
+    "test": "vitest",
     "types:check": "tsc --noEmit",
     "clean": "rimraf dist"
   },
-  "peerDependencies": {
-    "client-only": "*",
-    "swr": "*",
-    "superjson": "*",
-    "zod": "*"
+  "dependencies": {
+    "json-schema": "^0.4.0"
+  },
+  "devDependencies": {
+    "@types/json-schema": "^7.0.12",
+    "vite": "^4.3.9",
+    "vitest": "^0.32.2"
   }
 }

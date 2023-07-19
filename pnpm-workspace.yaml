@@ -3,4 +3,5 @@ packages:
   - 'core'
   - 'server'
   - 'client'
+  - 'parsers'
   - 'examples/*'

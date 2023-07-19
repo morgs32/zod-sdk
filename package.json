@@ -55,7 +55,7 @@
     "build-package": "bunchee --cwd",
     "typecheck": "tsc",
     "test": "vitest",
-    "lint": "eslint ./src/**",
+    "lint": "turbo run lint",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
