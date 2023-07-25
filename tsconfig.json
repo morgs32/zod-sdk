@@ -22,9 +22,6 @@
     "noEmitOnError": true,
     "downlevelIteration": true,
     "paths": {
-      "zod-sdk": [
-        "./core/src/index.ts"
-      ],
       "zod-sdk/internal": [
         "./internal/src/index.ts"
       ],

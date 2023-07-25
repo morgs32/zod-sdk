@@ -1,1 +1,1 @@
-export * from './useRPC';
+export * from './useQuery';

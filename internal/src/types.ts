@@ -10,7 +10,6 @@ export interface IContextFn<T = any, R extends RequestType = RequestType> {
   (req: R): T | Promise<T>;
 }
 
-
 export interface IContextFn<T = any, R extends RequestType = RequestType> {
   (req: R): T | Promise<T>;
 }
@@ -22,11 +21,14 @@ export interface IMiddlewareFn<R = RequestType, T = any> {
   ): Promise<T | Response>
 }
 
+type IType = 'query' | 'command'
+
 export interface IHandler<F extends Func = Func> {
   procedure: F
   createContext?: IContextFn<any>
   middleware?: IMiddlewareFn<any>
   schema?: ZodType<any>
+  type: IType
 }
 
 export interface IRoutes {
@@ -40,10 +42,10 @@ export type IRequestOptions = Omit<RequestInit, 'headers'> & {
 export type INextFunction = () => Promise<any>
 
 export type IClientSDK<R extends IRoutes> = {
-  [K in keyof R]: R[K] extends IHandler<infer F> 
-    ? F 
+  [K in keyof R]: R[K] extends IHandler
+    ? R[K]
     : R[K] extends (...args: any[]) => any
-      ? R[K]
+      ? IHandler<R[K]>
       : R[K] extends IRoutes 
         ? IClientSDK<R[K]> 
         : never;
@@ -54,7 +56,18 @@ export type IClientSDKInternal = IClientSDK<any> & {
   _swrConfig: () => SWRConfiguration | undefined;
 }
 
-export interface IRemoteProcedureCall {
+export type IHandlerInternal = IHandler & {
+  _baseUrl: () => string;
+  _swrConfig: () => SWRConfiguration | undefined;
+}
+
+export interface IBaseRPC<I extends any = any> {
   path: string[];
-  input: unknown[];
+  input: I;
+  baseUrl: string;
+  swrConfig?: SWRConfiguration;
+}
+
+export interface ICompleteRPC<I extends any = any> extends IBaseRPC<I> {
+  type: IType
 }

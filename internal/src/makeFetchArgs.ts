@@ -1,55 +1,46 @@
-import { IRemoteProcedureCall, IRequestOptions } from 'zod-sdk/internal';
-import SuperJSON from 'superjson';
+import { ICompleteRPC, IRequestOptions } from 'zod-sdk/internal';
 
-interface IProps {
-  baseUrl: string;
-  rpc: IRemoteProcedureCall;
-  requestOptions?: IRequestOptions;
-}
-
-export function makeFetchArgs(props: IProps): [string, IRequestOptions] {
+export function makeFetchArgs(rpc: ICompleteRPC, options?: IRequestOptions): [string, IRequestOptions] {
 
   const {
     baseUrl,
-    rpc,
-    requestOptions,
-  } = props;
+    input,
+    path,
+    type,
+  } = rpc;
 
-  const routePath = rpc.path.join('.');
+  const routePath = path.join('.');
 
-  if (routePath.match(/(^|\.)(query|queries)\./)) {
-    return [
-      `${baseUrl}/${routePath + (
-        rpc.input !== undefined
-          ? `?input=${SuperJSON.stringify(rpc.input)}`
-          : ''
-      )}`,
-      {
-        ...requestOptions,
-        method: 'GET',
-      }
-    ];
-  }
-  else if (routePath.match(/\.(commands?|mutate|mutations?)\./)) {
-    return [
-      `${baseUrl}/${routePath}`,
-      {
-        ...requestOptions,
-        method: 'POST',
-        headers: {
-          ...requestOptions?.headers,
-          'Content-Type': 'application/json',
-        },
-        body: rpc.input !== undefined 
-          ? JSON.stringify({
-            input: SuperJSON.stringify(rpc.input)
-          })
-          : undefined,
-      }
-    ];
-  }
-  else {
-    throw new Error(`Invalid route path: ${routePath}`);
+  switch (type) {
+    case 'query':
+      return [
+        `${baseUrl}/${routePath + (
+          input !== undefined
+            ? `?input=${JSON.stringify(input)}`
+            : ''
+        )}`,
+        {
+          ...options,
+          method: 'GET',
+        }
+      ];
+    case 'command':
+      return [
+        `${baseUrl}/${routePath}`,
+        {
+          ...options,
+          method: 'POST',
+          headers: {
+            ...options?.headers,
+            'Content-Type': 'application/json',
+          },
+          body: input !== undefined 
+            ? JSON.stringify({ 
+              input 
+            })
+            : undefined,
+        }
+      ];
   }
 
 }

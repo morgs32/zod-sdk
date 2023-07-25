@@ -17,6 +17,8 @@ import { parseObject } from './parseObject';
 import { parseAnyOf } from './parseAnyOf';
 import { parseAllOf } from './parseAllOf';
 import { parseArray } from './parseArray';
+import { parseNot } from './parseNot';
+import { parseEnum } from './parseEnum';
 
 export const parseSchema = (
   schema: JSONSchema7 | boolean,
@@ -94,12 +96,12 @@ const selectParser: ParserSelector = (schema, refs) => {
   else if (its.an.allOf(schema)) {
     return parseAllOf(schema, refs);
   } 
-  // else if (its.a.not(schema)) {
-  //   return parseNot(schema, refs);
-  // } 
-  // else if (its.an.enum(schema)) {
-  //   return parseEnum(schema); // <-- needs to come before primitives
-  // } 
+  else if (its.a.not(schema)) {
+    return parseNot(schema, refs);
+  } 
+  else if (its.an.enum(schema)) {
+    return parseEnum(schema, refs); // <-- needs to come before primitives
+  } 
   // else if (its.a.const(schema)) {
   //   return parseConst(schema);
   // } 

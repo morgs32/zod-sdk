@@ -39,11 +39,6 @@ export function createServerRouter<R extends IRoutes>(routes: R, options: IOptio
       if (!found) {
         throw new Error(`Route not found: ${sdkPath}`)
       }
-      if (typeof found === 'function') {
-        return { 
-          procedure: found,
-        }
-      }
       if (isHandler(found)) {
         return found
       }
@@ -119,7 +114,7 @@ async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
           break
         }
         try {
-          input = SuperJSON.deserialize(JSON.parse(body.input))
+          input = JSON.parse(body.input)
           break
         }
         catch (err) {
@@ -136,8 +131,7 @@ async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
       return res
     }
 
-    // TODO: Handle remapping of results. Maybe result.data should have everything?
-    return SuperJSON.serialize({
+    return {
       result: res,
       included: {
         // related: 'deal',
@@ -145,7 +139,7 @@ async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
         // So we put relatedKey in for deal
         // And then put back together!
       }
-    })
+    }
 
   })
 }

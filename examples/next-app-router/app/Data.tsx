@@ -1,6 +1,6 @@
 'use client';
 import styles from './page.module.css'
-import { createClientSDK, useRPC } from 'zod-sdk'
+import { createClientSDK, useQuery } from 'zod-sdk'
 import { IRoutes } from './routes'
 
 const sdk = createClientSDK<IRoutes>({
@@ -13,7 +13,7 @@ interface IProps {
 
 export function Data(props: IProps) {
 
-  const { data } = useRPC(sdk, {
+  const { data } = useQuery(sdk, {
     fn: sdk => sdk.queries.hello()
   })
 
