@@ -1,4 +1,4 @@
-import { defineConfig } from 'vitest/config';
+const { defineConfig } = require('vitest/config')
 
 module.exports = defineConfig({
   base: './',

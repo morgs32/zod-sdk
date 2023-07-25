@@ -10,6 +10,7 @@ import { ZodType } from 'zod';
 
 interface IHandlerOptions {
   schema: ZodType<any>
+  type: 'query' | 'command'
 }
 
 export function createProcedure<C extends {}, R extends IncomingMessage | Request>(options: {
@@ -28,7 +29,7 @@ export function createProcedure<C extends {}, R extends IncomingMessage | Reques
         procedure,
         middleware,
         createContext: createContext as IContextFn<C>,
-        schema: handlerOptions.schema,
+        ...handlerOptions,
       };
     },
     useCtx: function useCtx(): C {
