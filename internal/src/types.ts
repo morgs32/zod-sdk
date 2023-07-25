@@ -6,12 +6,8 @@ export type Func = (input: any) => Promise<any>
 
 export type RequestType = IncomingMessage | Request
 
-export interface IContextFn<T = any, R extends RequestType = RequestType> {
-  (req: R): T | Promise<T>;
-}
-
-export interface IContextFn<T = any, R extends RequestType = RequestType> {
-  (req: R): T | Promise<T>;
+export interface IContextFn<R extends RequestType = RequestType, C = any> {
+  (req: R): C | Promise<C>;
 }
 
 export interface IMiddlewareFn<R = RequestType, T = any> {
