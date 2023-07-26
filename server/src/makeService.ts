@@ -8,39 +8,39 @@ import {
 import { asyncLocalStorage } from './asyncLocalStorage';
 import { ZodType } from 'zod';
 
-export function createProcedure<R extends IncomingMessage | Request, C extends {} | Promise<{}>>(options: {
+export function makeService<R extends IncomingMessage | Request, C extends any>(options: {
   middleware?: IMiddlewareFn<R>
-  createContext?: IContextFn<R, C>
+  makeContext?: IContextFn<R, C>
 } = {}) {
 
   const {
     middleware,
-    createContext,
+    makeContext,
   } = options
 
   return {
-    makeQuery: function makeHandler<F extends Func>(procedure: F, schema?: ZodType<any>): IHandler<F> {
+    makeQuery: function makeQuery<F extends Func>(procedure: F, schema?: ZodType<Parameters<F>[0]>): IHandler<F> {
       return {
         procedure,
         middleware,
-        createContext,
+        makeContext,
         schema,
         type: 'query'
       };
     },
-    makeCommand: function makeHandler<F extends Func>(procedure: F, schema?: ZodType<any>): IHandler<F> {
+    makeCommand: function makeCommand<F extends Func>(procedure: F, schema?: ZodType<Parameters<F>[0]>): IHandler<F> {
       return {
         procedure,
         middleware,
-        createContext,
+        makeContext,
         schema,
         type: 'command'
       };
     },
     useCtx: function useCtx() {
-      return asyncLocalStorage.getStore() as C
+      return asyncLocalStorage.getStore() as Awaited<C>
     },
-    mockCtx: function mockCtx<T extends any>(ctx: C, fn: () => Promise<T>): Promise<T> {
+    mockCtx: function mockCtx<T extends any>(ctx: Awaited<C>, fn: () => Promise<T>): Promise<T> {
       return asyncLocalStorage.run(ctx, fn)
     }
   }

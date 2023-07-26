@@ -1,13 +1,11 @@
-import { createClientSDK } from 'zod-sdk/internal';
-import { createQuery, createServerRouter } from 'zod-sdk/server';
+import { makeSDK } from 'zod-sdk/internal';
+import { makeQuery, makeRouter } from 'zod-sdk/server';
 import { makeServer } from './listen';
 import { query } from 'internal/src/query';
 
-
-
 export const routes = {
   widgets: {
-    findMany: createQuery(async function findMany<T extends 'foo' | 'bar'>(str: T): Promise<{ id: number, type: T, createdAt: Date }[]> {
+    findMany: makeQuery(async function findMany<T extends 'foo' | 'bar'>(str: T): Promise<{ id: number, type: T, createdAt: Date }[]> {
       return [
         {
           id: 1,
@@ -22,9 +20,9 @@ export const routes = {
 describe('results', () => {
 
   it('with http server', async () => {
-    const handler = createServerRouter(routes)
+    const handler = makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = createClientSDK<typeof routes>({
+      const clientSDK = makeSDK<typeof routes>({
         baseUrl: url,
       })
       const result = await query(clientSDK.widgets.findMany, findMany => findMany('foo'))

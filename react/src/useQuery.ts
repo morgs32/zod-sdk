@@ -48,7 +48,6 @@ export function useQuery<H extends IHandler, F extends H extends IHandler<infer 
       type: 'query'
     }),
     {
-      ...isRPC(maybeAnRPC) && maybeAnRPC.swrConfig,
       ...swrConfig,
       onSuccess,
     }

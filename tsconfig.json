@@ -28,8 +28,8 @@
       "zod-sdk/server": [
         "./server/src/index.ts"
       ],
-      "zod-sdk/client": [
-        "./client/src/index.ts"
+      "zod-sdk/react": [
+        "./react/src/index.ts"
       ]
     },
     "incremental": true

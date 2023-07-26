@@ -1,4 +1,3 @@
-import { SWRConfiguration } from 'swr';
 import { IBaseRPC } from '.';
 
 const noop = () => {}
@@ -6,10 +5,9 @@ const noop = () => {}
 interface IProps {
   path?: string[]
   baseUrl: string
-  swrConfig?: SWRConfiguration
 }
 
-export function createInnerProxy(props: IProps) {
+export function makeInnerProxy(props: IProps) {
 
   const {
     path = [],
@@ -20,7 +18,7 @@ export function createInnerProxy(props: IProps) {
       if (typeof key !== 'string' || key === 'then') {
         return undefined; // Special case for if the proxy is accidentally treated like a PromiseLike (like in `Promise.resolve(proxy)`)
       }
-      return createInnerProxy({
+      return makeInnerProxy({
         ...props,
         path: [...path, key]
       });
