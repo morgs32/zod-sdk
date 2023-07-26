@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { makeService } from '.';
+import { makeService } from './zsdkserver';
 
 
 describe('makeService', () => {

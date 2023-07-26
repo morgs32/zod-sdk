@@ -1,5 +1,5 @@
 import { makeSDK } from 'zod-sdk/internal';
-import { useQuery } from '../client/src';
+import { useQuery } from '../react/src';
 import { routes } from './results.test';
 
 

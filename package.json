@@ -3,17 +3,17 @@
   "author": "Morgan Intrator",
   "version": "0.1.5",
   "license": "MIT",
-  "main": "./core/dist/index.js",
-  "module": "./core/dist/index.esm.js",
-  "types": "./core/dist/index.d.ts",
+  "main": "./client/dist/index.js",
+  "module": "./client/dist/index.esm.js",
+  "types": "./client/dist/index.d.ts",
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "types": "./core/dist/index.d.ts",
-      "react-server": "./core/dist/react-server.mjs",
-      "import": "./core/dist/index.mjs",
-      "module": "./core/dist/index.esm.js",
-      "require": "./core/dist/index.js"
+    "./client": {
+      "types": "./client/dist/index.d.ts",
+      "react-client": "./client/dist/react-server.mjs",
+      "import": "./client/dist/index.mjs",
+      "module": "./client/dist/index.esm.js",
+      "require": "./client/dist/index.js"
     },
     "./internal": {
       "types": "./internal/dist/index.d.ts",
@@ -38,12 +38,12 @@
     }
   },
   "files": [
-    "core/dist/**/*.{js,d.ts,mjs}",
     "client/dist/**/*.{js,d.ts,mjs}",
+    "react/dist/**/*.{js,d.ts,mjs}",
     "server/dist/**/*.{js,d.ts,mjs}",
     "internal/dist/**/*.{js,d.ts,mjs}",
-    "core/package.json",
     "client/package.json",
+    "react/package.json",
     "server/package.json",
     "internal/package.json"
   ],
@@ -51,7 +51,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "pnpm build-package client && pnpm build-package server && pnpm build-package core && pnpm build-package internal",
+    "build": "pnpm build-package client && pnpm build-package server && pnpm build-package react && pnpm build-package internal",
     "build-package": "bunchee --cwd",
     "typecheck": "tsc",
     "test": "vitest",
