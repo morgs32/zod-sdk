@@ -22,12 +22,12 @@
       "module": "./internal/dist/index.esm.js",
       "require": "./internal/dist/index.js"
     },
-    "./client": {
-      "types": "./client/dist/index.d.ts",
-      "react-server": "./client/dist/react-server.mjs",
-      "import": "./client/dist/index.mjs",
-      "module": "./client/dist/index.esm.js",
-      "require": "./client/dist/index.js"
+    "./react": {
+      "types": "./react/dist/index.d.ts",
+      "react-server": "./react/dist/react-server.mjs",
+      "import": "./react/dist/index.mjs",
+      "module": "./react/dist/index.esm.js",
+      "require": "./react/dist/index.js"
     },
     "./server": {
       "types": "./server/dist/index.d.ts",

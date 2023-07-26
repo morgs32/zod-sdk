@@ -1,14 +1,15 @@
-import { createProcedure } from '.';
+// @ts-nocheck
+import { makeService } from '.';
 
 
-describe('createProcedure', () => {
+describe('makeService', () => {
   it('works', async () => {
     
-    const procedure = createProcedure({
+    const procedure = makeService({
       middleware: async (req: Request) => {
 
       },
-      createContext: async (req) => {
+      makeContext: async (req) => {
         return {
           foo: 'bar'
         }

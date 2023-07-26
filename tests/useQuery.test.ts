@@ -1,4 +1,4 @@
-import { createClientSDK } from 'zod-sdk/internal';
+import { makeSDK } from 'zod-sdk/internal';
 import { useQuery } from '../client/src';
 import { routes } from './results.test';
 
@@ -6,7 +6,7 @@ import { routes } from './results.test';
 describe('useQuery', () => {
   it('works', async () => {
 
-    const clientSDK = createClientSDK<typeof routes>({
+    const clientSDK = makeSDK<typeof routes>({
       baseUrl: 'http://example.com',
     })
 

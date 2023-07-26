@@ -1,6 +1,5 @@
 import { ZodType } from 'zod'
 import { IncomingMessage } from 'http'
-import { SWRConfiguration } from 'swr'
 
 export type Func = (input: any) => Promise<any>
 
@@ -10,18 +9,15 @@ export interface IContextFn<R extends RequestType = RequestType, C = any> {
   (req: R): C | Promise<C>;
 }
 
-export interface IMiddlewareFn<R = RequestType, T = any> {
-  (
-    req: R, 
-    next: () => Promise<any>,
-  ): Promise<T | Response>
+export interface IMiddlewareFn<R = RequestType> {
+  (req: R, next: () => Promise<Response>): void
 }
 
 type IType = 'query' | 'command'
 
 export interface IHandler<F extends Func = Func> {
   procedure: F
-  createContext?: IContextFn<any>
+  makeContext?: IContextFn<any>
   middleware?: IMiddlewareFn<any>
   schema?: ZodType<any>
   type: IType
@@ -47,21 +43,10 @@ export type IClientSDK<R extends IRoutes> = {
         : never;
 }
 
-export type IClientSDKInternal = IClientSDK<any> & {
-  _baseUrl: () => string;
-  _swrConfig: () => SWRConfiguration | undefined;
-}
-
-export type IHandlerInternal = IHandler & {
-  _baseUrl: () => string;
-  _swrConfig: () => SWRConfiguration | undefined;
-}
-
 export interface IBaseRPC<I extends any = any> {
   path: string[];
   input: I;
   baseUrl: string;
-  swrConfig?: SWRConfiguration;
 }
 
 export interface ICompleteRPC<I extends any = any> extends IBaseRPC<I> {

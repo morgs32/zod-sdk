@@ -1,11 +1,11 @@
-export { useQuery } from 'zod-sdk/client'
 export {
-  createClientSDK,
+  makeSDK,
   command,
   query 
 } from 'zod-sdk/internal'
 export {
-  createProcedure,
-  createQuery,
-  createCommand,
+  makeService,
+  makeQuery,
+  makeCommand,
+  makeRouter,
 } from 'zod-sdk/server'

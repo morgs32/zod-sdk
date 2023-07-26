@@ -13,7 +13,10 @@ interface IOptions {
 }
 
 export interface IRouter<R extends IRoutes = IRoutes> {
-  (req: IncomingMessage | Request, httpRes?: OutgoingMessage): Promise<Response>
+  (req: Request): Promise<Response>
+  (req: IncomingMessage, res: OutgoingMessage): Promise<OutgoingMessage<IncomingMessage>>
+  GET: (req: Request) => Promise<Response>
+  POST: (req: Request) => Promise<Response>
   routes: R
 }
 
@@ -21,9 +24,11 @@ function isHandler(handler: any): handler is IHandler {
   return typeof handler.procedure === 'function'
 }
 
-export function createServerRouter<R extends IRoutes>(routes: R, options: IOptions = {}): IRouter<R> {
+export function makeRouter<R extends IRoutes>(routes: R, options: IOptions = {}): IRouter<R> {
 
-  async function qrpcRouter(req: IncomingMessage | Request, res?: OutgoingMessage) {
+  async function router(req: Request): Promise<Response>
+  async function router(req: IncomingMessage, res: OutgoingMessage): Promise<OutgoingMessage<IncomingMessage>>
+  async function router(req: IncomingMessage | Request, res?: OutgoingMessage): Promise<OutgoingMessage<IncomingMessage> | Response> {
 
     const url = new URL(req.url!, 'http://localhost')
     const sdkPath = url.pathname.split('/').pop()
@@ -75,14 +80,19 @@ export function createServerRouter<R extends IRoutes>(routes: R, options: IOptio
     }
   }
 
-  qrpcRouter.routes = routes;
-  // @ts-ignore
-  return qrpcRouter;
+  router.GET = (req: Request) => {
+    return router(req)
+  }
+  router.POST = (req: Request) => {
+    return router(req)
+  }
+  router.routes = routes
+  return router
 
 }
 
 async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
-  const context = handler.createContext && await handler.createContext(req)
+  const context = handler.makeContext && await handler.makeContext(req)
 
   return await asyncLocalStorage.run(context, async () => {
 
