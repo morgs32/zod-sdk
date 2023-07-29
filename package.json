@@ -93,7 +93,6 @@
     "zod": "^3.21.4"
   },
   "dependencies": {
-    "raw-body": "^2.5.2",
     "type-fest": "^4.0.0"
   },
   "peerDependencies": {
