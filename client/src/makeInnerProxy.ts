@@ -1,4 +1,4 @@
-import { IBaseRPC } from '.';
+import { IBaseRPC } from 'zod-sdk/internal';
 
 const noop = () => {}
 

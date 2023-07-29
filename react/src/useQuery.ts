@@ -2,14 +2,14 @@ import {
   IBaseRPC,
   IHandler,
 } from 'zod-sdk/internal';
+import { callRPC } from 'zod-sdk/client';
 import { Jsonify } from 'type-fest'
 import {
   SWRConfiguration,
   SWRResponse
 } from 'swr';
 import {
-  callRPC,
-  isRPC 
+  isRPC
 } from 'zod-sdk/internal';
 import useSWR from 'swr';
 

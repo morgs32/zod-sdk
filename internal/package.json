@@ -19,7 +19,6 @@
   },
   "peerDependencies": {
     "client-only": "*",
-    "superjson": "*",
     "swr": "*",
     "zod": "*"
   },
