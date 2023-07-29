@@ -1,7 +1,7 @@
 {
   "name": "zod-sdk",
   "author": "Morgan Intrator",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "main": "./core/dist/index.js",
   "module": "./core/dist/index.esm.js",
