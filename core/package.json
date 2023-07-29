@@ -1,4 +1,5 @@
 {
+  "name": "core",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
@@ -12,19 +13,8 @@
   "private": true,
   "scripts": {
     "watch": "bunchee -w",
-    "build": "bunchee --no-external",
+    "build": "bunchee",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
-  },
-  "peerDependencies": {
-    "buffer": "*",
-    "client-only": "*",
-    "raw-body": "*",
-    "superjson": "*",
-    "swr": "*",
-    "zod": "*"
-  },
-  "dependencies": {
-    "zod-to-json-schema": "^3.21.4"
   }
 }

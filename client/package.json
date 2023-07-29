@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "client",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
@@ -16,11 +16,5 @@
     "build": "bunchee",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
-  },
-  "peerDependencies": {
-    "client-only": "*",
-    "swr": "*",
-    "superjson": "*",
-    "zod": "*"
   }
 }

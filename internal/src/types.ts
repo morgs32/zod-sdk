@@ -9,8 +9,16 @@ export interface IContextFn<R extends RequestType = RequestType, C = any> {
   (req: R): C | Promise<C>;
 }
 
+export type zsdkInfer<H extends IHandler> = Awaited<H extends IHandler<infer T> ? ReturnType<T> : never>
+
+export type IPayload = {
+  result: any
+  included?: any[]
+}
+
+export type IMiddlewareReturnType = IPayload | void | Response
 export interface IMiddlewareFn<R = RequestType> {
-  (req: R, next: () => Promise<Response>): void
+  (req: R, next: () => Promise<IPayload>): IMiddlewareReturnType | Promise<IMiddlewareReturnType>;
 }
 
 type IType = 'query' | 'command'

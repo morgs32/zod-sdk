@@ -1,1 +1,4 @@
-export * as zsdk from './zsdk'
+export * from './callRPC'
+export * from './command'
+export * from './query'
+export * from './makeSDK'

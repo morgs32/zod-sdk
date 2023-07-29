@@ -8,7 +8,7 @@ import { IncomingMessage, OutgoingMessage } from 'http';
 import { parseBody } from './parseBody';
 
 interface IOptions {
-  onError?: (err: any) => Response
+  onError?: (err: any) => void
   middleware?: IMiddlewareFn
 }
 
@@ -50,34 +50,18 @@ export function makeRouter<R extends IRoutes>(routes: R, options: IOptions = {})
       throw new Error(`Invalid handler: ${sdkPath}`)
     })()
     
-    
-    
-    /**
-     * Then catch that and do what?
-    */
-   
-    try {
-      const middlewares = [handler.middleware, options.middleware].filter(x => x)
-      const result = middlewares.length 
-        ? await middlewares.reduce((acc: () => Promise<any>, fn) => async () => fn!(req, acc), () => callHandler(handler, req))()
-        : await callHandler(handler, req)
-      if (result instanceof Response) {
-        return result
-      }
-      if (res) {
-        return res.end(JSON.stringify(result))
-      }
-      return new Response(JSON.stringify(result))
+    const middlewares = [handler.middleware, options.middleware].filter(x => x)
+    const result = middlewares.length 
+      ? await middlewares.reduce((acc: () => Promise<any>, fn) => async () => fn!(req, acc), () => callHandler(handler, req))()
+      : await callHandler(handler, req)
+
+    if (result instanceof Response) {
+      return result
     }
-    catch (e) {
-      console.error(e)
-      if (options.onError) return options.onError(e)
-      if (res) {
-        // res.set
-        return res.end(String(e))
-      }
-      return new Response(JSON.stringify(e), { status: 500 })
+    if (res) {
+      return res.end(JSON.stringify(result))
     }
+    return new Response(JSON.stringify(result))
   }
 
   router.GET = (req: Request) => {
@@ -91,8 +75,14 @@ export function makeRouter<R extends IRoutes>(routes: R, options: IOptions = {})
 
 }
 
-async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
-  const context = handler.makeContext && await handler.makeContext(req)
+export async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
+  let context
+  try {
+    context = handler.makeContext && await handler.makeContext(req)
+  }
+  catch (e) {
+    throw e
+  }
 
   return await asyncLocalStorage.run(context, async () => {
 
@@ -105,10 +95,7 @@ async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
         if (!input) {
           break
         }
-        if (typeof input === 'string') {
-          input = JSON.parse(input)
-        }
-        input = JSON.stringify(input)
+        input = JSON.parse(input)
         break
       }
       case 'POST': {
@@ -136,13 +123,13 @@ async function callHandler(handler: IHandler, req: IncomingMessage | Request) {
       }
     }
     
-    const res = await handler.procedure(input)
-    if (res instanceof Response) {
-      return res
+    const result = await handler.procedure(input)
+    if (result instanceof Response) {
+      return result
     }
 
     return {
-      result: res,
+      result,
       included: {
         // related: 'deal',
         // relatedKey: (deal) => deal.id,
