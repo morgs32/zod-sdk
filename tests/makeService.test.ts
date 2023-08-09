@@ -18,12 +18,11 @@ describe('makeService', () => {
       return 'hello'
     })
 
-    await callHandler(handler, new Request('http://localhost:3000'))
-    // try {
-    // }
-    // catch (e) {
-    //   console.error(e)
-    // }
+    await expect(() =>
+      callHandler(handler, new Request('http://localhost:3000'))
+    ).rejects.toThrowErrorMatchingInlineSnapshot(
+      '"x-lhc-workspace-key header is required"'
+    )
   })
 
   it.skip('check types', async () => {

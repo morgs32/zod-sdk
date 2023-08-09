@@ -31,8 +31,8 @@
       "zod-sdk/server": [
         "./server/src/index.ts"
       ],
-      "zod-sdk/parsers": [
-        "./parsers/src/index.ts"
+      "zod-sdk/schemas": [
+        "./schemas/src/index.ts"
       ]
     },
     "incremental": true
