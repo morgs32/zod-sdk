@@ -2,6 +2,7 @@ import { IHandler, IMiddlewareFn, IRoutes } from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
 import { IncomingMessage, OutgoingMessage } from 'http'
 import { parseBody } from './parseBody'
+import { makeJsonSchema } from 'zod-sdk/schemas'
 
 interface IOptions {
   onError?: (err: any) => void
@@ -121,8 +122,8 @@ export async function callHandler(
         } else {
           body = await parseBody(req)
         }
-        if (!body.input && handler.schema) {
-          input = handler.schema.parse(body)
+        if (!body.input && handler.schemas) {
+          input = handler.schemas.parameter.parse(body)
           break
         }
         try {
@@ -144,6 +145,8 @@ export async function callHandler(
 
     return {
       result,
+      schema:
+        handler.schemas && (makeJsonSchema(handler.schemas.result) as any),
       included: {
         // related: 'deal',
         // relatedKey: (deal) => deal.id,

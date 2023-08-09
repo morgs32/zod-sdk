@@ -1,13 +1,12 @@
-import { ZodType } from 'zod'
-import { Func, IHandler } from 'zod-sdk/internal'
+import { Func, IHandler, ISchemas } from 'zod-sdk/internal'
 
 export function makeCommand<F extends Func>(
   procedure: F,
-  schema?: ZodType<Parameters<F>[0]>
+  schemas?: ISchemas<F>
 ): IHandler<F> {
   return {
     procedure,
-    schema,
+    schemas,
     type: 'command',
   }
 }
