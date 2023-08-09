@@ -21,9 +21,5 @@
     "raw-body": "*",
     "server-only": "*",
     "zod-to-json-schema": "^3.21.4"
-  },
-  "devDependencies": {
-    "okrs": "^0.1.23",
-    "zod": "^3.21.4"
   }
 }

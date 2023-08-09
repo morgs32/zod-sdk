@@ -1,5 +1,5 @@
 {
-  "name": "@zod-sdk/parsers",
+  "name": "@zod-sdk/schemas",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
@@ -18,7 +18,7 @@
     "clean": "rimraf dist"
   },
   "dependencies": {
-    "json-schema": "^0.4.0"
+    "zod-to-json-schema": "^3.21.4"
   },
   "devDependencies": {
     "@types/json-schema": "^7.0.12",
