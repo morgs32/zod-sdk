@@ -14,7 +14,6 @@
   "scripts": {
     "watch": "bunchee -w",
     "build": "bunchee",
-    "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
   },
   "devDependencies": {

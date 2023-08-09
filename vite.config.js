@@ -4,10 +4,10 @@ const tsconfig = require('./tsconfig.json')
 module.exports = defineConfig({
   base: './',
   resolve: {
-    alias: tsconfig.compilerOptions.paths
+    alias: tsconfig.compilerOptions.paths,
   },
   test: {
     include: ['**/*.test.ts'],
-    globals: true
+    globals: true,
   },
-});
+})

@@ -1,10 +1,9 @@
 import { z } from 'zod'
-import { callHandler, makeService } from 'zod-sdk/server';
+import { callHandler, makeService } from 'zod-sdk/server'
 import { okrs } from 'okrs'
 
 describe('makeService', () => {
   it('works', async () => {
-    
     const procedure = makeService({
       makeContext: async () => {
         okrs.strict(() => {
@@ -12,7 +11,7 @@ describe('makeService', () => {
             invalid_type_error: 'x-lhc-workspace-key header is required',
           }).parse(null)
         })
-      }
+      },
     })
 
     const handler = procedure.makeQuery(async () => {
@@ -25,11 +24,9 @@ describe('makeService', () => {
     // catch (e) {
     //   console.error(e)
     // }
-
-  });
+  })
 
   it.skip('check types', async () => {
-    
     const procedure = makeService({
       middleware: async (req: Request) => {
         expect(req).toBeTruthy()
@@ -37,22 +34,22 @@ describe('makeService', () => {
       makeContext: async (req) => {
         expect(req).toBeTruthy()
         return {
-          foo: 'bar'
+          foo: 'bar',
         }
-      }
+      },
     })
 
-    const a = procedure.mockCtx({
-      foo: 'baz'
-    }, async () => {
-      
-    })
+    const a = procedure.mockCtx(
+      {
+        foo: 'baz',
+      },
+      async () => {}
+    )
     expect(a).toBeTruthy()
 
     const handler = procedure.makeQuery(async () => {
       return 'hello'
     })
     expect(handler).toBeTruthy()
-
-  });
-});
+  })
+})

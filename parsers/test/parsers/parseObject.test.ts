@@ -1,6 +1,6 @@
-import { JSONSchema7 } from 'json-schema';
-import z, { ZodError } from 'zod';
-import { parseObject } from '../../src/parsers/parseObject';
+import { JSONSchema7 } from 'json-schema'
+import z, { ZodError } from 'zod'
+import { parseObject } from '../../src/parsers/parseObject'
 
 describe('parseObject', () => {
   describe('With properties', () => {
@@ -20,13 +20,15 @@ describe('parseObject', () => {
             },
           },
           {
-            module: false, path: [], seen: new Map() 
+            module: false,
+            path: [],
+            seen: new Map(),
           }
         )
       ).toStrictEqual(
         'z.object({"myOptionalString":z.string().optional(),"myRequiredString":z.string()})'
-      );
-    });
+      )
+    })
 
     it('should handle additionalProperties when set to false', () => {
       expect(
@@ -42,11 +44,13 @@ describe('parseObject', () => {
             additionalProperties: false,
           },
           {
-            module: false, path: [], seen: new Map() 
+            module: false,
+            path: [],
+            seen: new Map(),
           }
         )
-      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.never())');
-    });
+      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.never())')
+    })
 
     it('should handle additionalProperties when set to true', () => {
       expect(
@@ -62,11 +66,13 @@ describe('parseObject', () => {
             additionalProperties: true,
           },
           {
-            module: false, path: [], seen: new Map() 
+            module: false,
+            path: [],
+            seen: new Map(),
           }
         )
-      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.any())');
-    });
+      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.any())')
+    })
 
     it('should handle additionalProperties when provided a schema', () => {
       expect(
@@ -82,12 +88,14 @@ describe('parseObject', () => {
             additionalProperties: { type: 'number' },
           },
           {
-            module: false, path: [], seen: new Map() 
+            module: false,
+            path: [],
+            seen: new Map(),
           }
         )
-      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.number())');
-    });
-  });
+      ).toStrictEqual('z.object({"myString":z.string()}).catchall(z.number())')
+    })
+  })
 
   describe('Without properties', () => {
     it('should handle additionalProperties when set to false', () => {
@@ -98,11 +106,13 @@ describe('parseObject', () => {
             additionalProperties: false,
           },
           {
-            module: false, path: [], seen: new Map() 
+            module: false,
+            path: [],
+            seen: new Map(),
           }
         )
-      ).toStrictEqual('z.record(z.never())');
-    });
+      ).toStrictEqual('z.record(z.never())')
+    })
 
     it('should handle additionalProperties when set to true', () => {
       expect(
@@ -112,11 +122,13 @@ describe('parseObject', () => {
             additionalProperties: true,
           },
           {
-            module: false, path: [], seen: new Map() 
+            module: false,
+            path: [],
+            seen: new Map(),
           }
         )
-      ).toStrictEqual('z.record(z.any())');
-    });
+      ).toStrictEqual('z.record(z.any())')
+    })
 
     it('should handle additionalProperties when provided a schema', () => {
       expect(
@@ -127,11 +139,13 @@ describe('parseObject', () => {
           },
 
           {
-            module: false, path: [], seen: new Map() 
+            module: false,
+            path: [],
+            seen: new Map(),
           }
         )
-      ).toStrictEqual('z.record(z.number())');
-    });
+      ).toStrictEqual('z.record(z.number())')
+    })
 
     it('should include falsy defaults', () => {
       expect(
@@ -146,12 +160,14 @@ describe('parseObject', () => {
             },
           },
           {
-            module: false, path: [], seen: new Map() 
+            module: false,
+            path: [],
+            seen: new Map(),
           }
         )
-      ).toStrictEqual('z.object({"s":z.string().default("")})');
-    });
-  });
+      ).toStrictEqual('z.object({"s":z.string().default("")})')
+    })
+  })
 
   describe('with nested unions', () => {
     expect(
@@ -184,12 +200,14 @@ describe('parseObject', () => {
           ],
         },
         {
-          module: false, path: [], seen: new Map() 
+          module: false,
+          path: [],
+          seen: new Map(),
         }
       )
     ).toStrictEqual(
       'z.object({"a":z.string()}).and(z.union([z.object({"b":z.string()}),z.object({"c":z.string()})]))'
-    );
+    )
 
     expect(
       parseObject(
@@ -221,7 +239,9 @@ describe('parseObject', () => {
           ],
         },
         {
-          module: false, path: [], seen: new Map() 
+          module: false,
+          path: [],
+          seen: new Map(),
         }
       )
     ).toStrictEqual(
@@ -243,7 +263,7 @@ describe('parseObject', () => {
       });
     }
   }))`
-    );
+    )
 
     expect(
       parseObject(
@@ -275,13 +295,15 @@ describe('parseObject', () => {
           ],
         },
         {
-          module: false, path: [], seen: new Map() 
+          module: false,
+          path: [],
+          seen: new Map(),
         }
       )
     ).toStrictEqual(
       'z.object({"a":z.string()}).and(z.intersection(z.object({"b":z.string()}),z.object({"c":z.string()})))'
-    );
-  });
+    )
+  })
 
   describe('functional tests', () => {
     const run = (schema: z.ZodType, data: unknown) => schema.safeParse(data)
@@ -290,8 +312,8 @@ describe('parseObject', () => {
       expect(run(z.string(), 'hello')).toStrictEqual({
         success: true,
         data: 'hello',
-      });
-    });
+      })
+    })
 
     test('properties', () => {
       const schema: JSONSchema7 & { type: 'object' } = {
@@ -305,20 +327,20 @@ describe('parseObject', () => {
             type: 'number',
           },
         },
-      };
+      }
 
-      const expected = 'z.object({"a":z.string(),"b":z.number().optional()})';
+      const expected = 'z.object({"a":z.string(),"b":z.number().optional()})'
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+      const result = parseObject(schema, { path: [], seen: new Map() })
 
-      expect(result).toStrictEqual(expected);
+      expect(result).toStrictEqual(expected)
 
       expect(run(result, { a: 'hello' })).toStrictEqual({
         success: true,
         data: {
           a: 'hello',
         },
-      });
+      })
 
       expect(run(result, { a: 'hello', b: 123 })).toStrictEqual({
         success: true,
@@ -326,7 +348,7 @@ describe('parseObject', () => {
           a: 'hello',
           b: 123,
         },
-      });
+      })
 
       expect(run(result, { b: 'hello', x: true })).toStrictEqual({
         success: false,
@@ -346,8 +368,8 @@ describe('parseObject', () => {
             message: 'Expected number, received string',
           },
         ]),
-      });
-    });
+      })
+    })
 
     test('properties and additionalProperties', () => {
       const schema: JSONSchema7 & { type: 'object' } = {
@@ -362,14 +384,14 @@ describe('parseObject', () => {
           },
         },
         additionalProperties: { type: 'boolean' },
-      };
+      }
 
       const expected =
-        'z.object({"a":z.string(),"b":z.number().optional()}).catchall(z.boolean())';
+        'z.object({"a":z.string(),"b":z.number().optional()}).catchall(z.boolean())'
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+      const result = parseObject(schema, { path: [], seen: new Map() })
 
-      expect(result).toStrictEqual(expected);
+      expect(result).toStrictEqual(expected)
 
       expect(run(result, { b: 'hello', x: 'true' })).toStrictEqual({
         success: false,
@@ -396,8 +418,8 @@ describe('parseObject', () => {
             message: 'Expected boolean, received string',
           },
         ]),
-      });
-    });
+      })
+    })
 
     test('properties, additionalProperties and patternProperties', () => {
       const schema: JSONSchema7 & { type: 'object' } = {
@@ -416,7 +438,7 @@ describe('parseObject', () => {
           '\\.': { type: 'array' },
           '\\,': { type: 'array', minItems: 1 },
         },
-      };
+      }
 
       const expected = `z.object({"a":z.string(),"b":z.number().optional()}).catchall(z.union([z.array(z.any()),z.array(z.any()).min(1),z.boolean()])).superRefine((value, ctx) => {
 for (const key in value) {
@@ -463,25 +485,24 @@ ctx.addIssue({
 }
 }
 }
-})`;
+})`
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+      const result = parseObject(schema, { path: [], seen: new Map() })
 
-      expect(result).toStrictEqual(expected);
-    });
+      expect(result).toStrictEqual(expected)
+    })
 
     test('additionalProperties', () => {
       const schema: JSONSchema7 & { type: 'object' } = {
         type: 'object',
         additionalProperties: { type: 'boolean' },
-      };
+      }
 
-      const expected = 'z.record(z.boolean())';
+      const expected = 'z.record(z.boolean())'
 
-      const result = parseObject(schema, { path: [], seen: new Map() });
+      const result = parseObject(schema, { path: [], seen: new Map() })
 
-      expect(result).toStrictEqual(expected);
-    });
-
-  });
-});
+      expect(result).toStrictEqual(expected)
+    })
+  })
+})

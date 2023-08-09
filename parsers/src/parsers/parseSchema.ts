@@ -1,24 +1,24 @@
-import { parseBoolean } from './parseBoolean';
-import { parseDefault } from './parseDefault';
-import { parseNull } from './parseNull';
-import { parseIfThenElse } from './parseIfThenElse';
-import { parseNumber } from './parseNumber';
+import { parseBoolean } from './parseBoolean'
+import { parseDefault } from './parseDefault'
+import { parseNull } from './parseNull'
+import { parseIfThenElse } from './parseIfThenElse'
+import { parseNumber } from './parseNumber'
 import {
   JSONSchema7,
   JSONSchema7Definition,
   JSONSchema7Type,
   JSONSchema7TypeName,
-} from 'json-schema';
-import { parseNullable } from './parseNullable';
-import { ParserSelector, Refs } from '../types';
-import z from 'zod';
-import { parseString } from './parseString';
-import { parseObject } from './parseObject';
-import { parseAnyOf } from './parseAnyOf';
-import { parseAllOf } from './parseAllOf';
-import { parseArray } from './parseArray';
-import { parseNot } from './parseNot';
-import { parseEnum } from './parseEnum';
+} from 'json-schema'
+import { parseNullable } from './parseNullable'
+import { ParserSelector, Refs } from '../types'
+import z from 'zod'
+import { parseString } from './parseString'
+import { parseObject } from './parseObject'
+import { parseAnyOf } from './parseAnyOf'
+import { parseAllOf } from './parseAllOf'
+import { parseArray } from './parseArray'
+import { parseNot } from './parseNot'
+import { parseEnum } from './parseEnum'
 
 export const parseSchema = (
   schema: JSONSchema7 | boolean,
@@ -34,98 +34,91 @@ export const parseSchema = (
   //   }
   // }
 
-  let seen = refs.seen.get(schema);
+  let seen = refs.seen.get(schema)
 
   if (seen) {
     if (seen.r !== undefined) {
-      return seen.r;
+      return seen.r
     }
 
     if (refs.recursionDepth === undefined || seen.n >= refs.recursionDepth) {
-      return z.any();
+      return z.any()
     }
 
-    seen.n += 1;
+    seen.n += 1
   } else {
-    seen = { r: undefined, n: 0 };
-    refs.seen.set(schema, seen);
+    seen = { r: undefined, n: 0 }
+    refs.seen.set(schema, seen)
   }
 
-  let parsed = selectParser(schema, refs);
+  let parsed = selectParser(schema, refs)
 
-  parsed = addMeta(schema, parsed);
+  parsed = addMeta(schema, parsed)
 
   if (!refs.withoutDefaults) {
-    parsed = addDefaults(schema, parsed);
+    parsed = addDefaults(schema, parsed)
   }
 
-  seen.r = parsed;
+  seen.r = parsed
 
-  return parsed;
-};
+  return parsed
+}
 
 const addMeta = (schema: JSONSchema7, parsed: z.ZodType): z.ZodType => {
   if (schema.description) {
     parsed.describe(JSON.stringify(schema.description))
   }
 
-  return parsed;
-};
+  return parsed
+}
 
 const addDefaults = (schema: JSONSchema7, parsed: z.ZodType): z.ZodType => {
   if (schema.default !== undefined) {
     parsed.default(JSON.stringify(schema.default))
   }
 
-  return parsed;
-};
+  return parsed
+}
 
 const selectParser: ParserSelector = (schema, refs) => {
   if (its.a.nullable(schema)) {
-    return parseNullable(schema, refs);
-  } 
-  else if (its.an.object(schema)) {
-    return parseObject(schema, refs);
-  } 
-  else if (its.an.array(schema)) {
-    return parseArray(schema, refs);
-  } 
-  else if (its.an.anyOf(schema)) {
-    return parseAnyOf(schema, refs);
-  } 
-  else if (its.an.allOf(schema)) {
-    return parseAllOf(schema, refs);
-  } 
-  else if (its.a.not(schema)) {
-    return parseNot(schema, refs);
-  } 
-  else if (its.an.enum(schema)) {
-    return parseEnum(schema, refs); // <-- needs to come before primitives
-  } 
+    return parseNullable(schema, refs)
+  } else if (its.an.object(schema)) {
+    return parseObject(schema, refs)
+  } else if (its.an.array(schema)) {
+    return parseArray(schema, refs)
+  } else if (its.an.anyOf(schema)) {
+    return parseAnyOf(schema, refs)
+  } else if (its.an.allOf(schema)) {
+    return parseAllOf(schema, refs)
+  } else if (its.a.not(schema)) {
+    return parseNot(schema, refs)
+  } else if (its.an.enum(schema)) {
+    return parseEnum(schema, refs) // <-- needs to come before primitives
+  }
   // else if (its.a.const(schema)) {
   //   return parseConst(schema);
-  // } 
+  // }
   // else if (its.a.multipleType(schema)) {
   //   return parseMultipleType(schema, refs);
-  // } 
+  // }
   else if (its.a.primitive(schema, 'string')) {
-    return parseString(schema, refs);
-  } 
-  else if (
+    return parseString(schema, refs)
+  } else if (
     its.a.primitive(schema, 'number') ||
     its.a.primitive(schema, 'integer')
   ) {
-    return parseNumber(schema, refs);
+    return parseNumber(schema, refs)
   } else if (its.a.primitive(schema, 'boolean')) {
-    return parseBoolean(schema, refs);
+    return parseBoolean(schema, refs)
   } else if (its.a.primitive(schema, 'null')) {
-    return parseNull(schema, refs);
+    return parseNull(schema, refs)
   } else if (its.a.conditional(schema)) {
-    return parseIfThenElse(schema, refs);
+    return parseIfThenElse(schema, refs)
   } else {
-    return parseDefault(schema, refs);
+    return parseDefault(schema, refs)
   }
-};
+}
 
 export const its = {
   an: {
@@ -136,17 +129,17 @@ export const its = {
     anyOf: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
-      anyOf: JSONSchema7Definition[];
+      anyOf: JSONSchema7Definition[]
     } => x.anyOf !== undefined,
     allOf: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
-      allOf: JSONSchema7Definition[];
+      allOf: JSONSchema7Definition[]
     } => x.allOf !== undefined,
     enum: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
-      enum: JSONSchema7Type | JSONSchema7Type[];
+      enum: JSONSchema7Type | JSONSchema7Type[]
     } => x.enum !== undefined,
   },
   a: {
@@ -159,12 +152,12 @@ export const its = {
     not: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
-      not: JSONSchema7Definition;
+      not: JSONSchema7Definition
     } => x.not !== undefined,
     const: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
-      const: JSONSchema7Type;
+      const: JSONSchema7Type
     } => x.const !== undefined,
     primitive: <T extends 'string' | 'number' | 'integer' | 'boolean' | 'null'>(
       x: JSONSchema7,
@@ -173,14 +166,14 @@ export const its = {
     conditional: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
-      if: JSONSchema7Definition;
-      then: JSONSchema7Definition;
-      else: JSONSchema7Definition;
+      if: JSONSchema7Definition
+      then: JSONSchema7Definition
+      else: JSONSchema7Definition
     } => Boolean(x.if && x.then && x.else),
     oneOf: (
       x: JSONSchema7
     ): x is JSONSchema7 & {
-      oneOf: JSONSchema7Definition[];
+      oneOf: JSONSchema7Definition[]
     } => x.oneOf !== undefined,
   },
-};
+}

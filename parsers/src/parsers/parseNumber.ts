@@ -1,5 +1,5 @@
-import z from 'zod';
-import { ParserSelector } from '../types';
+import z from 'zod'
+import { ParserSelector } from '../types'
 
 export const parseNumber: ParserSelector<{ type: 'number' | 'integer' }> = (
   schema
@@ -36,5 +36,5 @@ export const parseNumber: ParserSelector<{ type: 'number' | 'integer' }> = (
   } else if (typeof schema.exclusiveMaximum === 'number') {
     r.lt(schema.exclusiveMaximum)
   }
-  return r;
-};
+  return r
+}

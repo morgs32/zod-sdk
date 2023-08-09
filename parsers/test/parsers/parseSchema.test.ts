@@ -1,9 +1,7 @@
-import { parseSchema } from '../../src';
+import { parseSchema } from '../../src'
 
 describe('parseSchema', () => {
-  
   describe('parseString', () => {
-    
     it('string', () => {
       const schema = parseSchema({ type: 'string' })
       expect(schema._def).toMatchInlineSnapshot(`
@@ -12,15 +10,14 @@ describe('parseSchema', () => {
           "coerce": false,
           "typeName": "ZodString",
         }
-      `);
+      `)
       expect(schema.parse('foo')).toEqual('foo')
     })
 
-    
     it('parseDate', () => {
-      const schema = parseSchema({ 
+      const schema = parseSchema({
         type: 'string',
-        format: 'date-time'
+        format: 'date-time',
       })
       expect(schema._def).toMatchInlineSnapshot(`
         {
@@ -30,10 +27,9 @@ describe('parseSchema', () => {
           "errorMap": [Function],
           "typeName": "ZodDate",
         }
-      `);
+      `)
       expect(schema.parse('2021-10-10')).toEqual(new Date('2021-10-10'))
-
-    });
+    })
 
     it('parseObject', () => {
       const schema = parseSchema({
@@ -41,12 +37,12 @@ describe('parseSchema', () => {
         properties: {
           foo: {
             type: 'string',
-            format: 'date-time'
+            format: 'date-time',
           },
           bar: {
             type: 'number',
-          }
-        }
+          },
+        },
       })
 
       expect(schema._def).toMatchInlineSnapshot(`
@@ -83,34 +79,33 @@ describe('parseSchema', () => {
           "typeName": "ZodObject",
           "unknownKeys": "strip",
         }
-      `);
-      expect(schema.parse({
-        foo: '2021-10-10',
-        bar: '5'
-      })).toEqual({
+      `)
+      expect(
+        schema.parse({
+          foo: '2021-10-10',
+          bar: '5',
+        })
+      ).toEqual({
         foo: new Date('2021-10-10'),
-        bar: 5
+        bar: 5,
       })
-      
-    });
+    })
+  })
 
-  });
-
-  
   it('parseArray', () => {
     const schema = parseSchema({
       type: 'array',
       items: [
         {
           type: 'string',
-          format: 'date-time'
+          format: 'date-time',
         },
         {
           type: 'number',
-        }
-      ]
+        },
+      ],
     })
-      
+
     expect(schema._def).toMatchInlineSnapshot(`
       {
         "items": [
@@ -185,18 +180,10 @@ describe('parseSchema', () => {
         "rest": null,
         "typeName": "ZodTuple",
       }
-    `);
-    expect(schema.parse([
-      '2021-10-10',
-      '5'
-    ])).toEqual([
+    `)
+    expect(schema.parse(['2021-10-10', '5'])).toEqual([
       new Date('2021-10-10'),
-      5
+      5,
     ])
-      
-  });
-
-  
-
-
-});
+  })
+})

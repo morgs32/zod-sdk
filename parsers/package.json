@@ -14,9 +14,7 @@
   "scripts": {
     "watch": "bunchee -w",
     "build": "bunchee --no-external",
-    "lint": "eslint .",
     "test": "vitest",
-    "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
   },
   "dependencies": {

@@ -1,4 +1,4 @@
-import { parseSchema } from '../src';
+import { parseSchema } from '../src'
 
 describe('eval', () => {
   it('is usable I guess', () => {
@@ -6,6 +6,6 @@ describe('eval', () => {
     expect(zodSchema.safeParse('Please just use Ajv instead')).toStrictEqual({
       success: true,
       data: 'Please just use Ajv instead',
-    });
-  });
-});
+    })
+  })
+})
