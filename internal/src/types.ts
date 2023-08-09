@@ -9,7 +9,7 @@ export interface IContextFn<R extends RequestType = RequestType, C = any> {
   (req: R): C | Promise<C>;
 }
 
-export type zsdkInfer<H extends IHandler> = Awaited<H extends IHandler<infer T> ? ReturnType<T> : never>
+export type InferHandlerReturnType<H extends IHandler> = Awaited<H extends IHandler<infer T> ? ReturnType<T> : never>
 
 export type IPayload = {
   result: any

@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@zod-sdk/client",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",

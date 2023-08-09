@@ -1,12 +1,12 @@
 import { z } from 'zod'
-import { callHandler, makeService } from './zsdkserver';
+import { callHandler, makeService } from 'zod-sdk/server';
 import { okrs } from 'okrs'
 
 describe('makeService', () => {
   it('works', async () => {
     
     const procedure = makeService({
-      makeContext: async (req) => {
+      makeContext: async () => {
         okrs.strict(() => {
           z.string({
             invalid_type_error: 'x-lhc-workspace-key header is required',

@@ -6,5 +6,5 @@
   },
   "include": [
     "./**/*.ts"
-, "../tests/useQuery.test.ts"  ]
+  ]
 }

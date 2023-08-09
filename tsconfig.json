@@ -23,16 +23,19 @@
     "downlevelIteration": true,
     "paths": {
       "zod-sdk/client": [
-        "./client/src/index.ts"
+        "client/src/index.ts"
       ],
       "zod-sdk/internal": [
-        "./internal/src/index.ts"
+        "internal/src/index.ts"
       ],
       "zod-sdk/server": [
-        "server/src/zsdkserver.ts"
+        "server/src/index.ts"
+      ],
+      "zod-sdk/parsers": [
+        "parsers/src/index.ts"
       ],
       "zod-sdk/react": [
-        "./react/src/index.ts"
+        "react/src/index.ts"
       ]
     },
     "incremental": true

@@ -1,5 +1,5 @@
 {
-  "name": "react",
+  "name": "@zod-sdk/react",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
@@ -16,5 +16,9 @@
     "build": "bunchee",
     "typecheck": "tsc --noEmit",
     "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "react": "18.2.0",
+    "swr": "^2.2.0"
   }
 }

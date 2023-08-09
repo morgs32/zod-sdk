@@ -1,5 +1,5 @@
 {
-  "name": "parsers",
+  "name": "@zod-sdk/parsers",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",
