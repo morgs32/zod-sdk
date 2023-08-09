@@ -1,2 +1,2 @@
-export { makeSDK } from 'zod-sdk/client';
-export { makeRouter } from 'zod-sdk/server';
+export { makeSDK } from './makeSDK'
+export { makeRouter } from 'zod-sdk/server'

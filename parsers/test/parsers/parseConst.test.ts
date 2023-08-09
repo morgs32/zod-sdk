@@ -1,4 +1,4 @@
-import { parseConst } from '../../src/parsers/parseConst';
+import { parseConst } from '../../src/parsers/parseConst'
 
 describe('parseConst', () => {
   it('should handle falsy constants', () => {
@@ -6,6 +6,6 @@ describe('parseConst', () => {
       parseConst({
         const: false,
       })
-    ).toStrictEqual('z.literal(false)');
-  });
-});
+    ).toStrictEqual('z.literal(false)')
+  })
+})

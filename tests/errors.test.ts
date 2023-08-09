@@ -1,7 +1,4 @@
-
-
 describe('v1Router', () => {
-
   it('throws a 401 on an unauthorized request', async () => {
     // const { url: serverURL, server } =  await makeServerUrl(SDK)
     // const statusCode = await apiAxios.get(serverURL, {
@@ -13,5 +10,4 @@ describe('v1Router', () => {
     // expect(statusCode).toBe(401)
     // server.close()
   })
-
 })

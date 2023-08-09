@@ -1,4 +1,4 @@
-'use client';
+'use client'
 import styles from './page.module.css'
 import { createClientSDK, useQuery } from 'zod-sdk'
 import { IRoutes } from './routes'
@@ -7,22 +7,16 @@ const sdk = createClientSDK<IRoutes>({
   baseUrl: 'http://localhost:3000/api/sdk',
 })
 
-interface IProps {
-  
-}
+interface IProps {}
 
 export function Data(props: IProps) {
-
   const { data } = useQuery(sdk, {
-    fn: sdk => sdk.queries.hello()
+    fn: (sdk) => sdk.queries.hello(),
   })
 
   return (
     <pre>
-      <code className={styles.code}>
-        {JSON.stringify(data, null, 2)}
-      </code>
+      <code className={styles.code}>{JSON.stringify(data, null, 2)}</code>
     </pre>
   )
-
 }

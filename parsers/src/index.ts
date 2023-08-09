@@ -1,2 +1,1 @@
-export { parseSchema } from './parsers/parseSchema';
-
+export { parseSchema } from './parsers/parseSchema'

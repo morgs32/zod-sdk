@@ -1,4 +1,4 @@
-import { parseAnyOf } from '../../src/parsers/parseAnyOf';
+import { parseAnyOf } from '../../src/parsers/parseAnyOf'
 
 describe('parseAnyOf', () => {
   it('should create a union from two or more schemas', () => {
@@ -13,28 +13,37 @@ describe('parseAnyOf', () => {
           ],
         },
         {
-          module: false, path: [], seen: new Map() 
+          module: false,
+          path: [],
+          seen: new Map(),
         }
       )
-    ).toStrictEqual('z.union([z.string(),z.number()])');
-  });
+    ).toStrictEqual('z.union([z.string(),z.number()])')
+  })
 
   it('should extract a single schema', () => {
     expect(
       parseAnyOf(
         { anyOf: [{ type: 'string' }] },
         {
-          module: false, path: [], seen: new Map() 
+          module: false,
+          path: [],
+          seen: new Map(),
         }
       )
-    ).toStrictEqual('z.string()');
-  });
+    ).toStrictEqual('z.string()')
+  })
 
   it('should return z.any() if array is empty', () => {
     expect(
-      parseAnyOf({ anyOf: [] }, {
-        module: false, path: [], seen: new Map() 
-      })
-    ).toStrictEqual('z.any()');
-  });
-});
+      parseAnyOf(
+        { anyOf: [] },
+        {
+          module: false,
+          path: [],
+          seen: new Map(),
+        }
+      )
+    ).toStrictEqual('z.any()')
+  })
+})

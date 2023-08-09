@@ -4,6 +4,6 @@ module.exports = defineConfig({
   base: './',
   test: {
     include: ['**/*.test.ts'],
-    globals: true
+    globals: true,
   },
-});
+})

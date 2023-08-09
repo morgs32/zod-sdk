@@ -5,4 +5,4 @@ const router = createServerRouter(routes)
 
 export async function GET(req: Request) {
   return router(req)
-};
+}

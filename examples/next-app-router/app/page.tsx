@@ -3,7 +3,6 @@ import styles from './page.module.css'
 import { Data } from './Data'
 
 export default function Home() {
-
   return (
     <main className={styles.main}>
       <div className={styles.description}>
@@ -17,8 +16,7 @@ export default function Home() {
             target="_blank"
             rel="noopener noreferrer"
           >
-            By
-            {' '}
+            By{' '}
             <Image
               src="/vercel.svg"
               alt="Vercel Logo"
