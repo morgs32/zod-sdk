@@ -33,9 +33,6 @@
       ],
       "zod-sdk/parsers": [
         "./parsers/src/index.ts"
-      ],
-      "zod-sdk/react": [
-        "./react/src/index.ts"
       ]
     },
     "incremental": true
