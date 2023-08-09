@@ -1,9 +1,14 @@
-import { ZodType } from 'zod'
 import { IncomingMessage } from 'http'
+import { ZodType } from 'zod'
 
 export type Func = (input: any) => Promise<any>
 
 export type RequestType = IncomingMessage | Request
+
+export interface ISchemas<F extends Func> {
+  parameter: ZodType<Parameters<F>[0]>
+  result: ZodType<Awaited<ReturnType<F>>>
+}
 
 export interface IContextFn<R extends RequestType = RequestType, C = any> {
   (req: R): C | Promise<C>
@@ -32,7 +37,10 @@ export interface IHandler<F extends Func = Func> {
   procedure: F
   makeContext?: IContextFn<any>
   middleware?: IMiddlewareFn<any>
-  schema?: ZodType<any>
+  schemas?: {
+    parameter: ZodType<any>
+    result: ZodType<any>
+  }
   type: IType
 }
 

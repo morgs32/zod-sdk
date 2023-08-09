@@ -66,7 +66,7 @@ export const parseSchema = (
 
 const addMeta = (schema: JSONSchema7, parsed: z.ZodType): z.ZodType => {
   if (schema.description) {
-    parsed.describe(JSON.stringify(schema.description))
+    parsed.describe(schema.description)
   }
 
   return parsed
@@ -74,7 +74,7 @@ const addMeta = (schema: JSONSchema7, parsed: z.ZodType): z.ZodType => {
 
 const addDefaults = (schema: JSONSchema7, parsed: z.ZodType): z.ZodType => {
   if (schema.default !== undefined) {
-    parsed.default(JSON.stringify(schema.default))
+    parsed.default(schema.default)
   }
 
   return parsed

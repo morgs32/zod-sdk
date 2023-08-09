@@ -1,7 +1,12 @@
 import { IncomingMessage } from 'http'
-import { Func, IContextFn, IHandler, IMiddlewareFn } from 'zod-sdk/internal'
+import {
+  Func,
+  IContextFn,
+  IHandler,
+  IMiddlewareFn,
+  ISchemas,
+} from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
-import { ZodType } from 'zod'
 
 export function makeService<R extends IncomingMessage | Request, C extends any>(
   options: {
@@ -14,25 +19,25 @@ export function makeService<R extends IncomingMessage | Request, C extends any>(
   return {
     makeQuery: function makeQuery<F extends Func>(
       procedure: F,
-      schema?: ZodType<Parameters<F>[0]>
+      schemas?: ISchemas<F>
     ): IHandler<F> {
       return {
         procedure,
         middleware,
         makeContext,
-        schema,
+        schemas,
         type: 'query',
       }
     },
     makeCommand: function makeCommand<F extends Func>(
       procedure: F,
-      schema?: ZodType<Parameters<F>[0]>
+      schemas?: ISchemas<F>
     ): IHandler<F> {
       return {
         procedure,
         middleware,
         makeContext,
-        schema,
+        schemas,
         type: 'command',
       }
     },
