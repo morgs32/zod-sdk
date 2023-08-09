@@ -33,14 +33,14 @@ export interface IMiddlewareFn<R = RequestType> {
 
 type IType = 'query' | 'command'
 
-export interface IHandler<F extends Func = Func> {
+export interface IHandler<
+  F extends Func = Func,
+  S extends ISchemas<F> | undefined = any,
+> {
   procedure: F
   makeContext?: IContextFn<any>
   middleware?: IMiddlewareFn<any>
-  schemas?: {
-    parameter: ZodType<any>
-    result: ZodType<any>
-  }
+  schemas: S
   type: IType
 }
 
