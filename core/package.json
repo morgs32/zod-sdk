@@ -1,5 +1,5 @@
 {
-  "name": "core",
+  "name": "@zod-sdk/core",
   "main": "./dist/index.js",
   "module": "./dist/index.esm.js",
   "types": "./dist/index.d.ts",

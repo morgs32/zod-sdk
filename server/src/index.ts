@@ -1,2 +1,4 @@
-export * as zsdkserver from './zsdkserver'
-export * from './zsdkserver'
+export * from './makeRouter'
+export * from './makeService'
+export * from './makeCommand'
+export * from './makeQuery'

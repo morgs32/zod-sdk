@@ -1,7 +1,6 @@
-import { makeSDK } from 'zod-sdk/internal';
 import { makeQuery, makeRouter } from 'zod-sdk/server';
 import { makeServer } from './listen';
-import { query } from 'internal/src/query';
+import { makeSDK, query } from 'zod-sdk/client';
 
 export const routes = {
   widgets: {

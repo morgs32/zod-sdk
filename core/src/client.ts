@@ -1,5 +1,5 @@
 export type {
-  zsdkInfer as infer
+  InferHandlerReturnType as infer
 } from 'zod-sdk/internal'
 export {
   makeSDK,
