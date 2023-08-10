@@ -1,8 +1,9 @@
-import { makeQuery, makeRouter } from 'zod-sdk/server'
+import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
-import { makeSDK, query } from 'zod-sdk/internal'
 import z from 'zod'
-const findMany = makeQuery(
+import { sdk } from 'zod-sdk/internal'
+
+const findMany = server.makeQuery(
   async function findMany<T extends 'foo' | 'bar'>(
     str: T
   ): Promise<{ id: number; type: T; createdAt: Date }[]> {
@@ -33,12 +34,12 @@ export const routes = {
 
 describe('results', () => {
   it('with http server', async () => {
-    const router = makeRouter(routes)
+    const router = server.makeRouter(routes)
     await makeServer(router, async (url) => {
-      const clientSDK = makeSDK<typeof routes>({
+      const clientSDK = sdk.makeSDK<typeof routes>({
         baseUrl: url,
       })
-      const result = await query(clientSDK.widgets.findMany, (findMany) =>
+      const result = await sdk.query(clientSDK.widgets.findMany, (findMany) =>
         findMany('foo')
       )
       expect(typeof result[0].createdAt).toMatchInlineSnapshot('"object"')

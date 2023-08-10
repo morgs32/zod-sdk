@@ -1,6 +1,12 @@
+import { command } from './command'
+import { query } from './query'
+import { makeSDK } from './makeSDK'
 export * from './types'
 export * from './isRPC'
 export * from './callRPC'
-export * from './command'
-export * from './query'
-export * from './makeSDK'
+
+export const sdk = {
+  command,
+  query,
+  makeSDK,
+}

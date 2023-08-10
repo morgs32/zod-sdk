@@ -1,13 +1,20 @@
-import { IHandler, IBaseRPC, IRequestOptions, Func } from 'zod-sdk/internal'
+import {
+  IHandler,
+  IBaseRPC,
+  IRequestOptions,
+  Func,
+  IClientHandler,
+} from 'zod-sdk/internal'
 import { callRPC } from './callRPC'
 import { Jsonify } from 'type-fest'
 
 export function query<
-  H extends IHandler,
+  C extends IClientHandler,
+  H extends C extends IClientHandler<infer T> ? T : never,
   F extends H extends IHandler<infer T> ? T : never,
   S extends H extends IHandler<Func, infer T> ? T : never,
   R extends ReturnType<F>,
->(handler: H, fn: (query: F) => R, options?: IRequestOptions) {
+>(handler: C, fn: (query: F) => R, options?: IRequestOptions) {
   const rpc = fn(handler as any as F) as any as IBaseRPC
   return callRPC(
     {
