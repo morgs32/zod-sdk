@@ -3,9 +3,17 @@
   "author": "Morgan Intrator",
   "version": "0.2.1",
   "license": "MIT",
+  "packageManager": "pnpm@8.4.0",
   "main": "./core/dist/index.js",
   "module": "./core/dist/index.esm.js",
   "types": "./core/dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "client": [
+        "./client/dist/index.d.ts"
+      ]
+    }
+  },
   "exports": {
     "./package.json": "./package.json",
     ".": {
@@ -21,6 +29,13 @@
       "import": "./client/dist/index.mjs",
       "module": "./client/dist/index.esm.js",
       "require": "./client/dist/index.js"
+    },
+    "./schemas": {
+      "types": "./schemas/dist/index.d.ts",
+      "react-server": "./schemas/dist/react-server.mjs",
+      "import": "./schemas/dist/index.mjs",
+      "module": "./schemas/dist/index.esm.js",
+      "require": "./schemas/dist/index.js"
     },
     "./internal": {
       "types": "./internal/dist/index.d.ts",
@@ -42,17 +57,19 @@
     "client/dist/**/*.{js,d.ts,mjs}",
     "server/dist/**/*.{js,d.ts,mjs}",
     "internal/dist/**/*.{js,d.ts,mjs}",
+    "schemas/dist/**/*.{js,d.ts,mjs}",
     "core/package.json",
     "client/package.json",
     "react/package.json",
     "server/package.json",
-    "internal/package.json"
+    "internal/package.json",
+    "schemas/package.json"
   ],
   "engines": {
     "node": ">=10"
   },
   "scripts": {
-    "build": "pnpm build-package client && pnpm build-package server && pnpm build-package core && pnpm build-package internal",
+    "build": "pnpm build-package client && pnpm build-package server && pnpm build-package core && pnpm build-package schemas && pnpm build-package internal",
     "build-package": "bunchee --cwd",
     "typecheck": "tsc",
     "test": "vitest",
@@ -89,7 +106,6 @@
     "type-fest": "^4.0.0"
   },
   "peerDependencies": {
-    "swr": "*",
     "zod": "*"
   }
 }

@@ -1,6 +1,6 @@
 export const routes = {
   queries: {
-    hello: async () => ({
+    hello: async (date: Date) => ({
       hello: 'world',
       on: new Date(),
     }),

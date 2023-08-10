@@ -48,7 +48,7 @@ describe('results', () => {
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = sdk.makeClient<typeof handler.routes>({
+      const clientSDK = sdk.makeClient<typeof routes>({
         baseUrl: url,
       })
       const result = await sdk.query(clientSDK.findFooOrBar, (find) =>
@@ -82,7 +82,7 @@ describe('results', () => {
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = sdk.makeClient<typeof handler.routes>({
+      const clientSDK = sdk.makeClient<typeof routes>({
         baseUrl: url,
       })
       const result = await sdk.query(clientSDK.findFooOrBar, (find) => {

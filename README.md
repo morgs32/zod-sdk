@@ -205,3 +205,12 @@ Calling `sdk.query` with a handler you created with `makeQuery` will throw a typ
 ## sdk.command
 
 Works just like `sdk.query` except you pass it command handlers. 
+
+# FAQ
+
+- Waiting on yours!
+
+# To do
+- [ ] More testing
+
+

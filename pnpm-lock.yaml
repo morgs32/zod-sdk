@@ -8,9 +8,6 @@ importers:
 
   .:
     dependencies:
-      swr:
-        specifier: '*'
-        version: 2.2.0(react@18.2.0)
       type-fest:
         specifier: ^4.0.0
         version: 4.0.0
@@ -52,9 +49,23 @@ importers:
         specifier: ^3.21.4
         version: 3.21.4
 
-  client: {}
+  client:
+    dependencies:
+      client-only:
+        specifier: '*'
+        version: 0.0.1
+      swr:
+        specifier: '*'
+        version: 2.2.0(react@18.2.0)
+      zod-sdk:
+        specifier: '*'
+        version: link:..
 
-  core: {}
+  core:
+    dependencies:
+      zod-sdk:
+        specifier: '*'
+        version: link:..
 
   examples/next-app-router:
     dependencies:
@@ -92,8 +103,8 @@ importers:
         specifier: ^3.21.4
         version: 3.21.4
       zod-sdk:
-        specifier: link:../..
-        version: link:../..
+        specifier: file:../../zod-sdk-0.2.1.tgz
+        version: file:zod-sdk-0.2.1.tgz(zod@3.21.4)
 
   internal: {}
 
@@ -121,9 +132,9 @@ importers:
       raw-body:
         specifier: '*'
         version: 0.0.1
-      server-only:
+      zod-sdk:
         specifier: '*'
-        version: 0.0.1
+        version: link:..
       zod-to-json-schema:
         specifier: ^3.21.4
         version: 3.21.4(zod@3.21.4)
@@ -3523,10 +3534,6 @@ packages:
       lru-cache: 6.0.0
     dev: true
 
-  /server-only@0.0.1:
-    resolution: {integrity: sha512-qepMx2JxAa5jjfzxG79yPPq+8BuFToHd1hm7kI+Z4zAq1ftQiP7HcxMhDDItrbtwVeLg/cY2JnKnrcFkmiswNA==}
-    dev: false
-
   /shebang-command@2.0.0:
     resolution: {integrity: sha512-kHxr2zZpYtdmrN1qDjrrX/Z1rR1kG8Dx+gkpK1G4eXmvXswmcE1hTWBWYUzlraYw1/yZp6YuDY77YtvbN0dmDA==}
     engines: {node: '>=8'}
@@ -3815,6 +3822,11 @@ packages:
     engines: {node: '>=16'}
     dev: false
 
+  /type-fest@4.2.0:
+    resolution: {integrity: sha512-5zknd7Dss75pMSED270A1RQS3KloqRJA9XbXLe0eCxyw7xXFb3rd+9B0UQ/0E+LQT6lnrLviEolYORlRWamn4w==}
+    engines: {node: '>=16'}
+    dev: false
+
   /typed-array-buffer@1.0.0:
     resolution: {integrity: sha512-Y8KTSIglk9OZEr8zywiIHG/kmQ7KWyjseXs1CbSo8vC42w7hg2HgYTxSWwP0+is7bWDc1H+Fo026CpHFwm8tkw==}
     engines: {node: '>= 0.4'}
@@ -4087,3 +4099,16 @@ packages:
 
   /zod@3.21.4:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
+
+  file:zod-sdk-0.2.1.tgz(zod@3.21.4):
+    resolution: {integrity: sha512-mv8wPnTCHqav8G1wVSSwnkIFsHVe/fGx4KBZnvm4BG/+gf+eRtD7ATU17iiX2driiR777tFJBNnhJJk3OwUuMA==, tarball: file:zod-sdk-0.2.1.tgz}
+    id: file:zod-sdk-0.2.1.tgz
+    name: zod-sdk
+    version: 0.2.1
+    engines: {node: '>=10'}
+    peerDependencies:
+      zod: '*'
+    dependencies:
+      type-fest: 4.2.0
+      zod: 3.21.4
+    dev: false

@@ -7,7 +7,7 @@ interface IOptions {
   middleware?: IMiddlewareFn
 }
 
-export interface IRouter<R extends IRoutes = IRoutes> {
+export interface IRouter {
   (req: Request): Promise<Response>
   (
     req: IncomingMessage,
@@ -15,7 +15,6 @@ export interface IRouter<R extends IRoutes = IRoutes> {
   ): Promise<ServerResponse<IncomingMessage>>
   GET: (req: Request) => Promise<Response>
   POST: (req: Request) => Promise<Response>
-  routes: R
 }
 
 function isHandler(handler: any): handler is IHandler {
@@ -25,7 +24,7 @@ function isHandler(handler: any): handler is IHandler {
 export function makeRouter<R extends IRoutes>(
   routes: R,
   options: IOptions = {}
-): IRouter<R> {
+): IRouter {
   async function router(req: Request): Promise<Response>
   async function router(
     req: IncomingMessage,
@@ -55,6 +54,14 @@ export function makeRouter<R extends IRoutes>(
         }
         if (isHandler(found)) {
           return found
+        }
+        if (typeof found === 'function') {
+          return {
+            procedure: found,
+            schemas: undefined,
+            middleware: undefined,
+            type: req.method === 'GET' ? 'query' : 'command',
+          }
         }
         throw new Error(`Invalid handler: ${sdkPath}`)
       })()

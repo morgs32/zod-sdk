@@ -10,6 +10,13 @@
     "module": "./dist/index.esm.js",
     "require": "./dist/index.js"
   },
+  "dependencies": {
+    "swr": "*"
+  },
+  "peerDependencies": {
+    "zod-sdk": "*",
+    "client-only": "*"
+  },
   "private": true,
   "scripts": {
     "watch": "bunchee -w",
