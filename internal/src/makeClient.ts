@@ -1,11 +1,13 @@
 import { IClientSDK, IRoutes } from 'zod-sdk/internal'
 import { makeInnerProxy } from './makeInnerProxy'
 
-interface IProps {
+export interface IClientOptions {
   baseUrl: string
 }
 
-export function makeClient<R extends IRoutes>(props: IProps): IClientSDK<R> {
+export function makeClient<R extends IRoutes>(
+  props: IClientOptions
+): IClientSDK<R> {
   const { baseUrl } = props
 
   const sdk = makeInnerProxy({
