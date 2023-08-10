@@ -5,6 +5,5 @@ import { makeFetchArgs } from './makeFetchArgs'
 export async function callRPC(rpc: ICompleteRPC, options?: IRequestOptions) {
   const [url, requestInit] = makeFetchArgs(rpc, options)
   const res = await fetch(url, requestInit)
-  console.log('res.ok', res.ok)
   return parseRes(res)
 }

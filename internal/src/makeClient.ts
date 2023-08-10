@@ -5,7 +5,7 @@ interface IProps {
   baseUrl: string
 }
 
-export function makeSDK<R extends IRoutes>(props: IProps): IClientSDK<R> {
+export function makeClient<R extends IRoutes>(props: IProps): IClientSDK<R> {
   const { baseUrl } = props
 
   const sdk = makeInnerProxy({

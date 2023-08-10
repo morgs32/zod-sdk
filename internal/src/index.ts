@@ -1,6 +1,6 @@
 import { command } from './command'
 import { query } from './query'
-import { makeSDK } from './makeSDK'
+import { makeClient } from './makeClient'
 export * from './types'
 export * from './isRPC'
 export * from './callRPC'
@@ -8,5 +8,5 @@ export * from './callRPC'
 export const sdk = {
   command,
   query,
-  makeSDK,
+  makeClient,
 }

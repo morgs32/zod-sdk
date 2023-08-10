@@ -15,7 +15,6 @@ export async function parseRes(res: Response) {
   const data = (await res.json()) as any
   // TODO: Do something with include
 
-  console.log('data', data)
   if (data.schema) {
     return parseJsonSchema(data.schema).parse(data.result)
   }

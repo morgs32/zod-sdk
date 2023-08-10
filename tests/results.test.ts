@@ -24,7 +24,7 @@ describe('results', () => {
   it('with http server', async () => {
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = sdk.makeSDK<typeof routes>({
+      const clientSDK = sdk.makeClient<typeof routes>({
         baseUrl: url,
       })
       const result = await sdk.query(clientSDK.widgets.findMany, (findMany) =>
@@ -48,7 +48,7 @@ describe('results', () => {
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = sdk.makeSDK<typeof handler.routes>({
+      const clientSDK = sdk.makeClient<typeof handler.routes>({
         baseUrl: url,
       })
       const result = await sdk.query(clientSDK.findFooOrBar, (find) =>
@@ -60,7 +60,7 @@ describe('results', () => {
   })
 
   it.only('with context', async () => {
-    const procedure = server.makeService({
+    const service = server.makeService({
       makeContext: () => ({
         foo: 'bar',
       }),
@@ -68,17 +68,17 @@ describe('results', () => {
     async function findFooOrBar<T extends 'foo' | 'bar'>(
       str: T
     ): Promise<T extends 'foo' ? 'found-foo' : 'found-bar'> {
-      const { foo } = procedure.useCtx()
+      const { foo } = service.useCtx()
       expect(foo).toMatchInlineSnapshot('"bar"')
       return (str === foo ? 'found-foo' : 'found-bar') as any
     }
     const routes = {
-      findFooOrBar: server.makeQuery(findFooOrBar),
+      findFooOrBar: service.makeQuery(findFooOrBar),
     }
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = sdk.makeSDK<typeof handler.routes>({
+      const clientSDK = sdk.makeClient<typeof handler.routes>({
         baseUrl: url,
       })
       const result = await sdk.query(clientSDK.findFooOrBar, (find) => {
