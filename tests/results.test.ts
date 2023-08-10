@@ -1,6 +1,6 @@
 import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
-import { sdk } from 'zod-sdk/internal'
+import { IRoutes, sdk } from 'zod-sdk/internal'
 
 const findMany = server.makeQuery(async function findMany<
   T extends 'foo' | 'bar',
@@ -18,7 +18,7 @@ const routes = {
   widgets: {
     findMany,
   },
-}
+} satisfies IRoutes
 
 describe('results', () => {
   it('with http server', async () => {

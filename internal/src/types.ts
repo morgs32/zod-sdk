@@ -1,7 +1,7 @@
 import { IncomingMessage } from 'http'
 import { ZodType } from 'zod'
 
-export type Func = (input: any) => Promise<any>
+export type Func<I extends any = any> = (input: I) => Promise<any>
 
 export type RequestType = IncomingMessage | Request
 
@@ -44,8 +44,14 @@ export interface IHandler<
   type: IType
 }
 
+/**
+ * If you don't pass schemas to makeQuery or makeComment,
+ * then your argument needs to be JSON compatible (no dates)
+ */
+export interface InvalidJsonOrMissingSchemas {}
+
 export interface IRoutes {
-  [key: string]: IHandler | IRoutes | ((...args: any[]) => any)
+  [key: string]: IRoutes | ((...args: any[]) => any) | IHandler
 }
 
 export type IRequestOptions = Omit<RequestInit, 'headers'> & {
