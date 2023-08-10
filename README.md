@@ -119,9 +119,11 @@ export { GET, POST } from server.makeRouter(routes)
 
 ## On the client
 
-The client does not necessarily have to be the browser by the way. Client-side, use the `sdk` export from `zod-sdk` to:
+Client-side, use the `sdk` export from `zod-sdk` to:
 1. Pass your routes type object to `sdk.makeClient(options: Options)`
 2. Pass the appropriate handler to `sdk.query()` or `sdk.mutate()`
+
+NOTE: The client does not necessarily have to be the browser by the way. But if you are, then get `sdk` from `zod-sdk/client`
 
 ```
 const clientSDK = sdk.makeClient<Routes>({
@@ -141,8 +143,7 @@ You'll have to import this separately from `zod-sdk/client`. Because it only wor
 ```
 'use client'
 import styles from './page.module.css'
-import { sdk } from 'zod-sdk'
-import { useQuery } from 'zod-sdk/client'
+import { useQuery, sdk  } from 'zod-sdk/client'
 import { IRoutes } from './routes'
 
 const client = sdk.makeClient<IRoutes>({
