@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import { callHandler, makeService } from 'zod-sdk/server'
 import { okrs } from 'okrs'
+import { server, callHandler } from 'zod-sdk/server'
 
 describe('makeService', () => {
   it('works', async () => {
-    const procedure = makeService({
+    const procedure = server.makeService({
       makeContext: async () => {
         okrs.strict(() => {
           z.string({
@@ -26,7 +26,7 @@ describe('makeService', () => {
   })
 
   it.skip('check types', async () => {
-    const procedure = makeService({
+    const procedure = server.makeService({
       middleware: async (req: Request) => {
         expect(req).toBeTruthy()
       },

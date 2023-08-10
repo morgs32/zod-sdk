@@ -1,2 +1,2 @@
-export * from './server'
-export * as server from './server'
+export { sdk } from 'zod-sdk/internal'
+export { server } from 'zod-sdk/server'

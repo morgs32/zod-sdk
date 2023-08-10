@@ -54,9 +54,15 @@ export type IRequestOptions = Omit<RequestInit, 'headers'> & {
 
 export type INextFunction = () => Promise<any>
 
+export interface IClientHandler<H extends IHandler = IHandler> {
+  procedure: H['procedure']
+  schemas: H['schemas']
+  client: true
+}
+
 export type IClientSDK<R extends IRoutes> = {
   [K in keyof R]: R[K] extends IHandler
-    ? R[K]
+    ? IClientHandler<R[K]>
     : R[K] extends (...args: any[]) => any
     ? IHandler<R[K]>
     : R[K] extends IRoutes
