@@ -64,6 +64,10 @@ describe('results', () => {
       makeContext: () => ({
         foo: 'bar',
       }),
+      middleware: (_, next) => {
+        // console.log('middleware', req)
+        return next()
+      },
     })
     async function findFooOrBar<T extends 'foo' | 'bar'>(
       str: T
