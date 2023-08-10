@@ -1,6 +1,6 @@
 {
   "name": "next-app-router",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -19,6 +19,6 @@
     "swr": "^2.2.0",
     "typescript": "5.1.6",
     "zod": "^3.21.4",
-    "zod-sdk": "link:../.."
+    "zod-sdk": "file:../../zod-sdk-0.2.1.tgz"
   }
 }

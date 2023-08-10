@@ -15,5 +15,8 @@
     "watch": "bunchee -w",
     "build": "bunchee",
     "clean": "rimraf dist"
+  },
+  "peerDependencies": {
+    "zod-sdk": "*"
   }
 }

@@ -1,8 +1,4 @@
 import { routes } from '@/app/routes'
-import { createServerRouter } from 'zod-sdk/server'
+import { server } from 'zod-sdk'
 
-const router = createServerRouter(routes)
-
-export async function GET(req: Request) {
-  return router(req)
-}
+export const { GET } = server.makeRouter(routes)

@@ -1,4 +1,5 @@
 import { IncomingMessage } from 'http'
+import { JsonValue } from 'type-fest'
 import { ZodType } from 'zod'
 
 export type Func<I extends any = any> = (input: I) => Promise<any>
@@ -69,8 +70,10 @@ export interface IClientHandler<H extends IHandler = IHandler> {
 export type IClientSDK<R extends IRoutes> = {
   [K in keyof R]: R[K] extends IHandler
     ? IClientHandler<R[K]>
-    : R[K] extends Func
-    ? IHandler<R[K]>
+    : R[K] extends Func<infer I>
+    ? I extends JsonValue
+      ? IHandler<R[K]>
+      : InvalidJsonOrMissingSchemas
     : R[K] extends IRoutes
     ? IClientSDK<R[K]>
     : never
