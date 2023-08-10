@@ -36,7 +36,7 @@ describe('results', () => {
   it('with http server', async () => {
     const router = server.makeRouter(routes)
     await makeServer(router, async (url) => {
-      const clientSDK = sdk.makeSDK<typeof routes>({
+      const clientSDK = sdk.makeClient<typeof routes>({
         baseUrl: url,
       })
       const result = await sdk.query(clientSDK.widgets.findMany, (findMany) =>
