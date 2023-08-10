@@ -91,24 +91,11 @@ importers:
       zod:
         specifier: ^3.21.4
         version: 3.21.4
+      zod-sdk:
+        specifier: link:../..
+        version: link:../..
 
   internal: {}
-
-  parsers:
-    dependencies:
-      zod-to-json-schema:
-        specifier: ^3.21.4
-        version: 3.21.4(zod@3.21.4)
-    devDependencies:
-      '@types/json-schema':
-        specifier: ^7.0.12
-        version: 7.0.12
-      vite:
-        specifier: ^4.3.9
-        version: 4.3.9(@types/node@18.16.19)
-      vitest:
-        specifier: ^0.32.2
-        version: 0.32.2
 
   schemas:
     dependencies:

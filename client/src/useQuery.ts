@@ -17,12 +17,18 @@ export function useQuery<
     fn: (query: F) => T
     onSuccess?: (
       data: Awaited<
-        T extends R ? ('schema' extends keyof H ? T : Jsonify<T>) : never
+        T extends R
+          ? 'schema' extends keyof H
+            ? T
+            : Jsonify<Awaited<T>>
+          : never
       >
     ) => void
   } & Omit<SWRConfiguration, 'onSuccess'>
 ): SWRResponse<
-  Awaited<T extends R ? ('schema' extends keyof H ? T : Jsonify<T>) : never>
+  Awaited<
+    T extends R ? ('schema' extends keyof H ? T : Jsonify<Awaited<T>>) : never
+  >
 > {
   const { fn, onSuccess, ...swrConfig } = options
 

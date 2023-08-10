@@ -69,7 +69,7 @@ export interface IClientHandler<H extends IHandler = IHandler> {
 export type IClientSDK<R extends IRoutes> = {
   [K in keyof R]: R[K] extends IHandler
     ? IClientHandler<R[K]>
-    : R[K] extends (...args: any[]) => any
+    : R[K] extends Func
     ? IHandler<R[K]>
     : R[K] extends IRoutes
     ? IClientSDK<R[K]>
