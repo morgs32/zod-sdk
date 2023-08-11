@@ -4142,7 +4142,7 @@ packages:
     resolution: {integrity: sha512-m46AKbrzKVzOzs/DZgVnG5H55N1sv1M8qZU3A8RIKbs3mrACDNeIOeilDymVb2HdmP8uwshOCF4uJ8uM9rCqJw==}
 
   file:zod-sdk-0.2.1.tgz(zod@3.21.4):
-    resolution: {integrity: sha512-ftiHsY1ZI/keXm0hKSWm+unSb2OUah5Ab/FBNJZd8Ul0ETnH+UCnlCjdpJHQKRx97VuzM3cTpsUna2kLhJ+EtQ==, tarball: file:zod-sdk-0.2.1.tgz}
+    resolution: {integrity: sha512-M98gNkiof8GwWC2aqn2j2/PPo7887Qp9ShL4AVNytcwmbJGIwagix6ZqlQZpUk6jql+N4KNeLi3hYL+USb4Z7A==, tarball: file:zod-sdk-0.2.1.tgz}
     id: file:zod-sdk-0.2.1.tgz
     name: zod-sdk
     version: 0.2.1
