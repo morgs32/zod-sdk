@@ -1,5 +1,5 @@
 import { IncomingMessage } from 'http'
-import { JsonValue } from 'type-fest'
+import { JsonValue, Jsonify } from 'type-fest'
 import { ZodType } from 'zod'
 
 export type Func<I extends any = any> =
@@ -8,7 +8,7 @@ export type Func<I extends any = any> =
 
 export type RequestType = IncomingMessage | Request
 
-export interface ISchemas<F extends Func> {
+export interface ISchemas<F extends Func = Func> {
   parameter: ZodType<Parameters<F>[0]>
   payload: ZodType<Awaited<ReturnType<F>>>
 }
@@ -47,6 +47,11 @@ export interface IHandler<
   schemas: S
   type: IType
 }
+
+export type IMaybeJsonified<
+  S extends ISchemas | undefined,
+  R extends any,
+> = S extends undefined ? Promise<Jsonify<Awaited<R>>> : R
 
 export interface IDispatcherHandler<
   F extends Func = Func,
