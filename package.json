@@ -4,25 +4,8 @@
   "version": "0.2.1",
   "license": "MIT",
   "packageManager": "pnpm@8.4.0",
-  "main": "./core/dist/index.js",
-  "module": "./core/dist/index.esm.js",
-  "types": "./core/dist/index.d.ts",
-  "typesVersions": {
-    "*": {
-      "client": [
-        "./client/dist/index.d.ts"
-      ]
-    }
-  },
   "exports": {
     "./package.json": "./package.json",
-    ".": {
-      "types": "./core/dist/index.d.ts",
-      "react-server": "./core/dist/react-server.mjs",
-      "import": "./core/dist/index.mjs",
-      "module": "./core/dist/index.esm.js",
-      "require": "./core/dist/index.js"
-    },
     "./client": {
       "types": "./client/dist/index.d.ts",
       "react-server": "./client/dist/react-server.mjs",
@@ -69,7 +52,7 @@
     "node": ">=10"
   },
   "scripts": {
-    "build": "pnpm build-package client && pnpm build-package server && pnpm build-package core && pnpm build-package schemas && pnpm build-package internal",
+    "build": "pnpm build-package client && pnpm build-package server && pnpm build-package schemas && pnpm build-package internal",
     "build-package": "bunchee --cwd",
     "typecheck": "tsc",
     "test": "vitest",
@@ -90,6 +73,7 @@
   },
   "devDependencies": {
     "@morgs32/eslint-config": "^2.0.10",
+    "@testing-library/react-hooks": "^8.0.1",
     "@types/jest": "^29.5.2",
     "@types/node": "^18.16.19",
     "@types/react": "^18.2.14",
@@ -103,6 +87,7 @@
     "zod": "^3.21.4"
   },
   "dependencies": {
+    "client-only": "^0.0.1",
     "type-fest": "^4.0.0"
   },
   "peerDependencies": {

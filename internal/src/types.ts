@@ -2,13 +2,15 @@ import { IncomingMessage } from 'http'
 import { JsonValue } from 'type-fest'
 import { ZodType } from 'zod'
 
-export type Func<I extends any = any> = (input: I) => Promise<any>
+export type Func<I extends any = any> =
+  | ((input: I) => Promise<any>)
+  | (() => Promise<any>)
 
 export type RequestType = IncomingMessage | Request
 
 export interface ISchemas<F extends Func> {
   parameter: ZodType<Parameters<F>[0]>
-  result: ZodType<Awaited<ReturnType<F>>>
+  payload: ZodType<Awaited<ReturnType<F>>>
 }
 
 export interface IContextFn<R extends RequestType = RequestType, C = any> {
@@ -19,16 +21,17 @@ export type InferHandlerFn<H extends IHandler> = Awaited<
   H extends IHandler<infer T> ? T : never
 >
 
-export type IPayload = {
-  result: any
+export type IResult = {
+  payload: any
+  schema?: any
   included?: any[]
 }
 
-export type IMiddlewareReturnType = IPayload | void | Response
+export type IMiddlewareReturnType = IResult | void | Response
 export interface IMiddlewareFn<R = RequestType> {
   (
     req: R,
-    next: () => Promise<IPayload>
+    next: () => Promise<IResult>
   ): IMiddlewareReturnType | Promise<IMiddlewareReturnType>
 }
 
@@ -45,6 +48,16 @@ export interface IHandler<
   type: IType
 }
 
+export interface IDispatcherHandler<
+  F extends Func = Func,
+  S extends ISchemas<F> | undefined = undefined,
+> {
+  procedure: F
+  schemas: S
+  type: IType
+  dispatcher: true
+}
+
 /**
  * If you don't pass schemas to makeQuery or makeComment,
  * then your argument needs to be JSON compatible (no dates)
@@ -52,7 +65,7 @@ export interface IHandler<
 export interface InvalidJsonOrMissingSchemas {}
 
 export interface IRoutes {
-  [key: string]: IRoutes | ((...args: any[]) => any) | IHandler
+  [key: string]: Func | IHandler | IRoutes
 }
 
 export type IRequestOptions = Omit<RequestInit, 'headers'> & {
@@ -61,21 +74,19 @@ export type IRequestOptions = Omit<RequestInit, 'headers'> & {
 
 export type INextFunction = () => Promise<any>
 
-export interface IClientHandler<H extends IHandler = IHandler> {
-  procedure: H['procedure']
-  schemas: H['schemas']
-  client: true
-}
-
-export type IClientSDK<R extends IRoutes> = {
-  [K in keyof R]: R[K] extends IHandler
-    ? IClientHandler<R[K]>
-    : R[K] extends Func<infer I>
-    ? I extends JsonValue
-      ? IHandler<R[K]>
+export type IDispatcher<R extends IRoutes> = {
+  [K in keyof R]: R[K] extends IHandler<infer F>
+    ? IDispatcherHandler<F>
+    : // : R[K] extends () => any
+    // ? IDispatcherHandler<R[K]>
+    R[K] extends Func<infer I>
+    ? I extends unknown
+      ? IDispatcherHandler<R[K]>
+      : I extends JsonValue
+      ? IDispatcherHandler<R[K]>
       : InvalidJsonOrMissingSchemas
     : R[K] extends IRoutes
-    ? IClientSDK<R[K]>
+    ? IDispatcher<R[K]>
     : never
 }
 

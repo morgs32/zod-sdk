@@ -13,7 +13,7 @@
   "private": true,
   "scripts": {
     "watch": "bunchee -w",
-    "build": "bunchee --no-external",
+    "build": "bunchee",
     "clean": "rimraf dist"
   },
   "dependencies": {

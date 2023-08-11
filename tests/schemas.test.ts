@@ -1,7 +1,8 @@
 import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
 import z from 'zod'
-import { IRoutes, sdk } from 'zod-sdk/internal'
+import { IRoutes } from 'zod-sdk/internal'
+import { client } from 'zod-sdk/client'
 
 const addYear = server.makeQuery(
   async function (date: Date) {
@@ -9,7 +10,7 @@ const addYear = server.makeQuery(
   },
   {
     parameter: z.date(),
-    result: z.date(),
+    payload: z.date(),
   }
 )
 
@@ -27,7 +28,7 @@ const findFoobar = server.makeQuery(
   },
   {
     parameter: z.union([z.literal('foo'), z.literal('bar')]),
-    result: z.array(
+    payload: z.array(
       z.object({
         id: z.number(),
         type: z.union([z.literal('foo'), z.literal('bar')]),
@@ -47,12 +48,11 @@ describe('results', () => {
   it('with http server', async () => {
     const router = server.makeRouter(routes)
     await makeServer(router, async (url) => {
-      const clientSDK = sdk.makeClient<typeof routes>({
+      const sdk = client.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await sdk.query(
-        clientSDK.widgets.findFoobar,
-        (findFoobar) => findFoobar('foo')
+      const result = await client.query(sdk.widgets.findFoobar, (findFoobar) =>
+        findFoobar('foo')
       )
       expect(typeof result[0].createdAt).toMatchInlineSnapshot('"object"')
       expect(result[0].createdAt).toMatchInlineSnapshot(

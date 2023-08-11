@@ -1,5 +1,6 @@
 export * from './types'
 export * from './isRPC'
 export * from './callRPC'
-
-export * as sdk from './sdk'
+export * from './command'
+export * from './query'
+export * from './makeDispatcher'

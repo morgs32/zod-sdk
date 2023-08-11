@@ -1,3 +1,3 @@
 export * from './command'
 export * from './query'
-export * from './makeClient'
+export * from './makeDispatcher'

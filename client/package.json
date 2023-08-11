@@ -10,17 +10,21 @@
     "module": "./dist/index.esm.js",
     "require": "./dist/index.js"
   },
-  "dependencies": {
-    "swr": "*"
-  },
-  "peerDependencies": {
-    "zod-sdk": "*",
-    "client-only": "*"
-  },
   "private": true,
   "scripts": {
     "watch": "bunchee -w",
     "build": "bunchee",
     "clean": "rimraf dist"
+  },
+  "dependencies": {
+    "swr": ">=2.0.0"
+  },
+  "peerDependencies": {
+    "client-only": "*",
+    "type-fest": "*",
+    "zod-sdk": "*"
+  },
+  "devDependencies": {
+    "type-fest": "^4.0.0"
   }
 }
