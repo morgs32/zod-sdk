@@ -1,4 +1,5 @@
 import { parseJsonSchema } from 'zod-sdk/schemas'
+import { IResult } from '.'
 export async function parseRes(res: Response) {
   if (!res.ok) {
     const message = await res.text().catch((e) => e.message)
@@ -12,11 +13,11 @@ export async function parseRes(res: Response) {
     }
     throw new Error(`[${res.status}] at ${url.href} \n${message}`)
   }
-  const data = (await res.json()) as any
+  const data = (await res.json()) as IResult
   // TODO: Do something with include
 
   if (data.schema) {
-    return parseJsonSchema(data.schema).parse(data.result)
+    return parseJsonSchema(data.schema).parse(data.payload)
   }
-  return data.result
+  return data.payload
 }

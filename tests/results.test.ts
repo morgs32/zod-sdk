@@ -60,7 +60,7 @@ describe('results', () => {
 
   it.only('with context', async () => {
     const service = server.makeService({
-      makeContext: () => ({
+      makeContext: (): { foo: 'bar' } => ({
         foo: 'bar',
       }),
       middleware: (_, next) => {
@@ -68,15 +68,13 @@ describe('results', () => {
         return next()
       },
     })
-    async function findFooOrBar<T extends 'foo' | 'bar'>(
-      str: T
-    ): Promise<T extends 'foo' ? 'found-foo' : 'found-bar'> {
+    async function getContextFoo() {
       const { foo } = service.useCtx()
       expect(foo).toMatchInlineSnapshot('"bar"')
-      return (str === foo ? 'found-foo' : 'found-bar') as any
+      return `found-${foo}` as const
     }
     const routes = {
-      findFooOrBar: service.makeQuery(findFooOrBar),
+      getContextFoo: service.makeQuery(getContextFoo),
     }
     // You have to use routes!!
     const handler = server.makeRouter(routes)
@@ -84,9 +82,7 @@ describe('results', () => {
       const sdk = client.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await client.query(sdk.findFooOrBar, (find) => {
-        return find('foo')
-      })
+      const result = await client.query(sdk.getContextFoo, (find) => find())
       // Check the type on result
       expect(result).toMatchInlineSnapshot('"found-bar"')
     })
