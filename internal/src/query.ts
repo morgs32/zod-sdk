@@ -3,14 +3,14 @@ import {
   IBaseRPC,
   IRequestOptions,
   Func,
-  IClientHandler,
+  IDispatcherHandler,
 } from 'zod-sdk/internal'
 import { callRPC } from './callRPC'
 import { Jsonify } from 'type-fest'
 
 export function query<
-  C extends IClientHandler,
-  H extends C extends IClientHandler<infer T> ? T : never,
+  C extends IDispatcherHandler,
+  H extends C extends IDispatcherHandler<infer T> ? T : never,
   F extends H extends IHandler<infer T> ? T : never,
   S extends H extends IHandler<Func, infer T> ? T : never,
   R extends ReturnType<F>,

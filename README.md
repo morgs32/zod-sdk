@@ -17,7 +17,7 @@ async function find<T extends 'foo' | 'bar'>(
 
 const query = makeQuery(find)
 
-const result = sdk.query(query, (find) => find('foo'))
+const result = client.query(query, (find) => find('foo'))
 // Result has type: Promise<"found-foo">
 ```
 
@@ -70,7 +70,7 @@ const addYear = server.makeQuery(
   },
   {
     parameter: z.date(),
-    result: z.date(),
+    payload: z.date(),
   }
 )
 ```
@@ -85,7 +85,7 @@ There's a big benefit to doing this! We can use zod to parse input and results a
 pnpm add zod-sdk
 ```
 
-## On the server
+## On the server, make a router
 
 Use the `server` export on the Node server.
 1. Pass your backend functions to `server.makeQuery()` or `server.makeCommand()`
@@ -95,7 +95,7 @@ Use the `server` export on the Node server.
 
 ```
 // server.ts
-import { server } from 'zod-sdk'
+import { server } from 'zod-sdk/server'
 
 function findUserById(id: string) {
   const user = await db.user.findById(input);
@@ -117,23 +117,32 @@ That `router` returned from `server.makeRouter()` is a request handler. You can 
 export { GET, POST } from server.makeRouter(routes)
 ```
 
-## On the client
+## On the client, make a dispatcher
 
-Client-side, use the `sdk` export from `zod-sdk` to:
-1. Pass your routes type object to `sdk.makeClient(options: Options)`
-2. Pass the appropriate handler to `sdk.query()` or `sdk.mutate()`
+Client-side:
+1. Pass your routes type object to `client.makeDispatcher(options: Options)`
+2. Pass the appropriate handler to `client.query()` or `client.mutate()`
 
-NOTE: The client does not necessarily have to be the browser by the way. But if you are, then get `sdk` from `zod-sdk/client`
 
 ```
-const clientSDK = sdk.makeClient<Routes>({
+import { client } from 'zod-sdk/client'
+
+const sdk = client.makeDispatcher<Routes>({
   baseUrl: url,
 })
-const result = await sdk.query(clientSDK.findFooOrBar, (find) =>
+const result = await client.query(sdk.findFooOrBar, (find) =>
   find('foo')
 )
 ```
 
+NOTE: The client does not necessarily have to be the browser by the way. The same methods are availble to you on the server:
+```
+import { server } from 'zod-sdk/server'
+
+const sdk = server.makeDispatcher<Routes>({
+  baseUrl: url,
+})
+```
 ## useQuery in React
 
 This is a wrapper around Vercel's `swr` data fetching library. You probably know it or `@tanstack/react-query`.
@@ -142,11 +151,12 @@ You'll have to import this separately from `zod-sdk/client`. Because it only wor
 
 ```
 'use client'
+
 import styles from './page.module.css'
-import { useQuery, sdk  } from 'zod-sdk/client'
+import { useQuery, client  } from 'zod-sdk/client'
 import { IRoutes } from './routes'
 
-const client = sdk.makeClient<IRoutes>({
+const client = client.makeDispatcher<IRoutes>({
   baseUrl: 'http://localhost:3000/api/sdk',
 })
 
@@ -194,18 +204,18 @@ Call this to make the router on the server. That's covered in [Getting Started](
 
 You should use `server/service.makeQuery()` to make a GET request. Whether you use `makeQuery` or `makeCommand` doesn't make a difference, but do what's intuitive! Read up on CQRS if you want some reasons why
 
-# sdk
+# client
 
-## sdk.makeClient
-See [Getting Started](#getting-started)
+## client.makeDispatcher
+See [Make a dispatcher](#on-the-client-make-a-dispatcher)
 
-## sdk.query
+## client.query
 See [Getting Started](#getting-started).
 
-Calling `sdk.query` with a handler you created with `makeQuery` will throw a typescript error.
-## sdk.command
+Calling `client.query` with a handler you created with `makeQuery` will throw a typescript error.
+## client.command
 
-Works just like `sdk.query` except you pass it command handlers. 
+Works just like `client.query` except you pass it command handlers. 
 
 # FAQ
 

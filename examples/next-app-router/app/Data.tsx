@@ -1,16 +1,16 @@
 'use client'
 import styles from './page.module.css'
-import { useQuery, sdk } from 'zod-sdk/client'
+import { client } from 'zod-sdk/client'
 import { IRoutes } from './routes'
 
-const client = sdk.makeClient<IRoutes>({
+const sdk = client.makeDispatcher<IRoutes>({
   baseUrl: 'http://localhost:3000/api/sdk',
 })
 
 const date = new Date()
 
 export function Data() {
-  const { data } = useQuery(client.queries.hello, {
+  const { data } = client.useQuery(sdk.hello, {
     fn: (hello) => hello(date),
   })
 

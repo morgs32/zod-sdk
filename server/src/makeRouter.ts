@@ -88,6 +88,8 @@ export function makeRouter<R extends IRoutes>(
     } catch (e) {
       if (options.onError) {
         options.onError(e)
+      } else {
+        console.error(e)
       }
       if (e instanceof Error) {
         if (res) {

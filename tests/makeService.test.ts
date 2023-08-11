@@ -1,6 +1,7 @@
 import { z } from 'zod'
 import { okrs } from 'okrs'
-import { server, callHandler } from 'zod-sdk/server'
+import { server } from 'zod-sdk/server'
+import { callHandler } from 'server/src/callHandler'
 
 describe('makeService', () => {
   it('works', async () => {

@@ -1,6 +1,7 @@
 import { server } from 'zod-sdk/server'
+import { client } from 'zod-sdk/client'
 import { makeServer } from './listen'
-import { IRoutes, sdk } from 'zod-sdk/internal'
+import { IRoutes } from 'zod-sdk/internal'
 
 const findMany = server.makeQuery(async function findMany<
   T extends 'foo' | 'bar',
@@ -24,10 +25,10 @@ describe('results', () => {
   it('with http server', async () => {
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = sdk.makeClient<typeof routes>({
+      const sdk = client.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await sdk.query(clientSDK.widgets.findMany, (findMany) =>
+      const result = await client.query(sdk.widgets.findMany, (findMany) =>
         findMany('foo')
       )
       expect(result[0].createdAt).toMatchInlineSnapshot(
@@ -48,12 +49,10 @@ describe('results', () => {
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = sdk.makeClient<typeof routes>({
+      const sdk = client.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await sdk.query(clientSDK.findFooOrBar, (find) =>
-        find('foo')
-      )
+      const result = await client.query(sdk.findFooOrBar, (find) => find('foo'))
       // Check the type on result
       expect(result).toMatchInlineSnapshot('"found-foo"')
     })
@@ -82,10 +81,10 @@ describe('results', () => {
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const clientSDK = sdk.makeClient<typeof routes>({
+      const sdk = client.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await sdk.query(clientSDK.findFooOrBar, (find) => {
+      const result = await client.query(sdk.findFooOrBar, (find) => {
         return find('foo')
       })
       // Check the type on result

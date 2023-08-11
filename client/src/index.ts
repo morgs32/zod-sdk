@@ -1,2 +1,2 @@
-export * from './useQuery'
-export * from 'zod-sdk/internal'
+export * as client from './client'
+export type * from 'zod-sdk/internal'

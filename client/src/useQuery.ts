@@ -1,24 +1,23 @@
-import { IBaseRPC, IHandler, callRPC } from 'zod-sdk/internal'
+import { IBaseRPC, IDispatcherHandler, callRPC, isRPC } from 'zod-sdk/internal'
 import { Jsonify } from 'type-fest'
 import { SWRConfiguration, SWRResponse } from 'swr'
-import { isRPC } from 'zod-sdk/internal'
 import useSWR from 'swr'
 
 type IFalsy = null | undefined | false | ''
 
 export function useQuery<
-  H extends IHandler,
-  F extends H extends IHandler<infer X> ? X : never,
+  D extends IDispatcherHandler,
+  F extends D extends IDispatcherHandler<infer H> ? H : never,
   R extends ReturnType<F>,
   T extends R | IFalsy,
 >(
-  handler: H,
+  handler: D,
   options: {
     fn: (query: F) => T
     onSuccess?: (
       data: Awaited<
         T extends R
-          ? 'schema' extends keyof H
+          ? 'schema' extends keyof D
             ? T
             : Jsonify<Awaited<T>>
           : never
@@ -27,7 +26,7 @@ export function useQuery<
   } & Omit<SWRConfiguration, 'onSuccess'>
 ): SWRResponse<
   Awaited<
-    T extends R ? ('schema' extends keyof H ? T : Jsonify<Awaited<T>>) : never
+    T extends R ? ('schema' extends keyof D ? T : Jsonify<Awaited<T>>) : never
   >
 > {
   const { fn, onSuccess, ...swrConfig } = options
