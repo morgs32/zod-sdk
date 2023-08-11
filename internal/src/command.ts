@@ -1,16 +1,18 @@
-import { IBaseRPC, IHandler, IRequestOptions } from 'zod-sdk/internal'
+import {
+  Func,
+  IBaseRPC,
+  IDispatcherHandler,
+  IMaybeJsonified,
+  IRequestOptions,
+} from 'zod-sdk/internal'
 import { callRPC } from './callRPC'
-import { Jsonify } from 'type-fest'
 
 export function command<
-  H extends IHandler,
-  F extends H extends IHandler<infer T> ? T : never,
+  D extends IDispatcherHandler,
+  F extends D extends IDispatcherHandler<infer _F> ? _F : never,
+  S extends D extends IDispatcherHandler<Func, infer _S> ? _S : never,
   R extends ReturnType<F>,
->(
-  handler: H,
-  fn: (query: F) => R,
-  options?: IRequestOptions
-): Promise<Jsonify<Awaited<R>>> {
+>(handler: D, fn: (query: F) => R, options?: IRequestOptions) {
   const rpc = fn(handler as any as F) as any as IBaseRPC
   return callRPC(
     {
@@ -18,5 +20,5 @@ export function command<
       type: 'command',
     },
     options
-  ) as Promise<Jsonify<Awaited<R>>>
+  ) as IMaybeJsonified<S, R>
 }
