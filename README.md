@@ -1,6 +1,27 @@
-# `zod-sdk`
+![zod-sdk](./zod-sdk.png)
 
 Zod SDK is an RPC library. Like TRPC it's going to reflect types from your backend. Of course, it does more than that. Here's what:
+
+- [What and why](#what-and-why)
+  - [Type narrowing your payloads](#type-narrowing-your-payloads)
+    - [Asynchronous context tracking in Node](#asynchronous-context-tracking-in-node)
+  - [Where does zod come in?](#where-does-zod-come-in)
+- [Getting Started](#getting-started)
+  - [On the server, make a router](#on-the-server-make-a-router)
+  - [On the client, make a dispatcher](#on-the-client-make-a-dispatcher)
+  - [useQuery in React](#usequery-in-react)
+- [server](#server)
+  - [server.makeService](#servermakeservice)
+  - [server.makeRouter](#servermakerouter)
+  - [server.makeQuery](#servermakequery)
+- [client](#client)
+  - [client.makeDispatcher](#clientmakedispatcher)
+  - [client.query](#clientquery)
+  - [client.command](#clientcommand)
+- [FAQ](#faq)
+- [To do](#to-do)
+
+<br />
 
 # What and why
 
