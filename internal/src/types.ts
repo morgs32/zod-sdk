@@ -80,8 +80,8 @@ export type IRequestOptions = Omit<RequestInit, 'headers'> & {
 export type INextFunction = () => Promise<any>
 
 export type IDispatcher<R extends IRoutes> = {
-  [K in keyof R]: R[K] extends IHandler<infer F>
-    ? IDispatcherHandler<F>
+  [K in keyof R]: R[K] extends IHandler<infer F, infer S>
+    ? IDispatcherHandler<F, S>
     : // : R[K] extends () => any
     // ? IDispatcherHandler<R[K]>
     R[K] extends Func<infer I>
