@@ -6,18 +6,21 @@ import {
   ISchemas,
 } from 'zod-sdk/internal'
 
-export function makeQuery<F extends Func>(
-  procedure: F
-): F extends Func<infer I>
-  ? I extends JsonValue
-    ? IHandler<F, undefined>
-    : InvalidJsonOrMissingSchemas
-  : never
 export function makeQuery<F extends Func, S extends ISchemas<F>>(
   procedure: F,
   schemas: S
 ): IHandler<F, S>
-export function makeQuery<F extends Func>(procedure: F, schemas?: ISchemas<F>) {
+export function makeQuery<F extends Func>(
+  procedure: F
+): F extends Func<infer I>
+  ? I extends JsonValue
+    ? IHandler<F>
+    : InvalidJsonOrMissingSchemas
+  : never
+export function makeQuery<F extends Func, S extends ISchemas<F>>(
+  procedure: F,
+  schemas?: S
+) {
   return {
     procedure,
     schemas,

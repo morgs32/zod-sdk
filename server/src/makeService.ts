@@ -16,31 +16,45 @@ export function makeService<R extends IncomingMessage | Request, C extends any>(
 ) {
   const { middleware, makeContext } = options
 
+  function makeQuery<F extends Func>(procedure: F): IHandler<F>
+  function makeQuery<F extends Func, S extends ISchemas<F>>(
+    procedure: F,
+    schemas: S
+  ): IHandler<F, S>
+  function makeQuery<F extends Func, S extends ISchemas<F>>(
+    procedure: F,
+    schemas?: S
+  ): IHandler<F, S | undefined> {
+    return {
+      procedure,
+      middleware,
+      makeContext,
+      schemas,
+      type: 'query',
+    }
+  }
+
+  function makeCommand<F extends Func>(procedure: F): IHandler<F>
+  function makeCommand<F extends Func, S extends ISchemas<F>>(
+    procedure: F,
+    schemas: S
+  ): IHandler<F, S>
+  function makeCommand<F extends Func, S extends ISchemas<F>>(
+    procedure: F,
+    schemas?: S
+  ): IHandler<F, S | undefined> {
+    return {
+      procedure,
+      middleware,
+      makeContext,
+      schemas,
+      type: 'command',
+    }
+  }
+
   return {
-    makeQuery: function makeQuery<F extends Func>(
-      procedure: F,
-      schemas?: ISchemas<F>
-    ): IHandler<F> {
-      return {
-        procedure,
-        middleware,
-        makeContext,
-        schemas,
-        type: 'query',
-      }
-    },
-    makeCommand: function makeCommand<F extends Func>(
-      procedure: F,
-      schemas?: ISchemas<F>
-    ): IHandler<F> {
-      return {
-        procedure,
-        middleware,
-        makeContext,
-        schemas,
-        type: 'command',
-      }
-    },
+    makeQuery,
+    makeCommand,
     useCtx: function useCtx() {
       return asyncLocalStorage.getStore() as Awaited<C>
     },

@@ -35,11 +35,11 @@ export interface IMiddlewareFn<R = RequestType> {
   ): IMiddlewareReturnType | Promise<IMiddlewareReturnType>
 }
 
-type IType = 'query' | 'command'
+export type IType = 'query' | 'command'
 
 export interface IHandler<
   F extends Func = Func,
-  S extends ISchemas<F> | undefined = any,
+  S extends ISchemas<F> | undefined = ISchemas<F> | undefined,
 > {
   procedure: F
   makeContext?: IContextFn<any>
@@ -70,7 +70,7 @@ export interface IDispatcherHandler<
 export interface InvalidJsonOrMissingSchemas {}
 
 export interface IRoutes {
-  [key: string]: Func | IHandler | IRoutes
+  [key: string]: Func | IHandler | IHandler<Func, ISchemas> | IRoutes
 }
 
 export type IRequestOptions = Omit<RequestInit, 'headers'> & {
@@ -82,9 +82,9 @@ export type INextFunction = () => Promise<any>
 export type IDispatcher<R extends IRoutes> = {
   [K in keyof R]: R[K] extends IHandler<infer F, infer S>
     ? IDispatcherHandler<F, S>
-    : // : R[K] extends () => any
-    // ? IDispatcherHandler<R[K]>
-    R[K] extends Func<infer I>
+    : R[K] extends IHandler<infer F>
+    ? IDispatcherHandler<F>
+    : R[K] extends Func<infer I>
     ? I extends unknown
       ? IDispatcherHandler<R[K]>
       : I extends JsonValue

@@ -40,7 +40,7 @@ export async function callHandler(
             body = await parseBody(req)
           }
           if (!body.input && handler.schemas) {
-            input = handler.schemas.parameter.parse(body)
+            input = handler.schemas?.parameter.parse(body)
             break
           }
           try {
