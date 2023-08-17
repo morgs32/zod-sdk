@@ -25,7 +25,7 @@ describe('results', () => {
   it('with http server', async () => {
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const sdk = client.makeDispatcher<typeof routes>({
+      const sdk = client.makeInstructions<typeof routes>({
         baseUrl: url,
       })
       const result = await client.call(sdk.widgets.findMany, ({ query }) =>
@@ -49,7 +49,7 @@ describe('results', () => {
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const sdk = client.makeDispatcher<typeof routes>({
+      const sdk = client.makeInstructions<typeof routes>({
         baseUrl: url,
       })
       const result = await client.call(sdk.findFooOrBar, ({ query }) =>
@@ -81,7 +81,7 @@ describe('results', () => {
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const sdk = client.makeDispatcher<typeof routes>({
+      const sdk = client.makeInstructions<typeof routes>({
         baseUrl: url,
       })
       const result = await client.call(sdk.getContextFoo, ({ query }) =>

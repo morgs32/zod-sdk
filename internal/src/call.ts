@@ -2,7 +2,7 @@ import {
   IBaseRPC,
   IRequestOptions,
   IMaybeJsonified,
-  IDispatcherHandler,
+  IInstructionsHandler,
   Func,
   ISchemas,
   IType,
@@ -15,7 +15,7 @@ export function call<
   T extends IType,
   R extends ReturnType<F>,
 >(
-  handler: IDispatcherHandler<F, S, T>,
+  handler: IInstructionsHandler<F, S, T>,
   fn: T extends 'query' ? (bag: { query: F }) => R : (bag: { command: F }) => R,
   options?: IRequestOptions
 ) {

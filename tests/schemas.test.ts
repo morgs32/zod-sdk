@@ -64,7 +64,7 @@ describe('results', () => {
   it('with http server', async () => {
     const router = server.makeRouter(routes)
     await makeServer(router, async (url) => {
-      const sdk = server.makeDispatcher<typeof routes>({
+      const sdk = server.makeInstructions<typeof routes>({
         baseUrl: url,
       })
       const result = await server.call(

@@ -6,7 +6,7 @@ export type Func<I extends any = any> =
   | ((input: I) => Promise<any>)
   | (() => Promise<any>)
 
-export type RequestType = IncomingMessage | Request
+type RequestType = IncomingMessage | Request
 
 export interface ISchemas<F extends Func = Func> {
   parameter: ZodType<Parameters<F>[0]>
@@ -54,7 +54,7 @@ export type IMaybeJsonified<
   R extends any,
 > = S extends undefined ? Promise<Jsonify<Awaited<R>>> : R
 
-export interface IDispatcherHandler<
+export interface IInstructionsHandler<
   F extends Func = Func,
   S extends ISchemas<F> | undefined = undefined,
   T extends IType = IType,
@@ -81,17 +81,17 @@ export type IRequestOptions = Omit<RequestInit, 'headers'> & {
 
 export type INextFunction = () => Promise<any>
 
-export type IDispatcher<R extends IRoutes> = {
+export type IInstructions<R extends IRoutes> = {
   [K in keyof R]: R[K] extends IHandler<infer F, infer S, infer T>
-    ? IDispatcherHandler<F, S, T>
+    ? IInstructionsHandler<F, S, T>
     : R[K] extends Func<infer I>
     ? I extends unknown
-      ? IDispatcherHandler<R[K]>
+      ? IInstructionsHandler<R[K]>
       : I extends JsonValue
-      ? IDispatcherHandler<R[K]>
+      ? IInstructionsHandler<R[K]>
       : InvalidJsonOrMissingSchemas
     : R[K] extends IRoutes
-    ? IDispatcher<R[K]>
+    ? IInstructions<R[K]>
     : never
 }
 

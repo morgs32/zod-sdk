@@ -15,7 +15,7 @@ Zod SDK is an RPC library. Like TRPC it's going to reflect types from your backe
   - [server.makeRouter](#servermakerouter)
   - [server.makeQuery](#servermakequery)
 - [client](#client)
-  - [client.makeDispatcher](#clientmakedispatcher)
+  - [client.makeInstructions](#clientmakedispatcher)
   - [client.call](#clientcall)
   - [client.command](#clientcommand)
 - [FAQ](#faq)
@@ -141,14 +141,14 @@ export { GET, POST } from server.makeRouter(routes)
 ## On the client, make a dispatcher
 
 Client-side:
-1. Pass your routes type object to `client.makeDispatcher(options: Options)`
+1. Pass your routes type object to `client.makeInstructions(options: Options)`
 2. Pass the appropriate handler to `client.call()` or `client.mutate()`
 
 
 ```
 import { client } from 'zod-sdk/client'
 
-const sdk = client.makeDispatcher<Routes>({
+const sdk = client.makeInstructions<Routes>({
   baseUrl: url,
 })
 const result = await client.call(sdk.findFooOrBar, (find) =>
@@ -160,7 +160,7 @@ NOTE: The client does not necessarily have to be the browser by the way. The sam
 ```
 import { server } from 'zod-sdk/server'
 
-const sdk = server.makeDispatcher<Routes>({
+const sdk = server.makeInstructions<Routes>({
   baseUrl: url,
 })
 ```
@@ -177,7 +177,7 @@ import styles from './page.module.css'
 import { useQuery, client  } from 'zod-sdk/client'
 import { IRoutes } from './routes'
 
-const client = client.makeDispatcher<IRoutes>({
+const client = client.makeInstructions<IRoutes>({
   baseUrl: 'http://localhost:3000/api/sdk',
 })
 
@@ -227,7 +227,7 @@ You should use `server/service.makeProcedure()` to make a GET request. Whether y
 
 # client
 
-## client.makeDispatcher
+## client.makeInstructions
 See [Make a dispatcher](#on-the-client-make-a-dispatcher)
 
 ## client.call

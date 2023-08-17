@@ -1,2 +1,2 @@
 export * from './call'
-export * from './makeDispatcher'
+export * from './makeInstructions'

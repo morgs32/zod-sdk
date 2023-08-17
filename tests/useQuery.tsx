@@ -12,7 +12,7 @@ describe('useQuery', () => {
     const handler = server.makeRouter(routes)
 
     await makeServer(handler, async (url) => {
-      const sdk = client.makeDispatcher<typeof routes>({
+      const sdk = client.makeInstructions<typeof routes>({
         baseUrl: url,
       })
       const { result } = renderHook(() =>

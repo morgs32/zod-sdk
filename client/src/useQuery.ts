@@ -1,6 +1,6 @@
 import {
   IBaseRPC,
-  IDispatcherHandler,
+  IInstructionsHandler,
   IMaybeJsonified,
   callRPC,
   isRPC,
@@ -11,9 +11,9 @@ import useSWR from 'swr'
 type IFalsy = null | undefined | false | ''
 
 export function useQuery<
-  D extends IDispatcherHandler,
-  F extends D extends IDispatcherHandler<infer _F> ? _F : never,
-  S extends D extends IDispatcherHandler<any, infer _S> ? _S : never,
+  D extends IInstructionsHandler,
+  F extends D extends IInstructionsHandler<infer _F> ? _F : never,
+  S extends D extends IInstructionsHandler<any, infer _S> ? _S : never,
   R extends ReturnType<F>,
   T extends R | IFalsy,
 >(
