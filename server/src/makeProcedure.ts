@@ -2,6 +2,7 @@ import { JsonValue } from 'type-fest'
 import {
   Func,
   IHandler,
+  IMapInterface,
   InvalidJsonOrMissingSchemas,
   ISchemas,
   IType,
@@ -18,7 +19,7 @@ export function makeProcedure<T extends IType, F extends Func>(
 ): F extends Func<undefined>
   ? IHandler<F, undefined, T>
   : F extends Func<infer P>
-  ? P extends JsonValue
+  ? IMapInterface<P> extends JsonValue
     ? IHandler<F, undefined, T>
     : InvalidJsonOrMissingSchemas
   : never

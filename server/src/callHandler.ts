@@ -2,7 +2,7 @@ import { IHandler, IResult } from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
 import { IncomingMessage } from 'http'
 import { parseBody } from './parseBody'
-import { makeJsonSchema } from 'zod-sdk/schemas'
+import { makeJsonSchema, parseJsonSchema } from 'zod-sdk/schemas'
 
 export async function callHandler(
   handler: IHandler,
@@ -40,7 +40,9 @@ export async function callHandler(
             body = await parseBody(req)
           }
           if (!body.input && handler.schemas) {
-            input = handler.schemas?.parameter.parse(body)
+            input = parseJsonSchema(
+              makeJsonSchema(handler.schemas.parameter) as any
+            ).parse(body)
             break
           }
           try {

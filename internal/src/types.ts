@@ -81,14 +81,20 @@ export type IRequestOptions = Omit<RequestInit, 'headers'> & {
 
 export type INextFunction = () => Promise<any>
 
+export type IMapInterface<T> = T extends {}
+  ? {
+      [P in keyof T]: T[P]
+    }
+  : T
+
 export type IInstructions<R extends IRoutes> = {
   [K in keyof R]: R[K] extends IHandler<infer F, infer S, infer T>
     ? IInstructionsHandler<F, S, T>
-    : R[K] extends Func<infer I>
-    ? I extends unknown
-      ? IInstructionsHandler<R[K]>
-      : I extends JsonValue
-      ? IInstructionsHandler<R[K]>
+    : R[K] extends Func<undefined>
+    ? IInstructionsHandler<R[K], undefined, 'query'>
+    : R[K] extends Func<infer P>
+    ? P extends JsonValue
+      ? IInstructionsHandler<R[K], undefined, 'query'>
       : InvalidJsonOrMissingSchemas
     : R[K] extends IRoutes
     ? IInstructions<R[K]>

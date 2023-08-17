@@ -13,9 +13,13 @@ const addYear = server.makeProcedure(
   }
 )
 
+interface Props {
+  foo: 'bar'
+}
+
 const somethingAndTuples = server.makeProcedure(
   'query',
-  async function (_: { foo: 'bar' }) {
+  async function (_: Props) {
     return [[new Date(), 1]]
   },
   {

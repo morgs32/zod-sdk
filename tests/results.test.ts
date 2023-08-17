@@ -1,7 +1,7 @@
 import { server } from 'zod-sdk/server'
 import { client } from 'zod-sdk/client'
 import { makeServer } from './listen'
-import { IRoutes } from 'zod-sdk/internal'
+import { IHandler, IRoutes } from 'zod-sdk/internal'
 
 const findMany = server.makeProcedure('query', async function findMany<
   T extends 'foo' | 'bar',
@@ -22,6 +22,20 @@ const routes = {
 } satisfies IRoutes
 
 describe('results', () => {
+  it('with interface and no schemas', () => {
+    interface Props {
+      foo: 'bar'
+    }
+
+    const findMany: IHandler = server.makeProcedure(
+      'query',
+      async (props: Props) => {
+        return props.foo
+      }
+    )
+    expect(findMany).toBeDefined()
+  })
+
   it('with http server', async () => {
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
