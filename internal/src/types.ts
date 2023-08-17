@@ -40,12 +40,13 @@ export type IType = 'query' | 'command'
 export interface IHandler<
   F extends Func = Func,
   S extends ISchemas<F> | undefined = ISchemas<F> | undefined,
+  T extends IType = IType,
 > {
   procedure: F
   makeContext?: IContextFn<any>
   middleware?: IMiddlewareFn<any>
   schemas: S
-  type: IType
+  type: T
 }
 
 export type IMaybeJsonified<
@@ -56,10 +57,11 @@ export type IMaybeJsonified<
 export interface IDispatcherHandler<
   F extends Func = Func,
   S extends ISchemas<F> | undefined = undefined,
+  T extends IType = IType,
 > {
   procedure: F
   schemas: S
-  type: IType
+  type: T
   dispatcher: true
 }
 
@@ -80,10 +82,8 @@ export type IRequestOptions = Omit<RequestInit, 'headers'> & {
 export type INextFunction = () => Promise<any>
 
 export type IDispatcher<R extends IRoutes> = {
-  [K in keyof R]: R[K] extends IHandler<infer F, infer S>
-    ? IDispatcherHandler<F, S>
-    : R[K] extends IHandler<infer F>
-    ? IDispatcherHandler<F>
+  [K in keyof R]: R[K] extends IHandler<infer F, infer S, infer T>
+    ? IDispatcherHandler<F, S, T>
     : R[K] extends Func<infer I>
     ? I extends unknown
       ? IDispatcherHandler<R[K]>

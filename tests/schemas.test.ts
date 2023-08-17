@@ -64,9 +64,9 @@ describe('results', () => {
       const sdk = server.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await server.query(
+      const result = await server.call(
         sdk.widgets.queries.findFoobar,
-        (findFoobar) => findFoobar('foo')
+        ({ query }) => query('foo')
       )
       expect(typeof result[0].createdAt).toMatchInlineSnapshot('"object"')
       expect(result[0].createdAt).toMatchInlineSnapshot(

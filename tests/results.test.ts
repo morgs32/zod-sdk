@@ -28,8 +28,8 @@ describe('results', () => {
       const sdk = client.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await client.query(sdk.widgets.findMany, (findMany) =>
-        findMany('foo')
+      const result = await client.call(sdk.widgets.findMany, ({ query }) =>
+        query('foo')
       )
       expect(result[0].createdAt).toMatchInlineSnapshot(
         '"2020-01-01T00:00:00.000Z"'
@@ -52,7 +52,9 @@ describe('results', () => {
       const sdk = client.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await client.query(sdk.findFooOrBar, (find) => find('foo'))
+      const result = await client.call(sdk.findFooOrBar, ({ query }) =>
+        query('foo')
+      )
       // Check the type on result
       expect(result).toMatchInlineSnapshot('"found-foo"')
     })
@@ -82,7 +84,9 @@ describe('results', () => {
       const sdk = client.makeDispatcher<typeof routes>({
         baseUrl: url,
       })
-      const result = await client.query(sdk.getContextFoo, (find) => find())
+      const result = await client.call(sdk.getContextFoo, ({ query }) =>
+        query()
+      )
       // Check the type on result
       expect(result).toMatchInlineSnapshot('"found-bar"')
     })

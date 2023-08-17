@@ -34,11 +34,6 @@ export function makeService<R extends IncomingMessage | Request, C extends any>(
     }
   }
 
-  function makeCommand<F extends Func>(procedure: F): IHandler<F>
-  function makeCommand<F extends Func, S extends ISchemas<F>>(
-    procedure: F,
-    schemas: S
-  ): IHandler<F, S>
   function makeCommand<F extends Func, S extends ISchemas<F>>(
     procedure: F,
     schemas?: S

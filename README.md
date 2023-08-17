@@ -16,7 +16,7 @@ Zod SDK is an RPC library. Like TRPC it's going to reflect types from your backe
   - [server.makeQuery](#servermakequery)
 - [client](#client)
   - [client.makeDispatcher](#clientmakedispatcher)
-  - [client.query](#clientquery)
+  - [client.call](#clientquery)
   - [client.command](#clientcommand)
 - [FAQ](#faq)
 - [To do](#to-do)
@@ -38,7 +38,7 @@ async function find<T extends 'foo' | 'bar'>(
 
 const query = makeQuery(find)
 
-const result = client.query(query, (find) => find('foo'))
+const result = client.call(query, (find) => find('foo'))
 // Result has type: Promise<"found-foo">
 ```
 
@@ -142,7 +142,7 @@ export { GET, POST } from server.makeRouter(routes)
 
 Client-side:
 1. Pass your routes type object to `client.makeDispatcher(options: Options)`
-2. Pass the appropriate handler to `client.query()` or `client.mutate()`
+2. Pass the appropriate handler to `client.call()` or `client.mutate()`
 
 
 ```
@@ -151,7 +151,7 @@ import { client } from 'zod-sdk/client'
 const sdk = client.makeDispatcher<Routes>({
   baseUrl: url,
 })
-const result = await client.query(sdk.findFooOrBar, (find) =>
+const result = await client.call(sdk.findFooOrBar, (find) =>
   find('foo')
 )
 ```
@@ -230,13 +230,13 @@ You should use `server/service.makeQuery()` to make a GET request. Whether you u
 ## client.makeDispatcher
 See [Make a dispatcher](#on-the-client-make-a-dispatcher)
 
-## client.query
+## client.call
 See [Getting Started](#getting-started).
 
-Calling `client.query` with a handler you created with `makeQuery` will throw a typescript error.
+Calling `client.call` with a handler you created with `makeQuery` will throw a typescript error.
 ## client.command
 
-Works just like `client.query` except you pass it command handlers. 
+Works just like `client.call` except you pass it command handlers. 
 
 # FAQ
 
