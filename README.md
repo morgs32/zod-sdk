@@ -16,7 +16,7 @@ Zod SDK is an RPC library. Like TRPC it's going to reflect types from your backe
   - [server.makeQuery](#servermakequery)
 - [client](#client)
   - [client.makeDispatcher](#clientmakedispatcher)
-  - [client.call](#clientquery)
+  - [client.call](#clientcall)
   - [client.command](#clientcommand)
 - [FAQ](#faq)
 - [To do](#to-do)
@@ -75,7 +75,7 @@ async function findContextFoo(): 'bar' {
   return foo
 }
 const routes = {
-  findFooOrBar: service.makeQuery(findFooOrBar),
+  findFooOrBar: service.makeProcedure('query', findFooOrBar),
 }
 // ...and so on, see "Getting Started"
 ```
@@ -85,7 +85,7 @@ const routes = {
 Like TRPC, you can use schemas to validate query and command parameters from the client, or the payloads sent back from the server.
 
 ```
-const addYear = server.makeQuery(
+const addYear = server.makeProcedure('query', 
   async function (date: Date) {
     return new Date(date.getFullYear() + 1, date.getMonth(), date.getDate())
   },
@@ -109,7 +109,7 @@ pnpm add zod-sdk
 ## On the server, make a router
 
 Use the `server` export on the Node server.
-1. Pass your backend functions to `server.makeQuery()` or `server.makeCommand()`
+1. Pass your backend functions to `server.makeProcedure()` or `server.makeCommand()`
 2. Create a routes object
 3. Pass routes to `server.makeRouter()`
 4. Export `typeof routes` however you want.
@@ -124,7 +124,7 @@ function findUserById(id: string) {
 }
 
 const routes = {
-  findUserById: server.makeQuery(findUserById),
+  findUserById: server.makeProcedure('query', findUserById),
 }
 
 const router = server.makeRouter(routes)
@@ -214,8 +214,8 @@ const service = server.makeService({
 ```
 
 Then you call
-- `service.makeQuery()` or `service.makeCommand()`
-- Instead of  ~~server~~.makeQuery() or ~~server.makeCommand()~~
+- `service.makeProcedure()` or `service.makeCommand()`
+- Instead of  ~~server~~.makeProcedure() or ~~server.makeCommand()~~
 
 ## server.makeRouter
 
@@ -223,7 +223,7 @@ Call this to make the router on the server. That's covered in [Getting Started](
 
 ## server.makeQuery
 
-You should use `server/service.makeQuery()` to make a GET request. Whether you use `makeQuery` or `makeCommand` doesn't make a difference, but do what's intuitive! Read up on CQRS if you want some reasons why
+You should use `server/service.makeProcedure()` to make a GET request. Whether you use `makeQuery` or `makeCommand` doesn't make a difference, but do what's intuitive! Read up on CQRS if you want some reasons why
 
 # client
 

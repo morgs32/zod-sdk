@@ -15,8 +15,10 @@ export function makeProcedure<
 export function makeProcedure<T extends IType, F extends Func>(
   type: T,
   procedure: F
-): F extends Func<infer I>
-  ? I extends JsonValue
+): F extends Func<undefined>
+  ? IHandler<F, undefined, T>
+  : F extends Func<infer P>
+  ? P extends JsonValue
     ? IHandler<F, undefined, T>
     : InvalidJsonOrMissingSchemas
   : never

@@ -5,7 +5,7 @@ import { callHandler } from 'server/src/callHandler'
 
 describe('makeService', () => {
   it('works', async () => {
-    const procedure = server.makeService({
+    const service = server.makeService({
       makeContext: async () => {
         okrs.strict(() => {
           z.string({
@@ -15,7 +15,7 @@ describe('makeService', () => {
       },
     })
 
-    const handler = procedure.makeQuery(async () => {
+    const handler = service.makeProcedure('query', async () => {
       return 'hello'
     })
 
@@ -27,7 +27,7 @@ describe('makeService', () => {
   })
 
   it.skip('check types', async () => {
-    const procedure = server.makeService({
+    const service = server.makeService({
       middleware: async (req: Request) => {
         expect(req).toBeTruthy()
       },
@@ -39,7 +39,7 @@ describe('makeService', () => {
       },
     })
 
-    const a = procedure.mockCtx(
+    const a = service.mockCtx(
       {
         foo: 'baz',
       },
@@ -47,7 +47,7 @@ describe('makeService', () => {
     )
     expect(a).toBeTruthy()
 
-    const handler = procedure.makeQuery(async () => {
+    const handler = service.makeProcedure('query', async () => {
       return 'hello'
     })
     expect(handler).toBeTruthy()

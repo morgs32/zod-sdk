@@ -2,7 +2,8 @@ import { z } from 'zod'
 import { server } from 'zod-sdk/server'
 
 export const routes = {
-  hello: server.makeQuery(
+  hello: server.makeProcedure(
+    'query',
     async (date: Date) => ({
       hello: 'world',
       on: new Date(),

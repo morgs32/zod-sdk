@@ -3,7 +3,7 @@ import { client } from 'zod-sdk/client'
 import { makeServer } from './listen'
 import { IRoutes } from 'zod-sdk/internal'
 
-const findMany = server.makeQuery(async function findMany<
+const findMany = server.makeProcedure('query', async function findMany<
   T extends 'foo' | 'bar',
 >(str: T): Promise<{ id: number; type: T; createdAt: Date }[]> {
   return [
@@ -44,7 +44,7 @@ describe('results', () => {
       return (str === 'foo' ? 'found-foo' : 'found-bar') as any
     }
     const routes = {
-      findFooOrBar: server.makeQuery(findFooOrBar),
+      findFooOrBar: server.makeProcedure('query', findFooOrBar),
     }
     // You have to use routes!!
     const handler = server.makeRouter(routes)
@@ -76,7 +76,7 @@ describe('results', () => {
       return `found-${foo}` as const
     }
     const routes = {
-      getContextFoo: service.makeQuery(getContextFoo),
+      getContextFoo: service.makeProcedure('query', getContextFoo),
     }
     // You have to use routes!!
     const handler = server.makeRouter(routes)

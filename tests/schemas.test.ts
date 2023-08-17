@@ -2,7 +2,8 @@ import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
 import z from 'zod'
 
-const addYear = server.makeQuery(
+const addYear = server.makeProcedure(
+  'query',
   async function (date: Date) {
     return new Date(date.getFullYear() + 1, date.getMonth(), date.getDate())
   },
@@ -12,7 +13,8 @@ const addYear = server.makeQuery(
   }
 )
 
-const somethingAndTuples = server.makeQuery(
+const somethingAndTuples = server.makeProcedure(
+  'query',
   async function (_: { foo: 'bar' }) {
     return [[new Date(), 1]]
   },
@@ -24,7 +26,8 @@ const somethingAndTuples = server.makeQuery(
   }
 )
 
-const findFoobar = server.makeQuery(
+const findFoobar = server.makeProcedure(
+  'query',
   async function findFoobar<T extends 'foo' | 'bar'>(
     str: T
   ): Promise<{ id: number; type: T; createdAt: Date }[]> {

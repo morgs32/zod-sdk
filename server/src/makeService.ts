@@ -1,12 +1,7 @@
 import { IncomingMessage } from 'http'
-import {
-  Func,
-  IContextFn,
-  IHandler,
-  IMiddlewareFn,
-  ISchemas,
-} from 'zod-sdk/internal'
+import { IContextFn, IMiddlewareFn } from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
+import { makeProcedure } from './makeProcedure'
 
 export function makeService<R extends IncomingMessage | Request, C extends any>(
   options: {
@@ -16,40 +11,16 @@ export function makeService<R extends IncomingMessage | Request, C extends any>(
 ) {
   const { middleware, makeContext } = options
 
-  function makeQuery<F extends Func>(procedure: F): IHandler<F>
-  function makeQuery<F extends Func, S extends ISchemas<F>>(
-    procedure: F,
-    schemas: S
-  ): IHandler<F, S>
-  function makeQuery<F extends Func, S extends ISchemas<F>>(
-    procedure: F,
-    schemas?: S
-  ): IHandler<F, S | undefined> {
+  const _makeProcedure = (...args: Parameters<typeof makeProcedure>) => {
     return {
-      procedure,
+      ...makeProcedure(...args),
       middleware,
       makeContext,
-      schemas,
-      type: 'query',
-    }
-  }
-
-  function makeCommand<F extends Func, S extends ISchemas<F>>(
-    procedure: F,
-    schemas?: S
-  ): IHandler<F, S | undefined> {
-    return {
-      procedure,
-      middleware,
-      makeContext,
-      schemas,
-      type: 'command',
     }
   }
 
   return {
-    makeQuery,
-    makeCommand,
+    makeProcedure: _makeProcedure as typeof makeProcedure,
     useCtx: function useCtx() {
       return asyncLocalStorage.getStore() as Awaited<C>
     },
