@@ -1,10 +1,14 @@
+// @vitest-environment jsdom
 import { IRoutes, client } from 'zod-sdk/client'
 import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
 import { renderHook } from '@testing-library/react-hooks'
+import { waitFor } from '@testing-library/react'
 
 const routes = {
-  hello: async () => 'world',
+  hello: async () => {
+    return 'world'
+  },
 } satisfies IRoutes
 
 describe('useQuery', () => {
@@ -16,11 +20,9 @@ describe('useQuery', () => {
         baseUrl: url,
       })
       const { result } = renderHook(() =>
-        client.useQuery(sdk.hello, {
-          fn: (hello) => hello(),
-        })
+        client.useQuery(sdk.hello, (hello) => hello())
       )
-      expect(result).toMatchInlineSnapshot()
+      await waitFor(() => expect(result.current.data).toEqual('world'))
     })
   })
 })

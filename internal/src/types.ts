@@ -72,7 +72,12 @@ export interface IInstructionsHandler<
 export interface InvalidJsonOrMissingSchemas {}
 
 export interface IRoutes {
-  [key: string]: Func | IHandler | IHandler<Func, ISchemas> | IRoutes
+  [key: string]:
+    | Func<undefined>
+    | Func<JsonValue>
+    | IHandler
+    | IHandler<Func, ISchemas>
+    | IRoutes
 }
 
 export type IRequestOptions = Omit<RequestInit, 'headers'> & {

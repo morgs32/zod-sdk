@@ -1,4 +1,5 @@
 import {
+  Func,
   IBaseRPC,
   IInstructionsHandler,
   IMaybeJsonified,
@@ -7,27 +8,22 @@ import {
 } from 'zod-sdk/internal'
 import { SWRConfiguration, SWRResponse } from 'swr'
 import useSWR from 'swr'
+import { ISchemas } from 'internal/dist'
 
 type IFalsy = null | undefined | false | ''
 
 export function useQuery<
-  D extends IInstructionsHandler,
-  F extends D extends IInstructionsHandler<infer _F> ? _F : never,
-  S extends D extends IInstructionsHandler<any, infer _S> ? _S : never,
+  F extends Func,
+  S extends ISchemas<F> | undefined,
   R extends ReturnType<F>,
-  T extends R | IFalsy,
 >(
-  handler: D,
-  options: {
-    fn: (query: F) => T
-    onSuccess?: (
-      data: Awaited<T extends R ? IMaybeJsonified<S, T> : never>
-    ) => void
+  handler: IFalsy | IInstructionsHandler<F, S>,
+  fetcher: (query: F) => R,
+  options?: {
+    onSuccess?: (data: Awaited<IMaybeJsonified<S, R>>) => void
   } & Omit<SWRConfiguration, 'onSuccess'>
-): SWRResponse<Awaited<T extends R ? IMaybeJsonified<S, T> : never>> {
-  const { fn, onSuccess, ...swrConfig } = options
-
-  const maybeAnRPC = fn(handler as any as F) as any as IBaseRPC | IFalsy
+): SWRResponse<Awaited<IMaybeJsonified<S, R>>> {
+  const maybeAnRPC = fetcher(handler as any as F) as any as IBaseRPC | IFalsy
 
   return useSWR(
     isRPC(maybeAnRPC) && maybeAnRPC,
@@ -36,9 +32,6 @@ export function useQuery<
         ...rpc,
         type: 'query',
       }),
-    {
-      ...swrConfig,
-      onSuccess,
-    }
+    options
   )
 }

@@ -64,8 +64,7 @@ export async function callHandler(
 
       return {
         payload,
-        schema:
-          handler.schemas && (makeJsonSchema(handler.schemas.payload) as any),
+        schema: handler.schemas && makeJsonSchema(handler.schemas.payload),
         included: [],
       }
     }
