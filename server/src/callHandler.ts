@@ -40,8 +40,9 @@ export async function callHandler(
             body = await parseBody(req)
           }
           if (!body.input && handler.schemas) {
+            const schemas = handler.schemas
             input = parseJsonSchema(
-              makeJsonSchema(handler.schemas.parameter) as any
+              makeJsonSchema(schemas.parameter) as any
             ).parse(body)
             break
           }
@@ -57,7 +58,7 @@ export async function callHandler(
         }
       }
 
-      const payload = await handler.procedure(input)
+      const payload = await handler.fn(input)
       if (payload instanceof Response) {
         return payload
       }

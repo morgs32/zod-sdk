@@ -1,16 +1,16 @@
 import { IncomingMessage } from 'http'
-import { JsonValue, Jsonify } from 'type-fest'
-import { ZodType } from 'zod'
+import { JsonValue } from 'type-fest'
+import { z } from 'zod'
 
-export type Func<I extends any = any> =
-  | ((input: I) => Promise<any>)
+export type Func<S extends any = any, I extends any = any> =
+  | ((this: S, input: I) => Promise<any>)
   | (() => Promise<any>)
 
 type RequestType = IncomingMessage | Request
 
 export interface ISchemas<F extends Func = Func> {
-  parameter: ZodType<Parameters<F>[0]>
-  payload: ZodType<Awaited<ReturnType<F>>>
+  parameter: z.ZodType<Parameters<F>[0]>
+  payload: z.ZodType<Awaited<ReturnType<F>>>
 }
 
 export interface IContextFn<R extends RequestType = RequestType, C = any> {
@@ -28,6 +28,7 @@ export type IResult = {
 }
 
 export type IMiddlewareReturnType = IResult | void | Response
+
 export interface IMiddlewareFn<R = RequestType> {
   (
     req: R,
@@ -35,34 +36,18 @@ export interface IMiddlewareFn<R = RequestType> {
   ): IMiddlewareReturnType | Promise<IMiddlewareReturnType>
 }
 
-export type IType = 'query' | 'command'
+export type IRPCType = 'query' | 'command'
 
 export interface IHandler<
   F extends Func = Func,
   S extends ISchemas<F> | undefined = ISchemas<F> | undefined,
-  T extends IType = IType,
+  T extends IRPCType = IRPCType,
 > {
-  procedure: F
-  makeContext?: IContextFn<any>
+  fn: F
+  type: T
+  makeContext?: IContextFn
   middleware?: IMiddlewareFn<any>
-  schemas: S
-  type: T
-}
-
-export type IMaybeJsonified<
-  S extends ISchemas | undefined,
-  R extends any,
-> = S extends undefined ? Promise<Jsonify<Awaited<R>>> : R
-
-export interface IInstructionsHandler<
-  F extends Func = Func,
-  S extends ISchemas<F> | undefined = undefined,
-  T extends IType = IType,
-> {
-  procedure: F
-  schemas: S
-  type: T
-  dispatcher: true
+  schemas?: S
 }
 
 /**
@@ -84,28 +69,6 @@ export type IRequestOptions = Omit<RequestInit, 'headers'> & {
   headers?: Record<string, string>
 }
 
-export type INextFunction = () => Promise<any>
-
-export type IMapInterface<T> = T extends {}
-  ? {
-      [P in keyof T]: T[P]
-    }
-  : T
-
-export type IInstructions<R extends IRoutes> = {
-  [K in keyof R]: R[K] extends IHandler<infer F, infer S, infer T>
-    ? IInstructionsHandler<F, S, T>
-    : R[K] extends Func<undefined>
-    ? IInstructionsHandler<R[K], undefined, 'query'>
-    : R[K] extends Func<infer P>
-    ? P extends JsonValue
-      ? IInstructionsHandler<R[K], undefined, 'query'>
-      : InvalidJsonOrMissingSchemas
-    : R[K] extends IRoutes
-    ? IInstructions<R[K]>
-    : never
-}
-
 export interface IBaseRPC<I extends any = any> {
   path: string[]
   input: I
@@ -113,5 +76,5 @@ export interface IBaseRPC<I extends any = any> {
 }
 
 export interface ICompleteRPC<I extends any = any> extends IBaseRPC<I> {
-  type: IType
+  type: IRPCType
 }

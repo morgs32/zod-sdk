@@ -3,7 +3,7 @@ import { client } from 'zod-sdk/client'
 import { makeServer } from './listen'
 import { IHandler, IRoutes } from 'zod-sdk/internal'
 
-const findMany = server.makeProcedure('query', async function findMany<
+const findMany = server.makeProcedure(async function findMany<
   T extends 'foo' | 'bar',
 >(str: T): Promise<{ id: number; type: T; createdAt: Date }[]> {
   return [
@@ -27,19 +27,16 @@ describe('results', () => {
       foo: 'bar'
     }
 
-    const findMany: IHandler = server.makeProcedure(
-      'query',
-      async (props: Props) => {
-        return props.foo
-      }
-    )
+    const findMany: IHandler = server.makeProcedure(async (props: Props) => {
+      return props.foo
+    })
     expect(findMany).toBeDefined()
   })
 
   it('with http server', async () => {
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const sdk = client.makeInstructions<typeof routes>({
+      const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })
       const result = await client.call(sdk.widgets.findMany, ({ query }) =>
@@ -58,12 +55,12 @@ describe('results', () => {
       return (str === 'foo' ? 'found-foo' : 'found-bar') as any
     }
     const routes = {
-      findFooOrBar: server.makeProcedure('query', findFooOrBar),
+      findFooOrBar: server.makeProcedure(findFooOrBar),
     }
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const sdk = client.makeInstructions<typeof routes>({
+      const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })
       const result = await client.call(sdk.findFooOrBar, ({ query }) =>
@@ -90,12 +87,12 @@ describe('results', () => {
       return `found-${foo}` as const
     }
     const routes = {
-      getContextFoo: service.makeProcedure('query', getContextFoo),
+      getContextFoo: service.makeProcedure(getContextFoo),
     }
     // You have to use routes!!
     const handler = server.makeRouter(routes)
     await makeServer(handler, async (url) => {
-      const sdk = client.makeInstructions<typeof routes>({
+      const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })
       const result = await client.call(sdk.getContextFoo, ({ query }) =>

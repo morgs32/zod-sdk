@@ -3,7 +3,7 @@ import styles from './page.module.css'
 import { client } from 'zod-sdk/client'
 import { IRoutes } from './routes'
 
-const sdk = client.makeInstructions<IRoutes>({
+const sdk = client.makeInterface<IRoutes>({
   baseUrl: 'http://localhost:3000/api/sdk',
 })
 

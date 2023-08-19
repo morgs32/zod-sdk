@@ -1,36 +1,59 @@
+import { IContextFn } from 'internal/dist'
 import { JsonValue } from 'type-fest'
 import {
   Func,
   IHandler,
-  IMapInterface,
   InvalidJsonOrMissingSchemas,
   ISchemas,
-  IType,
+  IRPCType,
 } from 'zod-sdk/internal'
 
-export function makeProcedure<
-  T extends IType,
-  F extends Func,
-  S extends ISchemas<F>,
->(type: T, procedure: F, schemas: S): IHandler<F, S, T>
-export function makeProcedure<T extends IType, F extends Func>(
-  type: T,
-  procedure: F
+type IParameterInterfaceFix<T> = T extends {}
+  ? {
+      [P in keyof T]: T[P]
+    }
+  : T
+
+export function makeProcedure<F extends Func, T extends IRPCType = 'query'>(
+  fn: F
 ): F extends Func<undefined>
   ? IHandler<F, undefined, T>
   : F extends Func<infer P>
-  ? IMapInterface<P> extends JsonValue
+  ? IParameterInterfaceFix<P> extends JsonValue
     ? IHandler<F, undefined, T>
     : InvalidJsonOrMissingSchemas
   : never
 export function makeProcedure<
-  T extends IType,
   F extends Func,
   S extends ISchemas<F>,
->(type: T, procedure: F, schemas?: S) {
+  M extends IContextFn,
+  T extends IRPCType = 'query',
+>(
+  fn: F,
+  options: {
+    type?: T
+    schemas?: S
+    makeContext?: M
+    middleware?: any // TODO: fix
+  }
+): IHandler<F, S, T>
+export function makeProcedure<
+  T extends IRPCType,
+  F extends Func,
+  S extends ISchemas<F>,
+  M extends IContextFn,
+>(
+  fn: F,
+  options?: {
+    type?: T
+    schemas?: S
+    makeContext?: M
+    middleware?: any // TODO: fix
+  }
+): IHandler {
   return {
-    procedure,
-    schemas,
-    type,
+    fn,
+    type: 'query',
+    ...options,
   }
 }

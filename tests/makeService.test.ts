@@ -4,7 +4,7 @@ import { server } from 'zod-sdk/server'
 import { callHandler } from 'server/src/callHandler'
 
 describe('makeService', () => {
-  it('works', async () => {
+  it('throws error in makeContext', async () => {
     const service = server.makeService({
       makeContext: async () => {
         okrs.strict(() => {
@@ -15,7 +15,7 @@ describe('makeService', () => {
       },
     })
 
-    const handler = service.makeProcedure('query', async () => {
+    const handler = service.makeProcedure(async () => {
       return 'hello'
     })
 
@@ -26,7 +26,25 @@ describe('makeService', () => {
     )
   })
 
-  it.skip('check types', async () => {
+  it('hmm', async () => {
+    const service = server.makeService({
+      makeContext: async () => {
+        return {
+          foo: 'bar',
+        } as const
+      },
+    })
+
+    const handler = service.makeProcedure(async function (this) {
+      return this.useCtx()
+    })
+
+    expect(
+      await callHandler(handler, new Request('http://localhost:3000'))
+    ).toMatchInlineSnapshot()
+  })
+
+  it('mockCtx', async () => {
     const service = server.makeService({
       middleware: async (req: Request) => {
         expect(req).toBeTruthy()
@@ -39,15 +57,21 @@ describe('makeService', () => {
       },
     })
 
-    const a = service.mockCtx(
+    const a = await service.mockCtx(
       {
         foo: 'baz',
       },
-      async () => {}
+      async function fn(this) {
+        return this.useCtx()
+      }
     )
-    expect(a).toBeTruthy()
+    expect(a).toMatchInlineSnapshot(`
+      {
+        "foo": "baz",
+      }
+    `)
 
-    const handler = service.makeProcedure('query', async () => {
+    const handler = service.makeProcedure(async () => {
       return 'hello'
     })
     expect(handler).toBeTruthy()

@@ -18,8 +18,7 @@
   },
   "dependencies": {
     "buffer": "*",
-    "raw-body": "*",
-    "zod-to-json-schema": "^3.21.4"
+    "raw-body": "*"
   },
   "peerDependencies": {
     "zod-sdk": "*"

@@ -3,13 +3,14 @@ import { makeServer } from './listen'
 import z from 'zod'
 
 const addYear = server.makeProcedure(
-  'query',
   async function (date: Date) {
     return new Date(date.getFullYear() + 1, date.getMonth(), date.getDate())
   },
   {
-    parameter: z.date(),
-    payload: z.date(),
+    schemas: {
+      parameter: z.date(),
+      payload: z.date(),
+    },
   }
 )
 
@@ -18,20 +19,20 @@ interface Props {
 }
 
 const somethingAndTuples = server.makeProcedure(
-  'query',
   async function (_: Props) {
     return [[new Date(), 1]]
   },
   {
-    parameter: z.object({
-      foo: z.literal('bar'),
-    }),
-    payload: z.array(z.tuple([z.date(), z.number()])),
+    schemas: {
+      parameter: z.object({
+        foo: z.literal('bar'),
+      }),
+      payload: z.array(z.tuple([z.date(), z.number()])),
+    },
   }
 )
 
 const findFoobar = server.makeProcedure(
-  'query',
   async function findFoobar<T extends 'foo' | 'bar'>(
     str: T
   ): Promise<{ id: number; type: T; createdAt: Date }[]> {
@@ -44,14 +45,16 @@ const findFoobar = server.makeProcedure(
     ]
   },
   {
-    parameter: z.union([z.literal('foo'), z.literal('bar')]),
-    payload: z.array(
-      z.object({
-        id: z.number(),
-        type: z.union([z.literal('foo'), z.literal('bar')]),
-        createdAt: z.date(),
-      })
-    ),
+    schemas: {
+      parameter: z.union([z.literal('foo'), z.literal('bar')]),
+      payload: z.array(
+        z.object({
+          id: z.number(),
+          type: z.union([z.literal('foo'), z.literal('bar')]),
+          createdAt: z.date(),
+        })
+      ),
+    },
   }
 )
 export const routes = {
@@ -68,7 +71,7 @@ describe('results', () => {
   it('with http server', async () => {
     const router = server.makeRouter(routes)
     await makeServer(router, async (url) => {
-      const sdk = server.makeInstructions<typeof routes>({
+      const sdk = server.makeInterface<typeof routes>({
         baseUrl: url,
       })
       const result = await server.call(

@@ -16,11 +16,14 @@ describe('useQuery', () => {
     const handler = server.makeRouter(routes)
 
     await makeServer(handler, async (url) => {
-      const sdk = client.makeInstructions<typeof routes>({
+      const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })
       const { result } = renderHook(() =>
-        client.useQuery(sdk.hello, (hello) => hello())
+        client.useQuery([sdk.hello, 'foobar'], (hello, foobar) => {
+          expect(foobar).toEqual('foobar')
+          return hello()
+        })
       )
       await waitFor(() => expect(result.current.data).toEqual('world'))
     })

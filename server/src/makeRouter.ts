@@ -18,7 +18,7 @@ export interface IRouter {
 }
 
 function isHandler(handler: any): handler is IHandler {
-  return typeof handler.procedure === 'function'
+  return typeof handler.fn === 'function'
 }
 
 export function makeRouter<R extends IRoutes>(
@@ -57,9 +57,8 @@ export function makeRouter<R extends IRoutes>(
         }
         if (typeof found === 'function') {
           return {
-            procedure: found,
+            fn: found,
             schemas: undefined,
-            middleware: undefined,
             type: req.method === 'GET' ? 'query' : 'command',
           }
         }
