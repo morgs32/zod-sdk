@@ -1,47 +1,52 @@
-import { IContextFn } from 'internal/dist'
 import { JsonValue } from 'type-fest'
-import {
-  Func,
-  IHandler,
-  InvalidJsonOrMissingSchemas,
-  ISchemas,
-  IRPCType,
-} from 'zod-sdk/internal'
+import { IFunc, IRPCType, ISchemas, IContextFn, IProcedure } from './types'
 
-type IParameterInterfaceFix<T> = T extends {}
-  ? {
-      [P in keyof T]: T[P]
-    }
-  : T
+/**
+ * If you don't pass schemas to makeQuery or makeComment,
+ * then your argument needs to be JSON compatible (no dates)
+ */
+export interface ValidJsonOrSchemasRequired {}
 
-export function makeProcedure<F extends Func, T extends IRPCType = 'query'>(
+interface IProps<
+  F extends IFunc,
+  S extends ISchemas<F> | undefined,
+  M extends IContextFn | undefined,
+  T extends IRPCType = 'query',
+> {
+  type?: T
+  schemas?: S
+  makeContext?: M
+  middleware?: any // TODO: fix
+}
+
+export function makeProcedure<F extends IFunc>(
   fn: F
-): F extends Func<undefined>
-  ? IHandler<F, undefined, T>
-  : F extends Func<infer P>
-  ? IParameterInterfaceFix<P> extends JsonValue
-    ? IHandler<F, undefined, T>
-    : InvalidJsonOrMissingSchemas
+): F extends IFunc<infer P>
+  ? P extends JsonValue[]
+    ? IProcedure<F, undefined, 'query'>
+    : ValidJsonOrSchemasRequired
   : never
 export function makeProcedure<
-  F extends Func,
-  S extends ISchemas<F>,
-  M extends IContextFn,
+  F extends IFunc,
+  S extends ISchemas<F> | undefined,
+  M extends IContextFn | undefined,
+  O extends IProps<F, S, M, T>,
   T extends IRPCType = 'query',
 >(
   fn: F,
-  options: {
-    type?: T
-    schemas?: S
-    makeContext?: M
-    middleware?: any // TODO: fix
-  }
-): IHandler<F, S, T>
+  options?: O
+): 'schemas' extends keyof O
+  ? IProcedure<F, S, T>
+  : F extends IFunc<infer P>
+  ? P extends JsonValue[]
+    ? IProcedure<F, S, T>
+    : ValidJsonOrSchemasRequired
+  : never
 export function makeProcedure<
-  T extends IRPCType,
-  F extends Func,
-  S extends ISchemas<F>,
-  M extends IContextFn,
+  F extends IFunc,
+  S extends ISchemas<F> | undefined,
+  M extends IContextFn | undefined,
+  T extends IRPCType = 'query',
 >(
   fn: F,
   options?: {
@@ -50,10 +55,16 @@ export function makeProcedure<
     makeContext?: M
     middleware?: any // TODO: fix
   }
-): IHandler {
+): S extends undefined
+  ? F extends IFunc<infer P>
+    ? P extends JsonValue[]
+      ? IProcedure<F, S, T>
+      : ValidJsonOrSchemasRequired
+    : never
+  : IProcedure<F, S, T> {
   return {
     fn,
-    type: 'query',
+    type: 'query' as T,
     ...options,
   }
 }

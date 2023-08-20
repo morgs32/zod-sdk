@@ -1,8 +1,8 @@
 import {
   IBaseRPC,
   IRequestOptions,
-  IInterfaceHandler,
-  Func,
+  IInterfaceProcedure,
+  IFunc,
   ISchemas,
   IRPCType,
   ICompleteRPC,
@@ -16,17 +16,17 @@ export type IMaybeJsonified<
 > = S extends undefined ? Promise<Jsonify<Awaited<R>>> : R
 
 export function call<
-  F extends Func,
+  F extends IFunc,
   S extends ISchemas | undefined,
   T extends IRPCType,
   R extends ReturnType<F>,
 >(
-  handler: IInterfaceHandler<F, S, T>,
+  procedure: IInterfaceProcedure<F, S, T>,
   fn: T extends 'query' ? (bag: { query: F }) => R : (bag: { command: F }) => R,
   options?: IRequestOptions
 ) {
-  // Remember, handler is actually a proxy function that makes an RPC
-  const makeRPC = handler as any as (...args: any[]) => IBaseRPC
+  // Remember, procedure is actually a proxy function that makes an RPC
+  const makeRPC = procedure as any as (...args: any[]) => IBaseRPC
   const curry =
     (type: IRPCType) =>
     (...args: any[]) => ({ ...makeRPC(...args), type })

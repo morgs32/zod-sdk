@@ -1,7 +1,7 @@
 import { z } from 'zod'
 import { okrs } from 'okrs'
 import { server } from 'zod-sdk/server'
-import { callHandler } from 'server/src/callHandler'
+import { callProcedure } from 'server/src/callProcedure'
 
 describe('makeService', () => {
   it('throws error in makeContext', async () => {
@@ -15,12 +15,12 @@ describe('makeService', () => {
       },
     })
 
-    const handler = service.makeProcedure(async () => {
+    const procedure = service.makeProcedure(async () => {
       return 'hello'
     })
 
     await expect(() =>
-      callHandler(handler, new Request('http://localhost:3000'))
+      callProcedure(procedure, new Request('http://localhost:3000'))
     ).rejects.toThrowErrorMatchingInlineSnapshot(
       '"x-lhc-workspace-key header is required"'
     )
@@ -35,13 +35,24 @@ describe('makeService', () => {
       },
     })
 
-    const handler = service.makeProcedure(async function (this) {
-      return this.useCtx()
+    const procedure = service.makeProcedure(async function (str: string) {
+      return {
+        foo: this.useCtx().foo,
+        str,
+      }
     })
 
-    expect(
-      await callHandler(handler, new Request('http://localhost:3000'))
-    ).toMatchInlineSnapshot()
+    expect(await callProcedure(procedure, new Request('http://localhost:3000')))
+      .toMatchInlineSnapshot(`
+      {
+        "included": [],
+        "payload": {
+          "foo": "bar",
+          "str": undefined,
+        },
+        "schema": undefined,
+      }
+    `)
   })
 
   it('mockCtx', async () => {
@@ -71,9 +82,9 @@ describe('makeService', () => {
       }
     `)
 
-    const handler = service.makeProcedure(async () => {
+    const procedure = service.makeProcedure(async () => {
       return 'hello'
     })
-    expect(handler).toBeTruthy()
+    expect(procedure).toBeTruthy()
   })
 })

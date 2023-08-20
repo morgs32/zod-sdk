@@ -1,16 +1,15 @@
-import { IHandler, IResult } from 'zod-sdk/internal'
+import { IProcedure, IRequestType, IResult } from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
-import { IncomingMessage } from 'http'
 import { parseBody } from './parseBody'
 import { makeJsonSchema, parseJsonSchema } from 'zod-sdk/schemas'
 
-export async function callHandler(
-  handler: IHandler,
-  req: IncomingMessage | Request
+export async function callProcedure(
+  procedure: IProcedure,
+  req: IRequestType
 ): Promise<IResult | Response> {
   let context
   try {
-    context = handler.makeContext && (await handler.makeContext(req))
+    context = procedure.makeContext && (await procedure.makeContext(req))
   } catch (e) {
     throw e
   }
@@ -39,8 +38,8 @@ export async function callHandler(
           } else {
             body = await parseBody(req)
           }
-          if (!body.input && handler.schemas) {
-            const schemas = handler.schemas
+          if (!body.input && procedure.schemas) {
+            const schemas = procedure.schemas
             input = parseJsonSchema(
               makeJsonSchema(schemas.parameter) as any
             ).parse(body)
@@ -58,14 +57,14 @@ export async function callHandler(
         }
       }
 
-      const payload = await handler.fn(input)
+      const payload = await procedure.fn(input)
       if (payload instanceof Response) {
         return payload
       }
 
       return {
         payload,
-        schema: handler.schemas && makeJsonSchema(handler.schemas.payload),
+        schema: procedure.schemas && makeJsonSchema(procedure.schemas.payload),
         included: [],
       }
     }

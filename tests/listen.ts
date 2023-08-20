@@ -15,10 +15,10 @@ export const listen = (
   })
 
 export async function makeServer(
-  handler: http.RequestListener,
+  procedure: http.RequestListener,
   cb: (url: string) => any
 ) {
-  const srv = http.createServer(handler)
+  const srv = http.createServer(procedure)
   const url = await listen(srv)
   map.set(srv, url)
   await cb(url)

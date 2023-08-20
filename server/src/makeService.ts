@@ -1,8 +1,13 @@
-import { IncomingMessage } from 'http'
-import { IContextFn, IMiddlewareFn, IRPCType, ISchemas } from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
-import { makeProcedure } from './makeProcedure'
 import { makeRouter } from './makeRouter'
+import {
+  IRequestType,
+  IMiddlewareFn,
+  IContextFn,
+  IProcedure,
+  IRPCType,
+  ISchemas,
+} from './types'
 
 type IServiceFunc<S extends any = any, I extends any = any> = (
   this: S,
@@ -10,7 +15,7 @@ type IServiceFunc<S extends any = any, I extends any = any> = (
 ) => Promise<any>
 
 type IMakeProcedure<
-  R extends IncomingMessage | Request = IncomingMessage | Request,
+  R extends IRequestType = IRequestType,
   C extends any = any,
 > = {
   <
@@ -26,10 +31,11 @@ type IMakeProcedure<
       makeContext?: M
       middleware?: any // TODO: fix
     }
-  ): ReturnType<typeof makeProcedure<F, T>>
+  ): IProcedure<F, S, T>
 }
+
 export interface IService<
-  R extends IncomingMessage | Request = IncomingMessage | Request,
+  R extends IRequestType = IRequestType,
   C extends any = any,
 > {
   middleware?: IMiddlewareFn<R>
@@ -40,30 +46,26 @@ export interface IService<
   mockCtx: (ctx: Awaited<C>, fn: (this: this) => Promise<any>) => Promise<any>
 }
 
-export function makeService<R extends IncomingMessage | Request, C extends any>(
+export function makeService<R extends IRequestType, C extends any>(
   options: {
     middleware?: IMiddlewareFn<R>
     makeContext?: IContextFn<R, C>
   } = {}
 ): IService<R, C> {
   const { middleware, makeContext } = options
-
   return {
     middleware,
     makeContext,
-    makeProcedure: function makeProcedure(fn, options) {
-      return makeProcedure(fn.bind(this), {
+    makeProcedure: function (this: IService<R, C>, fn, options) {
+      return {
+        fn: fn.bind(this),
+        type: 'query',
         makeContext,
         middleware,
         ...options,
-      })
-    },
-    makeRouter: function (
-      this: IService<R, C>,
-      ...args: Parameters<typeof makeRouter>
-    ) {
-      return makeRouter(...args)
-    },
+      }
+    } as IService<R, C>['makeProcedure'],
+    makeRouter,
     useCtx: function useCtx() {
       return asyncLocalStorage.getStore() as Awaited<C>
     },

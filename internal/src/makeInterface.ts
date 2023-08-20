@@ -1,20 +1,12 @@
-import {
-  Func,
-  IHandler,
-  IRoutes,
-  ISchemas,
-  IRPCType,
-  InvalidJsonOrMissingSchemas,
-} from 'zod-sdk/internal'
 import { makeInnerProxy } from './makeInnerProxy'
-import { JsonValue } from 'type-fest'
+import { IFunc, IProcedure, IRPCType, IRoutes, ISchemas } from 'zod-sdk/server'
 
 export interface IInterfaceOptions {
   baseUrl: string
 }
 
-export interface IInterfaceHandler<
-  F extends Func = Func,
+export interface IInterfaceProcedure<
+  F extends IFunc = IFunc,
   S extends ISchemas<F> | undefined = undefined,
   T extends IRPCType = IRPCType,
 > {
@@ -25,14 +17,8 @@ export interface IInterfaceHandler<
 }
 
 export type IInterface<R extends IRoutes> = {
-  [K in keyof R]: R[K] extends IHandler<infer F, infer S, infer T>
-    ? IInterfaceHandler<F, S, T>
-    : R[K] extends Func<undefined>
-    ? IInterfaceHandler<R[K], undefined, 'query'>
-    : R[K] extends Func<infer P>
-    ? P extends JsonValue
-      ? IInterfaceHandler<R[K], undefined, 'query'>
-      : InvalidJsonOrMissingSchemas
+  [K in keyof R]: R[K] extends IProcedure<infer F, infer S, infer T>
+    ? IInterfaceProcedure<F, S, T>
     : R[K] extends IRoutes
     ? IInterface<R[K]>
     : never

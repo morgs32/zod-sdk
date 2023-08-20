@@ -132,7 +132,7 @@ const router = server.makeRouter(routes)
 export type Routes = typeof routes
 ```
 
-That `router` returned from `server.makeRouter()` is a request handler. You can use it directly or in NextJS you can do this:
+That `router` returned from `server.makeRouter()` is a request procedure. You can use it directly or in NextJS you can do this:
 
 ```
 export { GET, POST } from server.makeRouter(routes)
@@ -142,7 +142,7 @@ export { GET, POST } from server.makeRouter(routes)
 
 Client-side:
 1. Pass your routes type object to `client.makeInterface(options: Options)`
-2. Pass the appropriate handler to `client.call()` or `client.mutate()`
+2. Pass the appropriate procedure to `client.call()` or `client.mutate()`
 
 
 ```
@@ -233,10 +233,10 @@ See [Make a dispatcher](#on-the-client-make-a-dispatcher)
 ## client.call
 See [Getting Started](#getting-started).
 
-Calling `client.call` with a handler you created with `makeQuery` will throw a typescript error.
+Calling `client.call` with a procedure you created with `makeQuery` will throw a typescript error.
 ## client.command
 
-Works just like `client.call` except you pass it command handlers. 
+Works just like `client.call` except you pass it command procedures. 
 
 # FAQ
 

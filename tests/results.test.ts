@@ -1,41 +1,44 @@
-import { server } from 'zod-sdk/server'
-import { client } from 'zod-sdk/client'
+import { server, IRoutes } from 'zod-sdk/server'
 import { makeServer } from './listen'
-import { IHandler, IRoutes } from 'zod-sdk/internal'
+import { client } from 'zod-sdk/client'
 
-const findMany = server.makeProcedure(async function findMany<
-  T extends 'foo' | 'bar',
->(str: T): Promise<{ id: number; type: T; createdAt: Date }[]> {
+async function findMany<T extends 'foo' | 'bar'>(this: typeof service, str: T) {
   return [
     {
       id: 1,
       type: str,
+      foo: this.useCtx().foo,
       createdAt: new Date('2020-01-01'),
     },
   ]
+}
+
+const service = server.makeService({
+  makeContext: () => ({
+    foo: 'bar',
+  }),
 })
+
+/**
+ * So how do we make sure a function doesn't have this parameter!!
+ */
+findMany.procedure = server.makeProcedure(findMany) // TODO: Should throw
 
 const routes = {
   widgets: {
-    findMany,
+    findMany: findMany.procedure,
+    foobar: server.makeProcedure(async (foo: string) => foo),
   },
 } satisfies IRoutes
 
 describe('results', () => {
-  it('with interface and no schemas', () => {
-    interface Props {
-      foo: 'bar'
-    }
-
-    const findMany: IHandler = server.makeProcedure(async (props: Props) => {
-      return props.foo
-    })
-    expect(findMany).toBeDefined()
-  })
-
   it('with http server', async () => {
-    const handler = server.makeRouter(routes)
-    await makeServer(handler, async (url) => {
+    const procedure = server.makeRouter({
+      widgets: {
+        findMany: findMany.procedure,
+      },
+    }) // TODO: Needs to require service.makeRouter
+    await makeServer(procedure, async (url) => {
       const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })
@@ -58,8 +61,8 @@ describe('results', () => {
       findFooOrBar: server.makeProcedure(findFooOrBar),
     }
     // You have to use routes!!
-    const handler = server.makeRouter(routes)
-    await makeServer(handler, async (url) => {
+    const procedure = server.makeRouter(routes)
+    await makeServer(procedure, async (url) => {
       const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })
@@ -71,7 +74,7 @@ describe('results', () => {
     })
   })
 
-  it.only('with context', async () => {
+  it('with context', async () => {
     const service = server.makeService({
       makeContext: (): { foo: 'bar' } => ({
         foo: 'bar',
@@ -90,8 +93,8 @@ describe('results', () => {
       getContextFoo: service.makeProcedure(getContextFoo),
     }
     // You have to use routes!!
-    const handler = server.makeRouter(routes)
-    await makeServer(handler, async (url) => {
+    const procedure = server.makeRouter(routes)
+    await makeServer(procedure, async (url) => {
       const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })

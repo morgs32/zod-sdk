@@ -13,9 +13,9 @@ const routes = {
 
 describe('useQuery', () => {
   it('works', async () => {
-    const handler = server.makeRouter(routes)
+    const procedure = server.makeRouter(routes)
 
-    await makeServer(handler, async (url) => {
+    await makeServer(procedure, async (url) => {
       const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })
