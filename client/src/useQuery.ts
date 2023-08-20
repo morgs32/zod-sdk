@@ -1,6 +1,4 @@
 import {
-  IFunc,
-  IBaseRPC,
   IInterfaceProcedure,
   IMaybeJsonified,
   callRPC,
@@ -8,7 +6,7 @@ import {
 } from 'zod-sdk/internal'
 import { SWRConfiguration, SWRResponse } from 'swr'
 import useSWR from 'swr'
-import { ISchemas } from 'internal/dist'
+import { IBaseRPC, IFunc, ISchemas } from 'zod-sdk/server'
 
 type IFalsy = null | undefined | false | ''
 
@@ -19,7 +17,10 @@ export function useQuery<
   A extends any[],
   B extends A,
 >(
-  key: IFalsy | IInterfaceProcedure<F, S> | [IInterfaceProcedure<F, S>, ...A],
+  key:
+    | IFalsy
+    | IInterfaceProcedure<F, S, 'query'>
+    | [IInterfaceProcedure<F, S, 'query'>, ...A],
   fetcher: (query: F, ...args: B) => R,
   options?: {
     onSuccess?: (data: Awaited<IMaybeJsonified<S, R>>) => void
@@ -31,13 +32,16 @@ export function useQuery<
   R extends ReturnType<F>,
   A extends any[],
 >(
-  key: IFalsy | IInterfaceProcedure<F, S> | [IInterfaceProcedure<F, S>, ...A],
+  key:
+    | IFalsy
+    | IInterfaceProcedure<F, S, 'query'>
+    | [IInterfaceProcedure<F, S, 'query'>, ...A],
   fetcher: (query: F, ...args: A) => R,
   options?: {
     onSuccess?: (data: Awaited<IMaybeJsonified<S, R>>) => void
   } & Omit<SWRConfiguration, 'onSuccess'>
 ): SWRResponse<Awaited<IMaybeJsonified<S, R>>> {
-  let procedure: IInterfaceProcedure<F, S> | undefined
+  let procedure: IInterfaceProcedure<F, S, 'query'> | undefined
   if (Array.isArray(key)) {
     procedure = key[0]
   } else if (key) {

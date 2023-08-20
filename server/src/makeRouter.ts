@@ -1,12 +1,6 @@
-import {
-  IProcedure,
-  IMiddlewareFn,
-  IRequestType,
-  IRoutes,
-  IOnlyFunc,
-} from 'zod-sdk/internal'
 import { IncomingMessage, ServerResponse } from 'http'
 import { callProcedure } from './callProcedure'
+import { IMiddlewareFn, IProcedure, IRequestType, IRoutes } from './types'
 
 export interface IOptions {
   onError?: (err: any) => void
@@ -25,16 +19,6 @@ export interface IRouter {
 
 function isProcedure(procedure: any): procedure is IProcedure {
   return typeof procedure.fn === 'function'
-}
-
-type ICheckRoutes<R extends IRoutes> = {
-  [K in keyof R]: R[K] extends IProcedure
-    ? R[K]
-    : R[K] extends IOnlyFunc<[]>
-    ? IProcedure<R[K]>
-    : R[K] extends IOnlyFunc
-    ? IProcedure<R[K]>
-    : never
 }
 
 export function makeRouter<R extends IRoutes>(

@@ -1,14 +1,14 @@
-import {
-  IBaseRPC,
-  IRequestOptions,
-  IInterfaceProcedure,
-  IFunc,
-  ISchemas,
-  IRPCType,
-  ICompleteRPC,
-} from 'zod-sdk/internal'
+import { IInterfaceProcedure } from 'zod-sdk/internal'
 import { callRPC } from './callRPC'
 import { Jsonify } from 'type-fest'
+import {
+  ISchemas,
+  IFunc,
+  IRPCType,
+  IRequestOptions,
+  IBaseRPC,
+  ICompleteRPC,
+} from 'zod-sdk/server'
 
 export type IMaybeJsonified<
   S extends ISchemas | undefined,

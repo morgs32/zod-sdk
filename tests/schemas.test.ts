@@ -8,7 +8,7 @@ const addYear = server.makeProcedure(
   },
   {
     schemas: {
-      parameter: z.date(),
+      parameters: z.tuple([z.date()]),
       payload: z.date(),
     },
   }
@@ -24,9 +24,11 @@ const somethingAndTuples = server.makeProcedure(
   },
   {
     schemas: {
-      parameter: z.object({
-        foo: z.literal('bar'),
-      }),
+      parameters: z.tuple([
+        z.object({
+          foo: z.literal('bar'),
+        }),
+      ]),
       payload: z.array(z.tuple([z.date(), z.number()])),
     },
   }
@@ -46,7 +48,7 @@ const findFoobar = server.makeProcedure(
   },
   {
     schemas: {
-      parameter: z.union([z.literal('foo'), z.literal('bar')]),
+      parameters: z.tuple([z.union([z.literal('foo'), z.literal('bar')])]),
       payload: z.array(
         z.object({
           id: z.number(),

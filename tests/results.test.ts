@@ -19,10 +19,14 @@ const service = server.makeService({
   }),
 })
 
-/**
- * So how do we make sure a function doesn't have this parameter!!
- */
-findMany.procedure = server.makeProcedure(findMany) // TODO: Should throw
+const anotherService = server.makeService({
+  makeContext: () => ({
+    baz: 'qux',
+  }),
+})
+
+// @ts-expect-error
+findMany.procedure = anotherService.makeProcedure(findMany) // TODO: Should throw
 
 const routes = {
   widgets: {

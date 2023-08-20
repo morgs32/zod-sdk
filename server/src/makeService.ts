@@ -9,12 +9,12 @@ import {
   ISchemas,
 } from './types'
 
-type IServiceFunc<S extends any = any, I extends any = any> = (
+export type IServiceFunc<S extends any = any, I extends any = any> = (
   this: S,
   input: I
 ) => Promise<any>
 
-type IMakeProcedure<
+export type IMakeProcedure<
   R extends IRequestType = IRequestType,
   C extends any = any,
 > = {

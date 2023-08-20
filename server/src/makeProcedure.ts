@@ -1,11 +1,20 @@
 import { JsonValue } from 'type-fest'
-import { IFunc, IRPCType, ISchemas, IContextFn, IProcedure } from './types'
+import {
+  IFunc,
+  IRPCType,
+  ISchemas,
+  IContextFn,
+  IProcedure,
+  IMiddlewareFn,
+} from './types'
+import { IService } from './makeService'
 
 /**
  * If you don't pass schemas to makeQuery or makeComment,
  * then your argument needs to be JSON compatible (no dates)
  */
 export interface ValidJsonOrSchemasRequired {}
+export interface MustMakeProcedureWithService {}
 
 interface IProps<
   F extends IFunc,
@@ -16,12 +25,14 @@ interface IProps<
   type?: T
   schemas?: S
   makeContext?: M
-  middleware?: any // TODO: fix
+  middleware?: IMiddlewareFn
 }
 
-export function makeProcedure<F extends IFunc>(
+export function makeProcedure<F extends IFunc, T extends ThisParameterType<F>>(
   fn: F
-): F extends IFunc<infer P>
+): T extends IService
+  ? MustMakeProcedureWithService
+  : F extends IFunc<infer P>
   ? P extends JsonValue[]
     ? IProcedure<F, undefined, 'query'>
     : ValidJsonOrSchemasRequired
@@ -55,13 +66,7 @@ export function makeProcedure<
     makeContext?: M
     middleware?: any // TODO: fix
   }
-): S extends undefined
-  ? F extends IFunc<infer P>
-    ? P extends JsonValue[]
-      ? IProcedure<F, S, T>
-      : ValidJsonOrSchemasRequired
-    : never
-  : IProcedure<F, S, T> {
+): IProcedure {
   return {
     fn,
     type: 'query' as T,

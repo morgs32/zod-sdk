@@ -1,7 +1,7 @@
-import { IProcedure, IRequestType, IResult } from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
 import { parseBody } from './parseBody'
-import { makeJsonSchema, parseJsonSchema } from 'zod-sdk/schemas'
+import { makeJsonSchema } from 'zod-sdk/schemas'
+import { IProcedure, IRequestType, IResult } from './types'
 
 export async function callProcedure(
   procedure: IProcedure,
@@ -39,10 +39,7 @@ export async function callProcedure(
             body = await parseBody(req)
           }
           if (!body.input && procedure.schemas) {
-            const schemas = procedure.schemas
-            input = parseJsonSchema(
-              makeJsonSchema(schemas.parameter) as any
-            ).parse(body)
+            input = procedure.schemas.parameters.parse(body)
             break
           }
           try {
