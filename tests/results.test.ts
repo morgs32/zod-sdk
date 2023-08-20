@@ -1,9 +1,10 @@
 import { server, IRoutes } from 'zod-sdk/server'
 import { makeServer } from './listen'
 import { client } from 'zod-sdk/client'
+import z from 'zod'
 
 async function findMany<T extends 'foo' | 'bar'>(
-  this: Pick<typeof service, 'useCtx'>,
+  this: Pick<typeof fooService, 'useCtx'>,
   str: T
 ) {
   return [
@@ -16,23 +17,40 @@ async function findMany<T extends 'foo' | 'bar'>(
   ]
 }
 
-const service = server.makeService({
+const fooService = server.makeService({
   makeContext: () => ({
     foo: 'bar',
   }),
 })
 
-const anotherService = server.makeService({
+const bazService = server.makeService({
   makeContext: () => ({
     baz: 'qux',
   }),
 })
 
-findMany.procedure = service.makeProcedure(findMany)
+findMany.procedure = fooService.makeProcedure(findMany)
+findMany.withSchemas = fooService.makeProcedure(findMany, {
+  schemas: {
+    parameters: z.tuple([z.enum(['foo', 'bar'])]),
+    payload: z.array(
+      z.object({
+        id: z.number(),
+        type: z.union([z.literal('foo'), z.literal('bar')]),
+        foo: z.string(),
+        createdAt: z.date(),
+      })
+    ),
+  },
+  makeContext: () => ({
+    baz: 'qux',
+  }),
+})
 
 const routes = {
   widgets: {
     findMany: findMany.procedure,
+    findManyWithSchemas: findMany.withSchemas,
     foobar: server.makeProcedure(async (foo: string) => foo),
   },
 } satisfies IRoutes
@@ -40,7 +58,7 @@ const routes = {
 describe('results', () => {
   it('with wrong service', async () => {
     // @ts-expect-error
-    const wrongService = anotherService.makeProcedure(findMany)
+    const wrongService = bazService.makeProcedure(findMany)
     expect(wrongService).toBeDefined()
   })
 
@@ -49,7 +67,7 @@ describe('results', () => {
       widgets: {
         findMany: findMany.procedure,
       },
-    }) // TODO: Needs to require service.makeRouter
+    })
     await makeServer(procedure, async (url) => {
       const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
@@ -58,6 +76,13 @@ describe('results', () => {
         procedure.query('foo')
       )
       expect(result[0].createdAt).toMatchInlineSnapshot(
+        '"2020-01-01T00:00:00.000Z"'
+      )
+      const anotherResult = await client.call(
+        sdk.widgets.findManyWithSchemas,
+        (procedure) => procedure.query('foo')
+      )
+      expect(anotherResult[0].createdAt).toMatchInlineSnapshot(
         '"2020-01-01T00:00:00.000Z"'
       )
     })

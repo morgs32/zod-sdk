@@ -7,27 +7,12 @@ import {
   IProcedure,
   IRPCType,
   ISchemas,
-  IFunc,
 } from './types'
 
 export type IServiceFunc<S extends any = any, I extends any = any> = (
   this: S,
   input: I
 ) => Promise<any>
-
-interface IOptions<
-  F extends IFunc,
-  S extends ISchemas<F> | undefined,
-  R extends IRequestType,
-  C extends any,
-  M extends IContextFn<R, C> | undefined,
-  T extends IRPCType = 'query',
-> {
-  type?: T
-  schemas?: S
-  makeContext?: M
-  middleware?: IMiddlewareFn
-}
 
 export type IMakeProcedure<
   R extends IRequestType = IRequestType,
@@ -38,21 +23,28 @@ export type IMakeProcedure<
       this: Pick<IService<R, C>, 'useCtx'>,
       ...args: any[]
     ) => Promise<any>,
-    S extends ISchemas<F> | undefined,
-    T extends IRPCType = 'query',
   >(
     fn: F
-  ): IProcedure<F, S, T, C>
+  ): IProcedure<F, undefined, 'query', C>
   <
     F extends IServiceFunc<Pick<IService<R, C>, 'useCtx'>>,
-    S extends ISchemas<F> | undefined,
+    S extends ISchemas<F>,
     M extends IContextFn,
-    O extends IOptions<F, S, R, C, M, T>,
     T extends IRPCType = 'query',
   >(
     fn: F,
-    options?: O
-  ): IProcedure<F, S, T, M>
+    options: {
+      type?: T
+      schemas?: S
+      makeContext?: M
+      middleware?: IMiddlewareFn
+    }
+  ): IProcedure<
+    F,
+    S,
+    T,
+    C & (M extends IContextFn<IRequestType, infer C2> ? C2 : {})
+  >
 }
 
 export interface IService<
