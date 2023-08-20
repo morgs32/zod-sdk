@@ -20,9 +20,12 @@ export function call<
   S extends ISchemas | undefined,
   T extends IRPCType,
   R extends ReturnType<F>,
+  C extends any = any,
 >(
-  procedure: IInterfaceProcedure<F, S, T>,
-  fn: T extends 'query' ? (bag: { query: F }) => R : (bag: { command: F }) => R,
+  procedure: IInterfaceProcedure<F, S, T, C>,
+  fn: T extends 'query'
+    ? (bag: { query: F; useCtx: () => C }) => R
+    : (bag: { command: F; useCtx: () => C }) => R,
   options?: IRequestOptions
 ) {
   // Remember, procedure is actually a proxy function that makes an RPC
@@ -33,6 +36,7 @@ export function call<
   const rpc = fn({
     query: curry('query') as any as F,
     command: curry('command') as any as F,
+    useCtx: procedure.useCtx, // TODO: Alert user not to use this
   }) as ICompleteRPC
   return callRPC(rpc, options) as IMaybeJsonified<S, R>
 }

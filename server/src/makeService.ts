@@ -7,6 +7,7 @@ import {
   IProcedure,
   IRPCType,
   ISchemas,
+  IFunc,
 } from './types'
 
 export type IServiceFunc<S extends any = any, I extends any = any> = (
@@ -14,24 +15,44 @@ export type IServiceFunc<S extends any = any, I extends any = any> = (
   input: I
 ) => Promise<any>
 
+interface IOptions<
+  F extends IFunc,
+  S extends ISchemas<F> | undefined,
+  R extends IRequestType,
+  C extends any,
+  M extends IContextFn<R, C> | undefined,
+  T extends IRPCType = 'query',
+> {
+  type?: T
+  schemas?: S
+  makeContext?: M
+  middleware?: IMiddlewareFn
+}
+
 export type IMakeProcedure<
   R extends IRequestType = IRequestType,
   C extends any = any,
 > = {
   <
-    F extends IServiceFunc<IService<R, C>>,
-    S extends ISchemas<F>,
-    M extends IContextFn<R, C>,
+    F extends (
+      this: Pick<IService<R, C>, 'useCtx'>,
+      ...args: any[]
+    ) => Promise<any>,
+    S extends ISchemas<F> | undefined,
+    T extends IRPCType = 'query',
+  >(
+    fn: F
+  ): IProcedure<F, S, T, C>
+  <
+    F extends IServiceFunc<Pick<IService<R, C>, 'useCtx'>>,
+    S extends ISchemas<F> | undefined,
+    M extends IContextFn,
+    O extends IOptions<F, S, R, C, M, T>,
     T extends IRPCType = 'query',
   >(
     fn: F,
-    options?: {
-      type?: T
-      schemas?: S
-      makeContext?: M
-      middleware?: any // TODO: fix
-    }
-  ): IProcedure<F, S, T>
+    options?: O
+  ): IProcedure<F, S, T, M>
 }
 
 export interface IService<
@@ -56,7 +77,11 @@ export function makeService<R extends IRequestType, C extends any>(
   return {
     middleware,
     makeContext,
-    makeProcedure: function (this: IService<R, C>, fn, options) {
+    makeProcedure: function (
+      this: Pick<IService<R, C>, 'useCtx'>,
+      fn,
+      options
+    ) {
       return {
         fn: fn.bind(this),
         type: 'query',

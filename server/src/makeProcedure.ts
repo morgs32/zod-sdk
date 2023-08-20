@@ -16,7 +16,7 @@ import { IService } from './makeService'
 export interface ValidJsonOrSchemasRequired {}
 export interface MustMakeProcedureWithService {}
 
-interface IProps<
+interface IOptions<
   F extends IFunc,
   S extends ISchemas<F> | undefined,
   M extends IContextFn | undefined,
@@ -41,7 +41,7 @@ export function makeProcedure<
   F extends IFunc,
   S extends ISchemas<F> | undefined,
   M extends IContextFn | undefined,
-  O extends IProps<F, S, M, T>,
+  O extends IOptions<F, S, M, T>,
   T extends IRPCType = 'query',
 >(
   fn: F,

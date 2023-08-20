@@ -2,7 +2,10 @@ import { server, IRoutes } from 'zod-sdk/server'
 import { makeServer } from './listen'
 import { client } from 'zod-sdk/client'
 
-async function findMany<T extends 'foo' | 'bar'>(this: typeof service, str: T) {
+async function findMany<T extends 'foo' | 'bar'>(
+  this: Pick<typeof service, 'useCtx'>,
+  str: T
+) {
   return [
     {
       id: 1,
@@ -25,8 +28,7 @@ const anotherService = server.makeService({
   }),
 })
 
-// @ts-expect-error
-findMany.procedure = anotherService.makeProcedure(findMany) // TODO: Should throw
+findMany.procedure = service.makeProcedure(findMany)
 
 const routes = {
   widgets: {
@@ -36,6 +38,12 @@ const routes = {
 } satisfies IRoutes
 
 describe('results', () => {
+  it('with wrong service', async () => {
+    // @ts-expect-error
+    const wrongService = anotherService.makeProcedure(findMany)
+    expect(wrongService).toBeDefined()
+  })
+
   it('with http server', async () => {
     const procedure = server.makeRouter({
       widgets: {
@@ -46,8 +54,8 @@ describe('results', () => {
       const sdk = client.makeInterface<typeof routes>({
         baseUrl: url,
       })
-      const result = await client.call(sdk.widgets.findMany, ({ query }) =>
-        query('foo')
+      const result = await client.call(sdk.widgets.findMany, (procedure) =>
+        procedure.query('foo')
       )
       expect(result[0].createdAt).toMatchInlineSnapshot(
         '"2020-01-01T00:00:00.000Z"'

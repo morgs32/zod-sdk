@@ -6,5 +6,5 @@ export type IOnlyFunc<A extends JsonValue[] = JsonValue[]> = (
 ) => Promise<any>
 
 export type InferProcedureFn<H extends IInterfaceProcedure> = Awaited<
-  H extends IInterfaceProcedure<infer T> ? T : never
+  H extends IInterfaceProcedure<infer F> ? F : never
 >

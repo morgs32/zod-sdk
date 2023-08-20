@@ -35,10 +35,12 @@ export interface IProcedure<
   F extends IFunc = IFunc,
   S extends ISchemas<F> | undefined = ISchemas<F> | undefined,
   T extends IRPCType = IRPCType,
+  C extends any = any,
+  R extends IRequestType = IRequestType,
 > {
   fn: F
   type: T
-  makeContext?: IContextFn
+  makeContext?: IContextFn<R, C>
   middleware?: IMiddlewareFn<any>
   schemas?: S
 }
