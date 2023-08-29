@@ -1,5 +1,6 @@
 import { server } from 'zod-sdk/server'
 import { callProcedure } from 'server/src/callProcedure'
+import { makeFetchArgs } from 'internal/src/makeFetchArgs'
 
 describe('callProcedure', () => {
   it('works', async () => {
@@ -18,13 +19,24 @@ describe('callProcedure', () => {
       }
     })
 
-    expect(await callProcedure(procedure, new Request('http://localhost:3000')))
-      .toMatchInlineSnapshot(`
+    expect(
+      await callProcedure(
+        procedure,
+        new Request(
+          ...makeFetchArgs({
+            input: ['foo'],
+            type: 'query',
+            path: [],
+            baseUrl: 'https://www.example.com',
+          })
+        )
+      )
+    ).toMatchInlineSnapshot(`
       {
         "included": [],
         "payload": {
-          "foo": "bar",
-          "str": undefined,
+          "hello": "world",
+          "str": "foo",
         },
         "schema": undefined,
       }

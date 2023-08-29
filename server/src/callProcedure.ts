@@ -43,12 +43,6 @@ export async function callProcedure(
           } else {
             body = await parseBody(req)
           }
-          if (!body.input && fn.parameters) {
-            const _z = z
-            _z.date = z.coerce.date
-            input = fn.parameters(z).parse(body)
-            break
-          }
           try {
             input = JSON.parse(body.input)
             break
@@ -60,7 +54,12 @@ export async function callProcedure(
           throw new Error(`Method not supported: ${method}`)
         }
       }
-
+      if (fn.parameters) {
+        const _z = Object.assign({}, z, {
+          date: z.coerce.date,
+        })
+        input = fn.parameters(_z).parse(input)
+      }
       const payload = await fn.call(
         {
           useCtx: () => context,

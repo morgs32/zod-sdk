@@ -20,7 +20,7 @@ export function makeInnerProxy(props: IProps) {
         path: [...path, key],
       })
     },
-    apply(_1, _2, ...args): IBaseRPC {
+    apply(_1, _2, args): IBaseRPC {
       return {
         input: args,
         path,

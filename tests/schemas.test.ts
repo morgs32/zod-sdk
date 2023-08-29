@@ -22,7 +22,7 @@ describe('results', () => {
       const result = await server.call(sdk.widgets.addYear, ({ query }) =>
         query(new Date('2020-01-01'))
       )
-      expect(result).toMatchInlineSnapshot('2020-01-01T00:00:00.000Z')
+      expect(result).toMatchInlineSnapshot('2020-12-31T05:00:00.000Z')
     })
   })
 })

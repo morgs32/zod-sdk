@@ -56,7 +56,7 @@ export interface IProcedure<
 }
 
 export interface IRoutes {
-  [key: string]: IFunc | IProcedure | IRoutes
+  [key: string]: IProcedure | IRoutes
 }
 
 export interface IBaseRPC<I extends any = any> {

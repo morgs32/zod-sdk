@@ -1,6 +1,5 @@
 import { JsonValue } from 'type-fest'
-import { IFunc } from './types'
-import { IProcedure, IRPCType } from 'server/dist'
+import { IFunc, IProcedure, IRPCType } from './types'
 import { ZodType } from 'zod'
 import { IZod } from './makeSchemas'
 
@@ -29,7 +28,7 @@ type Check<F extends IFunc, T extends IRPCType> = CheckJson<F> extends string
   ? CheckJson<F>
   : CheckThis<F> extends string
   ? CheckThis<F>
-  : IProcedure<F, undefined, T>
+  : IProcedure<F, T>
 
 export function makeQuery<F extends IFunc>(fn: F) {
   return {

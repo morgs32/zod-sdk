@@ -16,7 +16,7 @@ describe('makeService', () => {
     await expect(() =>
       callProcedure(procedure, new Request('http://localhost:3000'))
     ).rejects.toThrowErrorMatchingInlineSnapshot(
-      '"x-lhc-workspace-key header is required"'
+      '"Uncaught exception in makeContext"'
     )
   })
 })

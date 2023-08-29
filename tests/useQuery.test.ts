@@ -1,21 +1,19 @@
 // @vitest-environment jsdom
 import { client } from 'zod-sdk/client'
-import { IRoutes, server } from 'zod-sdk/server'
+import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
 import { waitFor, renderHook } from '@testing-library/react'
 
-const routes = {
-  hello: async () => {
-    return 'world'
-  },
-} satisfies IRoutes
-
 describe('useQuery', () => {
   it('works', async () => {
-    const procedure = server.makeRouter(routes)
+    const router = server.makeRouter({
+      hello: server.makeQuery(async () => {
+        return 'world'
+      }),
+    })
 
-    await makeServer(procedure, async (url) => {
-      const sdk = client.makeInterface<typeof routes>({
+    await makeServer(router, async (url) => {
+      const sdk = client.makeInterface<typeof router.routes>({
         baseUrl: url,
       })
       const { result } = renderHook(() =>
