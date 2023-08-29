@@ -1,54 +1,64 @@
-import { IncomingMessage } from 'http'
-import {
-  Func,
-  IContextFn,
-  IHandler,
-  IMiddlewareFn,
-  ISchemas,
-} from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
+import {
+  IRequestType,
+  IMiddlewareFn,
+  IContextFn,
+  IProcedure,
+  IFunc,
+} from './types'
 
-export function makeService<R extends IncomingMessage | Request, C extends any>(
+export type inferThis<S extends Service<any, any>> = S extends Service<
+  any,
+  infer C
+>
+  ? { useCtx: () => Awaited<C> }
+  : never
+
+export class Service<
+  R extends IRequestType = IRequestType,
+  C extends any = any,
+> {
+  constructor(
+    public options: {
+      middleware?: IMiddlewareFn<R>
+      makeContext?: IContextFn<R, C>
+    } = {}
+  ) {}
+  public mockCtx(ctx: Awaited<C>, fn: () => Promise<any>): Promise<any> {
+    return asyncLocalStorage.run(
+      ctx,
+      fn.bind({
+        useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
+      })
+    )
+  }
+  public makeQuery<F extends IFunc<C>>(fn: F): IProcedure<F, 'query', C, R> {
+    return {
+      fn: fn.bind({
+        useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
+      }) as F,
+      type: 'query',
+      ...this.options,
+    }
+  }
+  public makeCommand<F extends IFunc<C>>(
+    fn: F
+  ): IProcedure<F, 'command', C, R> {
+    return {
+      fn: fn.bind({
+        useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
+      }) as F,
+      type: 'command',
+      ...this.options,
+    }
+  }
+}
+
+export function makeService<R extends IRequestType, C extends any>(
   options: {
     middleware?: IMiddlewareFn<R>
     makeContext?: IContextFn<R, C>
   } = {}
-) {
-  const { middleware, makeContext } = options
-
-  return {
-    makeQuery: function makeQuery<F extends Func>(
-      procedure: F,
-      schemas?: ISchemas<F>
-    ): IHandler<F> {
-      return {
-        procedure,
-        middleware,
-        makeContext,
-        schemas,
-        type: 'query',
-      }
-    },
-    makeCommand: function makeCommand<F extends Func>(
-      procedure: F,
-      schemas?: ISchemas<F>
-    ): IHandler<F> {
-      return {
-        procedure,
-        middleware,
-        makeContext,
-        schemas,
-        type: 'command',
-      }
-    },
-    useCtx: function useCtx() {
-      return asyncLocalStorage.getStore() as Awaited<C>
-    },
-    mockCtx: function mockCtx<T extends any>(
-      ctx: Awaited<C>,
-      fn: () => Promise<T>
-    ): Promise<T> {
-      return asyncLocalStorage.run(ctx, fn)
-    },
-  }
+): Service<R, C> {
+  return new Service(options)
 }

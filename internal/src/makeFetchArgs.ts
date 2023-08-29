@@ -1,4 +1,4 @@
-import { ICompleteRPC, IRequestOptions } from 'zod-sdk/internal'
+import { ICompleteRPC, IRequestOptions } from 'zod-sdk/server'
 
 export function makeFetchArgs(
   rpc: ICompleteRPC,

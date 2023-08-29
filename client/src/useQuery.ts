@@ -1,44 +1,62 @@
 import {
-  IBaseRPC,
-  IDispatcherHandler,
+  IInterfaceProcedure,
   IMaybeJsonified,
   callRPC,
   isRPC,
 } from 'zod-sdk/internal'
 import { SWRConfiguration, SWRResponse } from 'swr'
 import useSWR from 'swr'
+import { IBaseRPC, IFunc } from 'zod-sdk/server'
 
 type IFalsy = null | undefined | false | ''
 
 export function useQuery<
-  D extends IDispatcherHandler,
-  F extends D extends IDispatcherHandler<infer _F> ? _F : never,
-  S extends D extends IDispatcherHandler<any, infer _S> ? _S : never,
+  F extends IFunc,
+  C extends any,
   R extends ReturnType<F>,
-  T extends R | IFalsy,
+  A extends any[],
 >(
-  handler: D,
-  options: {
-    fn: (query: F) => T
-    onSuccess?: (
-      data: Awaited<T extends R ? IMaybeJsonified<S, T> : never>
-    ) => void
+  key:
+    | IFalsy
+    | IInterfaceProcedure<F, 'query', C>
+    | [IInterfaceProcedure<F, 'query', C>, ...A],
+  fetcher: (bag: { query: F; useCtx: () => C }, ...args: A) => R,
+  options?: {
+    onSuccess?: (data: Awaited<IMaybeJsonified<F, R>>) => void
   } & Omit<SWRConfiguration, 'onSuccess'>
-): SWRResponse<Awaited<T extends R ? IMaybeJsonified<S, T> : never>> {
-  const { fn, onSuccess, ...swrConfig } = options
+): SWRResponse<Awaited<IMaybeJsonified<F, R>>> {
+  let procedure: IInterfaceProcedure<F, 'query', C> | undefined
+  if (Array.isArray(key)) {
+    procedure = key[0]
+  } else if (key) {
+    procedure = key
+  }
 
-  const maybeAnRPC = fn(handler as any as F) as any as IBaseRPC | IFalsy
+  const rpc = fetcher(
+    {
+      query: procedure as any as F,
+      useCtx: (): any => {
+        console.error(
+          'Hmm, you should not be calling useCtx from the useQuery() method'
+        )
+        return
+      },
+    },
+    // @ts-ignore
+    ...(Array.isArray(key) ? key.slice(1) : [])
+  ) as any as IBaseRPC | IFalsy
+
+  if (!isRPC(rpc)) {
+    throw new Error('Invalid rpc')
+  }
 
   return useSWR(
-    isRPC(maybeAnRPC) && maybeAnRPC,
+    rpc,
     async (rpc) =>
       callRPC({
         ...rpc,
         type: 'query',
       }),
-    {
-      ...swrConfig,
-      onSuccess,
-    }
+    options
   )
 }

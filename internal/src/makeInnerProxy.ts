@@ -1,4 +1,4 @@
-import { IBaseRPC } from 'zod-sdk/internal'
+import { IBaseRPC } from 'zod-sdk/server'
 
 const noop = () => {}
 
@@ -8,7 +8,7 @@ interface IProps {
 }
 
 export function makeInnerProxy(props: IProps) {
-  const { path = [] } = props
+  const { path = [], baseUrl } = props
 
   const proxy: unknown = new Proxy(noop, {
     get(_obj, key) {
@@ -16,15 +16,15 @@ export function makeInnerProxy(props: IProps) {
         return undefined // Special case for if the proxy is accidentally treated like a PromiseLike (like in `Promise.resolve(proxy)`)
       }
       return makeInnerProxy({
-        ...props,
+        baseUrl,
         path: [...path, key],
       })
     },
-    apply(_1, _2, [input]): IBaseRPC {
+    apply(_1, _2, args): IBaseRPC {
       return {
-        input,
+        input: args,
         path,
-        ...props,
+        baseUrl,
       }
     },
   })

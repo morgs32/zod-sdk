@@ -15,8 +15,8 @@ Zod SDK is an RPC library. Like TRPC it's going to reflect types from your backe
   - [server.makeRouter](#servermakerouter)
   - [server.makeQuery](#servermakequery)
 - [client](#client)
-  - [client.makeDispatcher](#clientmakedispatcher)
-  - [client.query](#clientquery)
+  - [client.makeInterface](#clientmakedispatcher)
+  - [client.call](#clientcall)
   - [client.command](#clientcommand)
 - [FAQ](#faq)
 - [To do](#to-do)
@@ -38,7 +38,7 @@ async function find<T extends 'foo' | 'bar'>(
 
 const query = makeQuery(find)
 
-const result = client.query(query, (find) => find('foo'))
+const result = client.call(query, (find) => find('foo'))
 // Result has type: Promise<"found-foo">
 ```
 
@@ -46,7 +46,7 @@ See how that could be useful? A word of warning: this does necessarily put the o
 
 ### Asynchronous context tracking in Node
 
-In order to achieve type narrowing, we had to leave your function "unadulterated". That might be a harsh word for how you must conform to the arguments provided to you in a [TRPC procedure](https://trpc.io/docs/quickstart#3-using-input-parser-to-validate-procedure-inputs):
+In order to achieve type narrowing, we had to leave your function "unadulterated". That might be a harsh word for how you must conform to the arguments provided to you in a [TRPC fn](https://trpc.io/docs/quickstart#3-using-input-parser-to-validate-fn-inputs):
 
 ```
 // This is a TRPC snippet
@@ -60,7 +60,7 @@ userById: publicProcedure
 
 You have to use TRPC's `input` and `ctx` properties. It all comes bundled in an `opts` argument. In doing so, TRPC can't pass around complex types, because in the source code they have to wrap them and unwrap/infer them again.
 
-Zod SDK passes around the original function type, without alteration. But of course your backend may need data usually found in request headers or cookies, or you want to abstract some reusable code across many procedures. Here's how you do that:
+Zod SDK passes around the original function type, without alteration. But of course your backend may need data usually found in request headers or cookies, or you want to abstract some reusable code across many fns. Here's how you do that:
 
 ```
 // Make a service
@@ -75,7 +75,7 @@ async function findContextFoo(): 'bar' {
   return foo
 }
 const routes = {
-  findFooOrBar: service.makeQuery(findFooOrBar),
+  findFooOrBar: service.makeProcedure('query', findFooOrBar),
 }
 // ...and so on, see "Getting Started"
 ```
@@ -85,7 +85,7 @@ const routes = {
 Like TRPC, you can use schemas to validate query and command parameters from the client, or the payloads sent back from the server.
 
 ```
-const addYear = server.makeQuery(
+const addYear = server.makeProcedure('query', 
   async function (date: Date) {
     return new Date(date.getFullYear() + 1, date.getMonth(), date.getDate())
   },
@@ -109,7 +109,7 @@ pnpm add zod-sdk
 ## On the server, make a router
 
 Use the `server` export on the Node server.
-1. Pass your backend functions to `server.makeQuery()` or `server.makeCommand()`
+1. Pass your backend functions to `server.makeProcedure()` or `server.makeCommand()`
 2. Create a routes object
 3. Pass routes to `server.makeRouter()`
 4. Export `typeof routes` however you want.
@@ -124,7 +124,7 @@ function findUserById(id: string) {
 }
 
 const routes = {
-  findUserById: server.makeQuery(findUserById),
+  findUserById: server.makeProcedure('query', findUserById),
 }
 
 const router = server.makeRouter(routes)
@@ -132,7 +132,7 @@ const router = server.makeRouter(routes)
 export type Routes = typeof routes
 ```
 
-That `router` returned from `server.makeRouter()` is a request handler. You can use it directly or in NextJS you can do this:
+That `router` returned from `server.makeRouter()` is a request procedure. You can use it directly or in NextJS you can do this:
 
 ```
 export { GET, POST } from server.makeRouter(routes)
@@ -141,17 +141,17 @@ export { GET, POST } from server.makeRouter(routes)
 ## On the client, make a dispatcher
 
 Client-side:
-1. Pass your routes type object to `client.makeDispatcher(options: Options)`
-2. Pass the appropriate handler to `client.query()` or `client.mutate()`
+1. Pass your routes type object to `client.makeInterface(options: Options)`
+2. Pass the appropriate procedure to `client.call()` or `client.mutate()`
 
 
 ```
 import { client } from 'zod-sdk/client'
 
-const sdk = client.makeDispatcher<Routes>({
+const sdk = client.makeInterface<Routes>({
   baseUrl: url,
 })
-const result = await client.query(sdk.findFooOrBar, (find) =>
+const result = await client.call(sdk.findFooOrBar, (find) =>
   find('foo')
 )
 ```
@@ -160,7 +160,7 @@ NOTE: The client does not necessarily have to be the browser by the way. The sam
 ```
 import { server } from 'zod-sdk/server'
 
-const sdk = server.makeDispatcher<Routes>({
+const sdk = server.makeInterface<Routes>({
   baseUrl: url,
 })
 ```
@@ -177,7 +177,7 @@ import styles from './page.module.css'
 import { useQuery, client  } from 'zod-sdk/client'
 import { IRoutes } from './routes'
 
-const client = client.makeDispatcher<IRoutes>({
+const client = client.makeInterface<IRoutes>({
   baseUrl: 'http://localhost:3000/api/sdk',
 })
 
@@ -198,7 +198,7 @@ export function Data() {
 
 ## server.makeService
 
-This enables you to share `context` and `middleware` across procedures. Here's an example.
+This enables you to share `context` and `middleware` across fns. Here's an example.
 
 ```
 // Make a service
@@ -214,8 +214,8 @@ const service = server.makeService({
 ```
 
 Then you call
-- `service.makeQuery()` or `service.makeCommand()`
-- Instead of  ~~server~~.makeQuery() or ~~server.makeCommand()~~
+- `service.makeProcedure()` or `service.makeCommand()`
+- Instead of  ~~server~~.makeProcedure() or ~~server.makeCommand()~~
 
 ## server.makeRouter
 
@@ -223,20 +223,20 @@ Call this to make the router on the server. That's covered in [Getting Started](
 
 ## server.makeQuery
 
-You should use `server/service.makeQuery()` to make a GET request. Whether you use `makeQuery` or `makeCommand` doesn't make a difference, but do what's intuitive! Read up on CQRS if you want some reasons why
+You should use `server/service.makeProcedure()` to make a GET request. Whether you use `makeQuery` or `makeCommand` doesn't make a difference, but do what's intuitive! Read up on CQRS if you want some reasons why
 
 # client
 
-## client.makeDispatcher
+## client.makeInterface
 See [Make a dispatcher](#on-the-client-make-a-dispatcher)
 
-## client.query
+## client.call
 See [Getting Started](#getting-started).
 
-Calling `client.query` with a handler you created with `makeQuery` will throw a typescript error.
+Calling `client.call` with a procedure you created with `makeQuery` will throw a typescript error.
 ## client.command
 
-Works just like `client.query` except you pass it command handlers. 
+Works just like `client.call` except you pass it command procedures. 
 
 # FAQ
 

@@ -4,7 +4,7 @@ import { ParserSelector } from '../types'
 export const parseNumber: ParserSelector<{ type: 'number' | 'integer' }> = (
   schema
 ) => {
-  let r = z.coerce.number()
+  let r = z.number()
   if (
     schema.format === 'int64' ||
     schema.multipleOf === 1 ||

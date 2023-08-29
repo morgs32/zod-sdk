@@ -1,63 +1,28 @@
 import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
-import z from 'zod'
-import { IRoutes } from 'zod-sdk/internal'
-import { client } from 'zod-sdk/client'
 
-const addYear = server.makeQuery(
-  async function (date: Date) {
-    return new Date(date.getFullYear() + 1, date.getMonth(), date.getDate())
-  },
-  {
-    parameter: z.date(),
-    payload: z.date(),
-  }
-)
+async function addYear(date: Date) {
+  return new Date(date.getFullYear() + 1, date.getMonth(), date.getDate())
+}
 
-const findFoobar = server.makeQuery(
-  async function findFoobar<T extends 'foo' | 'bar'>(
-    str: T
-  ): Promise<{ id: number; type: T; createdAt: Date }[]> {
-    return [
-      {
-        id: 1,
-        type: str,
-        createdAt: new Date('2020-01-01'),
-      },
-    ]
-  },
-  {
-    parameter: z.union([z.literal('foo'), z.literal('bar')]),
-    payload: z.array(
-      z.object({
-        id: z.number(),
-        type: z.union([z.literal('foo'), z.literal('bar')]),
-        createdAt: z.date(),
-      })
-    ),
-  }
-)
-export const routes = {
-  widgets: {
-    findFoobar,
-    addYear,
-  },
-} satisfies IRoutes
+addYear.parameters = server.makeSchemas((z) => z.tuple([z.date()]))
+addYear.payload = server.makeSchemas((z) => z.date())
 
 describe('results', () => {
   it('with http server', async () => {
-    const router = server.makeRouter(routes)
+    const router = server.makeRouter({
+      widgets: {
+        addYear: server.makeQuery(addYear),
+      },
+    })
     await makeServer(router, async (url) => {
-      const sdk = client.makeDispatcher<typeof routes>({
+      const sdk = server.makeInterface<typeof router.routes>({
         baseUrl: url,
       })
-      const result = await client.query(sdk.widgets.findFoobar, (findFoobar) =>
-        findFoobar('foo')
+      const result = await server.call(sdk.widgets.addYear, ({ query }) =>
+        query(new Date('2020-01-01'))
       )
-      expect(typeof result[0].createdAt).toMatchInlineSnapshot('"object"')
-      expect(result[0].createdAt).toMatchInlineSnapshot(
-        '2020-01-01T00:00:00.000Z'
-      )
+      expect(result).toMatchInlineSnapshot('2020-12-31T05:00:00.000Z')
     })
   })
 })
