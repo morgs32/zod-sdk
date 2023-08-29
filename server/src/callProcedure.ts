@@ -2,11 +2,16 @@ import { asyncLocalStorage } from './asyncLocalStorage'
 import { parseBody } from './parseBody'
 import { makeJsonSchema } from 'zod-sdk/schemas'
 import { IProcedure, IRequestType, IResult } from './types'
+import z from 'zod'
 
 export async function callProcedure(
-  { fn, makeContext }: IProcedure,
+  { fn, makeContext, middleware }: IProcedure,
   req: IRequestType
 ): Promise<IResult | Response> {
+  if (middleware) {
+    await middleware(req)
+  }
+
   let context: any
   try {
     context = makeContext && (await makeContext(req))
@@ -22,7 +27,7 @@ export async function callProcedure(
       switch (method) {
         case 'GET': {
           const query = Object.fromEntries(
-            new URL(req.url!, 'http://www.trpcplus.com').searchParams
+            new URL(req.url!, 'http://www.morganatwork.com').searchParams
           )
           input = query.input
           if (!input) {
@@ -39,7 +44,9 @@ export async function callProcedure(
             body = await parseBody(req)
           }
           if (!body.input && fn.parameters) {
-            input = fn.parameters.parse(body)
+            const _z = z
+            _z.date = z.coerce.date
+            input = fn.parameters(z).parse(body)
             break
           }
           try {
@@ -63,10 +70,9 @@ export async function callProcedure(
       if (payload instanceof Response) {
         return payload
       }
-
       return {
         payload,
-        schema: fn.payload && makeJsonSchema(fn.payload),
+        schema: fn.payload && makeJsonSchema(fn.payload(z)),
         included: [],
       }
     }

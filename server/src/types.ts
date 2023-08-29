@@ -1,5 +1,6 @@
 import { IncomingMessage } from 'http'
 import z, { ZodType } from 'zod'
+import { IZod } from './makeSchemas'
 
 export type IResult = {
   payload: any
@@ -12,10 +13,7 @@ export type IRequestType = IncomingMessage | Request
 export type IMiddlewareReturnType = IResult | void | Response
 
 export interface IMiddlewareFn<R = IRequestType> {
-  (
-    req: R,
-    next: () => Promise<IResult>
-  ): IMiddlewareReturnType | Promise<IMiddlewareReturnType>
+  (req: R): Promise<any> | any
 }
 
 export interface IParameters<F extends IFunc = IFunc> {
@@ -29,8 +27,8 @@ export interface IContextFn<R extends IRequestType = IRequestType, C = any> {
 
 export type IFunc<C extends any = any, A extends any[] = any[]> = {
   (this: { useCtx: () => Awaited<C> }, ...args: A): Promise<any>
-  parameters?: ZodType<any>
-  payload?: ZodType<any>
+  parameters?: (z: IZod) => ZodType<any>
+  payload?: (z: IZod) => ZodType<any>
 }
 
 export interface ISchemas<A, R> {

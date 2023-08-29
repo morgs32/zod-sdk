@@ -1,9 +1,9 @@
 import { parseRes } from './parseRes'
-import { makeFetchArgs } from './makeFetchArgs'
+import { makeRequest } from './makeRequest'
 import { ICompleteRPC, IRequestOptions } from 'zod-sdk/server'
 
 export async function callRPC(rpc: ICompleteRPC, options?: IRequestOptions) {
-  const [url, requestInit] = makeFetchArgs(rpc, options)
-  const res = await fetch(url, requestInit)
+  const req = makeRequest(rpc, options)
+  const res = await fetch(req)
   return parseRes(res)
 }

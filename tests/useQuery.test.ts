@@ -2,8 +2,7 @@
 import { client } from 'zod-sdk/client'
 import { IRoutes, server } from 'zod-sdk/server'
 import { makeServer } from './listen'
-import { renderHook } from '@testing-library/react-hooks'
-import { waitFor } from '@testing-library/react'
+import { waitFor, renderHook } from '@testing-library/react'
 
 const routes = {
   hello: async () => {

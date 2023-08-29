@@ -25,7 +25,12 @@ export class Service<
     } = {}
   ) {}
   public mockCtx(ctx: Awaited<C>, fn: () => Promise<any>): Promise<any> {
-    return asyncLocalStorage.run(ctx, fn.bind(this))
+    return asyncLocalStorage.run(
+      ctx,
+      fn.bind({
+        useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
+      })
+    )
   }
   public makeQuery<F extends IFunc<C>>(fn: F): IProcedure<F, 'query', C, R> {
     return {

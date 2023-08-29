@@ -52,7 +52,17 @@ describe('type narrowing', () => {
         procedure.query('foo', new Date('2023-01-01'))
       )
       // Check the type on result
-      expect(result).toMatchInlineSnapshot('"found-foo"')
+      expect(result).toMatchInlineSnapshot(`
+        [
+          {
+            "discriminator": [
+              "foo",
+              "2023-01-01T00:00:00.000Z",
+            ],
+            "hello": "world",
+          },
+        ]
+      `)
     })
   })
 })

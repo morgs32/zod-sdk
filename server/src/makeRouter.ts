@@ -1,11 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { callProcedure } from './callProcedure'
-import { IMiddlewareFn, IProcedure, IRequestType, IRoutes } from './types'
-
-export interface IOptions {
-  onError?: (err: any) => void
-  middleware?: IMiddlewareFn
-}
+import { IProcedure, IRequestType, IRoutes } from './types'
 
 export interface IRouter {
   (req: Request): Promise<Response>
@@ -22,8 +17,7 @@ function isProcedure(procedure: any): procedure is IProcedure {
 }
 
 export function makeRouter<R extends IRoutes>(
-  routes: R,
-  options: IOptions = {}
+  routes: R
 ): IRouter & {
   routes: R
 } {
@@ -66,15 +60,7 @@ export function makeRouter<R extends IRoutes>(
         throw new Error(`Invalid procedure: ${sdkPath}`)
       })()
 
-      const middlewares = [procedure.middleware, options.middleware].filter(
-        (x) => x
-      )
-      return middlewares.length
-        ? await middlewares.reduce(
-            (acc: () => Promise<any>, fn) => async () => fn!(req, acc),
-            () => callProcedure(procedure, req)
-          )()
-        : await callProcedure(procedure, req)
+      return callProcedure(procedure, req)
     }
     try {
       const result = await main()
@@ -86,11 +72,6 @@ export function makeRouter<R extends IRoutes>(
       }
       return new Response(JSON.stringify(result))
     } catch (e) {
-      if (options.onError) {
-        options.onError(e)
-      } else {
-        console.error(e)
-      }
       if (e instanceof Error) {
         if (res) {
           res.statusCode = 500
