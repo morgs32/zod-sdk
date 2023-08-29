@@ -1,13 +1,7 @@
 import { JsonValue } from 'type-fest'
-import {
-  IFunc,
-  IRPCType,
-  ISchemas,
-  IContextFn,
-  IProcedure,
-  IMiddlewareFn,
-} from './types'
-import { IService } from './makeService'
+import { IFunc } from './types'
+import { IProcedure, IRPCType } from 'server/dist'
+import { ZodType } from 'zod'
 
 /**
  * If you don't pass schemas to makeQuery or makeComment,
@@ -16,60 +10,36 @@ import { IService } from './makeService'
 export interface ValidJsonOrSchemasRequired {}
 export interface MustMakeProcedureWithService {}
 
-interface IOptions<
-  F extends IFunc,
-  S extends ISchemas<F> | undefined,
-  M extends IContextFn | undefined,
-  T extends IRPCType = 'query',
-> {
-  type?: T
-  schemas?: S
-  makeContext?: M
-  middleware?: IMiddlewareFn
-}
+type CheckJson<F extends IFunc> = Parameters<F> extends JsonValue[]
+  ? 1
+  : F extends {
+      parameters: ZodType<Parameters<F>>
+    }
+  ? 1
+  : 'Non Json Values used in params without schemas to parse them'
 
-export function makeProcedure<F extends IFunc, T extends ThisParameterType<F>>(
-  fn: F
-): T extends IService
-  ? MustMakeProcedureWithService
-  : F extends IFunc<infer P>
-  ? P extends JsonValue[]
-    ? IProcedure<F, undefined, 'query'>
-    : ValidJsonOrSchemasRequired
-  : never
-export function makeProcedure<
-  F extends IFunc,
-  S extends ISchemas<F> | undefined,
-  M extends IContextFn | undefined,
-  O extends IOptions<F, S, M, T>,
-  T extends IRPCType = 'query',
->(
-  fn: F,
-  options?: O
-): 'schemas' extends keyof O
-  ? IProcedure<F, S, T>
-  : F extends IFunc<infer P>
-  ? P extends JsonValue[]
-    ? IProcedure<F, S, T>
-    : ValidJsonOrSchemasRequired
-  : never
-export function makeProcedure<
-  F extends IFunc,
-  S extends ISchemas<F> | undefined,
-  M extends IContextFn | undefined,
-  T extends IRPCType = 'query',
->(
-  fn: F,
-  options?: {
-    type?: T
-    schemas?: S
-    makeContext?: M
-    middleware?: any // TODO: fix
-  }
-): IProcedure {
+type CheckThis<F extends IFunc> = Awaited<
+  ReturnType<ThisParameterType<F>['useCtx']>
+> extends {}
+  ? 'Function with this param must be called with service.makeQuery/Command'
+  : 1
+
+type Check<F extends IFunc, T extends IRPCType> = CheckJson<F> extends string
+  ? CheckJson<F>
+  : CheckThis<F> extends string
+  ? CheckThis<F>
+  : IProcedure<F, undefined, T>
+
+export function makeQuery<F extends IFunc>(fn: F) {
   return {
     fn,
-    type: 'query' as T,
-    ...options,
-  }
+    type: 'query',
+  } as any as Check<F, 'query'>
+}
+
+export function makeCommand<F extends IFunc>(fn: F) {
+  return {
+    fn,
+    type: 'command',
+  } as any as Check<F, 'command'>
 }

@@ -1,5 +1,5 @@
 import { IncomingMessage } from 'http'
-import z from 'zod'
+import z, { ZodType } from 'zod'
 
 export type IResult = {
   payload: any
@@ -18,22 +18,35 @@ export interface IMiddlewareFn<R = IRequestType> {
   ): IMiddlewareReturnType | Promise<IMiddlewareReturnType>
 }
 
+export interface IParameters<F extends IFunc = IFunc> {
+  parameters: z.ZodType<Parameters<F>>
+  payload: z.ZodType<Awaited<ReturnType<F>>>
+}
+
 export interface IContextFn<R extends IRequestType = IRequestType, C = any> {
   (req: R): C | Promise<C>
 }
 
-export type IFunc<A extends any[] = any[]> = (...args: A) => Promise<any>
-
-export interface ISchemas<F extends IFunc = IFunc> {
-  parameters: z.ZodType<Parameters<F>>
-  payload: z.ZodType<Awaited<ReturnType<F>>>
+export type IFunc<C extends any = any, A extends any[] = any[]> = {
+  (this: { useCtx: () => Awaited<C> }, ...args: A): Promise<any>
+  parameters?: ZodType<any>
+  payload?: ZodType<any>
 }
+
+export interface ISchemas<A, R> {
+  parameters: z.ZodType<A>
+  payload?: z.ZodType<R>
+}
+
+export type ISchemasFromF<F extends IFunc> = ISchemas<
+  Parameters<F>,
+  Awaited<ReturnType<F>>
+>
 
 export type IRPCType = 'query' | 'command'
 
 export interface IProcedure<
   F extends IFunc = IFunc,
-  S extends ISchemas<F> | undefined = ISchemas<F> | undefined,
   T extends IRPCType = IRPCType,
   C extends any = any,
   R extends IRequestType = IRequestType,
@@ -42,7 +55,6 @@ export interface IProcedure<
   type: T
   makeContext?: IContextFn<R, C>
   middleware?: IMiddlewareFn<any>
-  schemas?: S
 }
 
 export interface IRoutes {

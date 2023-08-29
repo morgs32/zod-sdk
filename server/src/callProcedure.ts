@@ -4,12 +4,12 @@ import { makeJsonSchema } from 'zod-sdk/schemas'
 import { IProcedure, IRequestType, IResult } from './types'
 
 export async function callProcedure(
-  procedure: IProcedure,
+  { fn, makeContext }: IProcedure,
   req: IRequestType
 ): Promise<IResult | Response> {
-  let context
+  let context: any
   try {
-    context = procedure.makeContext && (await procedure.makeContext(req))
+    context = makeContext && (await makeContext(req))
   } catch (e) {
     throw e
   }
@@ -38,8 +38,8 @@ export async function callProcedure(
           } else {
             body = await parseBody(req)
           }
-          if (!body.input && procedure.schemas) {
-            input = procedure.schemas.parameters.parse(body)
+          if (!body.input && fn.parameters) {
+            input = fn.parameters.parse(body)
             break
           }
           try {
@@ -54,14 +54,19 @@ export async function callProcedure(
         }
       }
 
-      const payload = await procedure.fn(input)
+      const payload = await fn.call(
+        {
+          useCtx: () => context,
+        },
+        ...input
+      )
       if (payload instanceof Response) {
         return payload
       }
 
       return {
         payload,
-        schema: procedure.schemas && makeJsonSchema(procedure.schemas.payload),
+        schema: fn.payload && makeJsonSchema(fn.payload),
         included: [],
       }
     }

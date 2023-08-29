@@ -20,9 +20,9 @@ describe('useQuery', () => {
         baseUrl: url,
       })
       const { result } = renderHook(() =>
-        client.useQuery([sdk.hello, 'foobar'], (hello, foobar) => {
+        client.useQuery([sdk.hello, 'foobar'], (procedure, foobar) => {
           expect(foobar).toEqual('foobar')
-          return hello()
+          return procedure.query()
         })
       )
       await waitFor(() => expect(result.current.data).toEqual('world'))

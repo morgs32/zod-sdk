@@ -1,62 +1,52 @@
 import { asyncLocalStorage } from './asyncLocalStorage'
-import { makeRouter } from './makeRouter'
 import {
   IRequestType,
   IMiddlewareFn,
   IContextFn,
   IProcedure,
-  IRPCType,
-  ISchemas,
+  IFunc,
 } from './types'
 
-export type IServiceFunc<S extends any = any, I extends any = any> = (
-  this: S,
-  input: I
-) => Promise<any>
+export type inferThis<S extends Service<any, any>> = S extends Service<
+  any,
+  infer C
+>
+  ? { useCtx: () => Awaited<C> }
+  : never
 
-export type IMakeProcedure<
-  R extends IRequestType = IRequestType,
-  C extends any = any,
-> = {
-  <
-    F extends (
-      this: Pick<IService<R, C>, 'useCtx'>,
-      ...args: any[]
-    ) => Promise<any>,
-  >(
-    fn: F
-  ): IProcedure<F, undefined, 'query', C>
-  <
-    F extends IServiceFunc<Pick<IService<R, C>, 'useCtx'>>,
-    S extends ISchemas<F>,
-    M extends IContextFn,
-    T extends IRPCType = 'query',
-  >(
-    fn: F,
-    options: {
-      type?: T
-      schemas?: S
-      makeContext?: M
-      middleware?: IMiddlewareFn
-    }
-  ): IProcedure<
-    F,
-    S,
-    T,
-    C & (M extends IContextFn<IRequestType, infer C2> ? C2 : {})
-  >
-}
-
-export interface IService<
+export class Service<
   R extends IRequestType = IRequestType,
   C extends any = any,
 > {
-  middleware?: IMiddlewareFn<R>
-  makeContext?: IContextFn<R, C>
-  makeProcedure: IMakeProcedure<R, C>
-  makeRouter: typeof makeRouter
-  useCtx: () => Awaited<C>
-  mockCtx: (ctx: Awaited<C>, fn: (this: this) => Promise<any>) => Promise<any>
+  constructor(
+    public options: {
+      middleware?: IMiddlewareFn<R>
+      makeContext?: IContextFn<R, C>
+    } = {}
+  ) {}
+  public mockCtx(ctx: Awaited<C>, fn: () => Promise<any>): Promise<any> {
+    return asyncLocalStorage.run(ctx, fn.bind(this))
+  }
+  public makeQuery<F extends IFunc<C>>(fn: F): IProcedure<F, 'query', C, R> {
+    return {
+      fn: fn.bind({
+        useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
+      }) as F,
+      type: 'query',
+      ...this.options,
+    }
+  }
+  public makeCommand<F extends IFunc<C>>(
+    fn: F
+  ): IProcedure<F, 'command', C, R> {
+    return {
+      fn: fn.bind({
+        useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
+      }) as F,
+      type: 'command',
+      ...this.options,
+    }
+  }
 }
 
 export function makeService<R extends IRequestType, C extends any>(
@@ -64,33 +54,6 @@ export function makeService<R extends IRequestType, C extends any>(
     middleware?: IMiddlewareFn<R>
     makeContext?: IContextFn<R, C>
   } = {}
-): IService<R, C> {
-  const { middleware, makeContext } = options
-  return {
-    middleware,
-    makeContext,
-    makeProcedure: function (
-      this: Pick<IService<R, C>, 'useCtx'>,
-      fn,
-      options
-    ) {
-      return {
-        fn: fn.bind(this),
-        type: 'query',
-        makeContext,
-        middleware,
-        ...options,
-      }
-    } as IService<R, C>['makeProcedure'],
-    makeRouter,
-    useCtx: function useCtx() {
-      return asyncLocalStorage.getStore() as Awaited<C>
-    },
-    mockCtx: function mockCtx(
-      ctx: Awaited<C>,
-      fn: () => Promise<any>
-    ): Promise<any> {
-      return asyncLocalStorage.run(ctx, fn.bind(this))
-    },
-  }
+): Service<R, C> {
+  return new Service(options)
 }

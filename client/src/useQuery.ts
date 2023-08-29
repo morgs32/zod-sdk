@@ -6,49 +6,42 @@ import {
 } from 'zod-sdk/internal'
 import { SWRConfiguration, SWRResponse } from 'swr'
 import useSWR from 'swr'
-import { IBaseRPC, IFunc, ISchemas } from 'zod-sdk/server'
+import { IBaseRPC, IFunc } from 'zod-sdk/server'
 
 type IFalsy = null | undefined | false | ''
 
 export function useQuery<
   F extends IFunc,
-  S extends ISchemas<F> | undefined,
-  R extends ReturnType<F>,
-  A extends any[],
-  B extends A,
->(
-  key:
-    | IFalsy
-    | IInterfaceProcedure<F, S, 'query'>
-    | [IInterfaceProcedure<F, S, 'query'>, ...A],
-  fetcher: (query: F, ...args: B) => R,
-  options?: {
-    onSuccess?: (data: Awaited<IMaybeJsonified<S, R>>) => void
-  } & Omit<SWRConfiguration, 'onSuccess'>
-): SWRResponse<Awaited<IMaybeJsonified<S, R>>>
-export function useQuery<
-  F extends IFunc,
-  S extends ISchemas<F> | undefined,
+  C extends any,
   R extends ReturnType<F>,
   A extends any[],
 >(
   key:
     | IFalsy
-    | IInterfaceProcedure<F, S, 'query'>
-    | [IInterfaceProcedure<F, S, 'query'>, ...A],
-  fetcher: (query: F, ...args: A) => R,
+    | IInterfaceProcedure<F, 'query', C>
+    | [IInterfaceProcedure<F, 'query', C>, ...A],
+  fetcher: (bag: { query: F; useCtx: () => C }, ...args: A) => R,
   options?: {
-    onSuccess?: (data: Awaited<IMaybeJsonified<S, R>>) => void
+    onSuccess?: (data: Awaited<IMaybeJsonified<F, R>>) => void
   } & Omit<SWRConfiguration, 'onSuccess'>
-): SWRResponse<Awaited<IMaybeJsonified<S, R>>> {
-  let procedure: IInterfaceProcedure<F, S, 'query'> | undefined
+): SWRResponse<Awaited<IMaybeJsonified<F, R>>> {
+  let procedure: IInterfaceProcedure<F, 'query', C> | undefined
   if (Array.isArray(key)) {
     procedure = key[0]
   } else if (key) {
     procedure = key
   }
+
   const rpc = fetcher(
-    procedure as any as F,
+    {
+      query: procedure as any as F,
+      useCtx: (): any => {
+        console.error(
+          'Hmm, you should not be calling useCtx from the useQuery() method'
+        )
+        return
+      },
+    },
     // @ts-ignore
     ...(Array.isArray(key) ? key.slice(1) : [])
   ) as any as IBaseRPC | IFalsy

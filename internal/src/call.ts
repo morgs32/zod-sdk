@@ -2,27 +2,27 @@ import { IInterfaceProcedure } from 'zod-sdk/internal'
 import { callRPC } from './callRPC'
 import { Jsonify } from 'type-fest'
 import {
-  ISchemas,
   IFunc,
   IRPCType,
   IRequestOptions,
   IBaseRPC,
   ICompleteRPC,
 } from 'zod-sdk/server'
+import { ZodType } from 'zod'
 
-export type IMaybeJsonified<
-  S extends ISchemas | undefined,
-  R extends any,
-> = S extends undefined ? Promise<Jsonify<Awaited<R>>> : R
+export type IMaybeJsonified<F extends IFunc, R> = F extends {
+  payload: ZodType<Awaited<ReturnType<F>>>
+}
+  ? R
+  : Promise<Jsonify<R>>
 
 export function call<
   F extends IFunc,
-  S extends ISchemas | undefined,
   T extends IRPCType,
   R extends ReturnType<F>,
   C extends any = any,
 >(
-  procedure: IInterfaceProcedure<F, S, T, C>,
+  procedure: IInterfaceProcedure<F, T, C>,
   fn: T extends 'query'
     ? (bag: { query: F; useCtx: () => C }) => R
     : (bag: { command: F; useCtx: () => C }) => R,
@@ -36,7 +36,12 @@ export function call<
   const rpc = fn({
     query: curry('query') as any as F,
     command: curry('command') as any as F,
-    useCtx: procedure.useCtx, // TODO: Alert user not to use this
+    useCtx: (): any => {
+      console.error(
+        'Hmm, you should not be calling useCtx from the call() method'
+      )
+      return
+    },
   }) as ICompleteRPC
-  return callRPC(rpc, options) as IMaybeJsonified<S, R>
+  return callRPC(rpc, options) as IMaybeJsonified<F, R>
 }

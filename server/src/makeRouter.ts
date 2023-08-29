@@ -24,7 +24,9 @@ function isProcedure(procedure: any): procedure is IProcedure {
 export function makeRouter<R extends IRoutes>(
   routes: R,
   options: IOptions = {}
-): IRouter {
+): IRouter & {
+  routes: R
+} {
   async function router(req: Request): Promise<Response>
   async function router(
     req: IncomingMessage,
@@ -58,7 +60,6 @@ export function makeRouter<R extends IRoutes>(
         if (typeof found === 'function') {
           return {
             fn: found,
-            schemas: undefined,
             type: req.method === 'GET' ? 'query' : 'command',
           }
         }

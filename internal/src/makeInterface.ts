@@ -1,5 +1,5 @@
 import { makeInnerProxy } from './makeInnerProxy'
-import { IFunc, IProcedure, IRPCType, IRoutes, ISchemas } from 'zod-sdk/server'
+import { IFunc, IProcedure, IRPCType, IRoutes } from 'zod-sdk/server'
 
 export interface IInterfaceOptions {
   baseUrl: string
@@ -7,20 +7,18 @@ export interface IInterfaceOptions {
 
 export interface IInterfaceProcedure<
   F extends IFunc = IFunc,
-  S extends ISchemas<F> | undefined = undefined,
-  T extends IRPCType = IRPCType,
-  C extends any = undefined,
+  T extends IRPCType = IRPCType, // Need this for call() so we know to use procedure.query or procedure.command
+  C extends any = undefined, // Need this for call() so we can type this on the query/command fn()
 > {
   fn: F
-  schemas: S
   type: T
   useCtx: () => C
   dispatcher: true
 }
 
 export type IInterface<R extends IRoutes> = {
-  [K in keyof R]: R[K] extends IProcedure<infer F, infer S, infer T, infer C>
-    ? IInterfaceProcedure<F, S, T, C>
+  [K in keyof R]: R[K] extends IProcedure<infer F, infer T, infer C>
+    ? IInterfaceProcedure<F, T, C>
     : R[K] extends IRoutes
     ? IInterface<R[K]>
     : never
