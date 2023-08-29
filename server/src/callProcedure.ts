@@ -5,16 +5,22 @@ import { IProcedure, IRequestType, IResult } from './types'
 import z from 'zod'
 
 export async function callProcedure(
-  { fn, makeContext, middleware }: IProcedure,
+  procedure: IProcedure,
   req: IRequestType
 ): Promise<IResult | Response> {
-  if (middleware) {
-    await middleware(req)
+  if (procedure.middleware) {
+    return procedure.middleware(req, () => main(procedure, req))
   }
+  return main(procedure, req)
+}
 
+async function main(
+  procedure: IProcedure,
+  req: IRequestType
+): Promise<IResult | Response> {
   let context: any
   try {
-    context = makeContext && (await makeContext(req))
+    context = procedure.makeContext && (await procedure.makeContext(req))
   } catch (e) {
     throw e
   }
@@ -54,13 +60,13 @@ export async function callProcedure(
           throw new Error(`Method not supported: ${method}`)
         }
       }
-      if (fn.parameters) {
+      if (procedure.fn.parameters) {
         const _z = Object.assign({}, z, {
           date: z.coerce.date,
         })
-        input = fn.parameters(_z).parse(input)
+        input = procedure.fn.parameters(_z).parse(input)
       }
-      const payload = await fn.call(
+      const payload = await procedure.fn.call(
         {
           useCtx: () => context,
         },
@@ -71,7 +77,7 @@ export async function callProcedure(
       }
       return {
         payload,
-        schema: fn.payload && makeJsonSchema(fn.payload(z)),
+        schema: procedure.fn.payload && makeJsonSchema(procedure.fn.payload(z)),
         included: [],
       }
     }

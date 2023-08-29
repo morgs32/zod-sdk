@@ -13,7 +13,7 @@ export type IRequestType = IncomingMessage | Request
 export type IMiddlewareReturnType = IResult | void | Response
 
 export interface IMiddlewareFn<R = IRequestType> {
-  (req: R): Promise<any> | any
+  (req: R, next: () => Promise<any>): Promise<any> | any
 }
 
 export interface IParameters<F extends IFunc = IFunc> {
