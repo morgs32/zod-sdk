@@ -24,7 +24,10 @@ export class Service<
       makeContext?: IContextFn<R, C>
     } = {}
   ) {}
-  public mockCtx(ctx: Awaited<C>, fn: () => Promise<any>): Promise<any> {
+  public mockCtx(
+    ctx: Awaited<C>,
+    fn: (this: { useCtx: () => Awaited<C> }) => Promise<any>
+  ): Promise<any> {
     return asyncLocalStorage.run(
       ctx,
       fn.bind({
