@@ -47,7 +47,7 @@ export interface IProcedure<
   F extends IFunc = IFunc,
   T extends IRPCType = IRPCType,
   C extends any = any,
-  R extends IRequestType = IRequestType,
+  R extends IRequestType = any,
 > {
   fn: F
   type: T
