@@ -1,11 +1,6 @@
-import { IHandler, IMiddlewareFn, IRoutes } from 'zod-sdk/internal'
 import { IncomingMessage, ServerResponse } from 'http'
-import { callHandler } from './callHandler'
-
-interface IOptions {
-  onError?: (err: any) => void
-  middleware?: IMiddlewareFn
-}
+import { callProcedure } from './callProcedure'
+import { IProcedure, IRequestType, IRoutes } from './types'
 
 export interface IRouter {
   (req: Request): Promise<Response>
@@ -17,21 +12,22 @@ export interface IRouter {
   POST: (req: Request) => Promise<Response>
 }
 
-function isHandler(handler: any): handler is IHandler {
-  return typeof handler.procedure === 'function'
+function isProcedure(procedure: any): procedure is IProcedure {
+  return typeof procedure.fn === 'function'
 }
 
 export function makeRouter<R extends IRoutes>(
-  routes: R,
-  options: IOptions = {}
-): IRouter {
+  routes: R
+): IRouter & {
+  routes: R
+} {
   async function router(req: Request): Promise<Response>
   async function router(
     req: IncomingMessage,
     res: ServerResponse
   ): Promise<ServerResponse<IncomingMessage>>
   async function router(
-    req: IncomingMessage | Request,
+    req: IRequestType,
     res?: ServerResponse
   ): Promise<ServerResponse<IncomingMessage> | Response> {
     async function main() {
@@ -42,7 +38,7 @@ export function makeRouter<R extends IRoutes>(
         throw new Error(`No sdkPath found for url: ${req.url}`)
       }
 
-      const handler: IHandler = ((): IHandler => {
+      const procedure: IProcedure = ((): IProcedure => {
         const found = sdkPath
           .split('.')
           .reduce(
@@ -52,29 +48,19 @@ export function makeRouter<R extends IRoutes>(
         if (!found) {
           throw new Error(`Route not found: ${sdkPath}`)
         }
-        if (isHandler(found)) {
+        if (isProcedure(found)) {
           return found
         }
         if (typeof found === 'function') {
           return {
-            procedure: found,
-            schemas: undefined,
-            middleware: undefined,
+            fn: found,
             type: req.method === 'GET' ? 'query' : 'command',
           }
         }
-        throw new Error(`Invalid handler: ${sdkPath}`)
+        throw new Error(`Invalid procedure: ${sdkPath}`)
       })()
 
-      const middlewares = [handler.middleware, options.middleware].filter(
-        (x) => x
-      )
-      return middlewares.length
-        ? await middlewares.reduce(
-            (acc: () => Promise<any>, fn) => async () => fn!(req, acc),
-            () => callHandler(handler, req)
-          )()
-        : await callHandler(handler, req)
+      return callProcedure(procedure, req)
     }
     try {
       const result = await main()
@@ -86,11 +72,6 @@ export function makeRouter<R extends IRoutes>(
       }
       return new Response(JSON.stringify(result))
     } catch (e) {
-      if (options.onError) {
-        options.onError(e)
-      } else {
-        console.error(e)
-      }
       if (e instanceof Error) {
         if (res) {
           res.statusCode = 500

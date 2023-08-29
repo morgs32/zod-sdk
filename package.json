@@ -1,7 +1,7 @@
 {
   "name": "zod-sdk",
   "author": "Morgan Intrator",
-  "version": "0.2.2",
+  "version": "0.2.6",
   "license": "MIT",
   "packageManager": "pnpm@8.4.0",
   "exports": {
@@ -73,15 +73,16 @@
   },
   "devDependencies": {
     "@morgs32/eslint-config": "^2.0.10",
-    "@testing-library/react-hooks": "^8.0.1",
+    "@testing-library/react": "^14.0.0",
     "@types/jest": "^29.5.2",
     "@types/node": "^18.16.19",
     "@types/react": "^18.2.14",
     "bunchee": "^3.5.0",
     "husky": "^8.0.3",
+    "jsdom": "^22.1.0",
     "next": "13.4.8",
     "okrs": "^0.1.23",
-    "typescript": "^5.1.3",
+    "typescript": "^5.1.6",
     "vite": "^4.3.9",
     "vitest": "^0.32.2",
     "zod": "^3.21.4"

@@ -1,2 +1,2 @@
 export * from './useQuery'
-export { makeDispatcher, query, command } from 'zod-sdk/internal'
+export { makeInterface, call } from 'zod-sdk/internal'

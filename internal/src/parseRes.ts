@@ -1,5 +1,5 @@
 import { parseJsonSchema } from 'zod-sdk/schemas'
-import { IResult } from '.'
+import { IResult } from 'zod-sdk/server'
 export async function parseRes(res: Response) {
   if (!res.ok) {
     const message = await res.text().catch((e) => e.message)

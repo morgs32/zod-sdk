@@ -1,16 +1,20 @@
-import { IHandler, IResult } from 'zod-sdk/internal'
 import { asyncLocalStorage } from './asyncLocalStorage'
-import { IncomingMessage } from 'http'
 import { parseBody } from './parseBody'
 import { makeJsonSchema } from 'zod-sdk/schemas'
+import { IProcedure, IRequestType, IResult } from './types'
+import z from 'zod'
 
-export async function callHandler(
-  handler: IHandler,
-  req: IncomingMessage | Request
+export async function callProcedure(
+  { fn, makeContext, middleware }: IProcedure,
+  req: IRequestType
 ): Promise<IResult | Response> {
-  let context
+  if (middleware) {
+    await middleware(req)
+  }
+
+  let context: any
   try {
-    context = handler.makeContext && (await handler.makeContext(req))
+    context = makeContext && (await makeContext(req))
   } catch (e) {
     throw e
   }
@@ -23,7 +27,7 @@ export async function callHandler(
       switch (method) {
         case 'GET': {
           const query = Object.fromEntries(
-            new URL(req.url!, 'http://www.trpcplus.com').searchParams
+            new URL(req.url!, 'http://www.morganatwork.com').searchParams
           )
           input = query.input
           if (!input) {
@@ -39,10 +43,6 @@ export async function callHandler(
           } else {
             body = await parseBody(req)
           }
-          if (!body.input && handler.schemas) {
-            input = handler.schemas.parameter.parse(body)
-            break
-          }
           try {
             input = JSON.parse(body.input)
             break
@@ -54,16 +54,24 @@ export async function callHandler(
           throw new Error(`Method not supported: ${method}`)
         }
       }
-
-      const payload = await handler.procedure(input)
+      if (fn.parameters) {
+        const _z = Object.assign({}, z, {
+          date: z.coerce.date,
+        })
+        input = fn.parameters(_z).parse(input)
+      }
+      const payload = await fn.call(
+        {
+          useCtx: () => context,
+        },
+        ...input
+      )
       if (payload instanceof Response) {
         return payload
       }
-
       return {
         payload,
-        schema:
-          handler.schemas && (makeJsonSchema(handler.schemas.payload) as any),
+        schema: fn.payload && makeJsonSchema(fn.payload(z)),
         included: [],
       }
     }

@@ -17,12 +17,13 @@
     "test": "vitest",
     "clean": "rimraf dist"
   },
-  "dependencies": {
-    "zod-to-json-schema": "^3.21.4"
-  },
   "devDependencies": {
     "@types/json-schema": "^7.0.12",
     "vite": "^4.3.9",
     "vitest": "^0.32.2"
+  },
+  "dependencies": {
+    "zod": "^3.21.4",
+    "zod-to-json-schema": "^3.21.4"
   }
 }
