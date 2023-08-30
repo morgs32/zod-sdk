@@ -22,9 +22,9 @@ export function useQuery<
     | [IInterfaceProcedure<F, 'query', C>, ...A],
   fetcher: (bag: { query: F; useCtx: () => C }, ...args: A) => R,
   options?: {
-    onSuccess?: (data: Awaited<IMaybeJsonified<F, R>>) => void
+    onSuccess?: (data: IMaybeJsonified<F, Awaited<R>>) => void
   } & Omit<SWRConfiguration, 'onSuccess'>
-): SWRResponse<Awaited<IMaybeJsonified<F, R>>> {
+): SWRResponse<IMaybeJsonified<F, Awaited<R>>> {
   let procedure: IInterfaceProcedure<F, 'query', C> | undefined
   if (Array.isArray(key)) {
     procedure = key[0]
