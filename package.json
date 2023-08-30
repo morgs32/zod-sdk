@@ -1,7 +1,7 @@
 {
   "name": "zod-sdk",
   "author": "Morgan Intrator",
-  "version": "0.2.13",
+  "version": "0.2.14",
   "license": "MIT",
   "packageManager": "pnpm@8.4.0",
   "exports": {
