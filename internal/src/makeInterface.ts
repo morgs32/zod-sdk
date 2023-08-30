@@ -8,7 +8,7 @@ export interface IInterfaceOptions {
 export interface IInterfaceProcedure<
   F extends IFunc = IFunc,
   T extends IRPCType = IRPCType, // Need this for call() so we know to use procedure.query or procedure.command
-  C extends any = undefined, // Need this for call() so we can type this on the query/command fn()
+  C extends any = any, // Need this for call() so we can type this on the query/command fn()
 > {
   fn: F
   type: T
