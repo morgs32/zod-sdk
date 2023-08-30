@@ -88,6 +88,7 @@
     "zod": "^3.21.4"
   },
   "dependencies": {
+    "zod-to-json-schema": "^3.21.4",
     "client-only": "^0.0.1",
     "type-fest": "^4.0.0"
   },
