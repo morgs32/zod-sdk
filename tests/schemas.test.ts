@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
 
@@ -5,8 +6,8 @@ async function addYear(date: Date) {
   return new Date(date.getFullYear() + 1, date.getMonth(), date.getDate())
 }
 
-addYear.parameters = server.makeSchemas((z) => z.tuple([z.date()]))
-addYear.payload = server.makeSchemas((z) => z.date())
+addYear.parameters = z.tuple([z.date()])
+addYear.payload = z.date()
 
 describe('results', () => {
   it('with http server', async () => {

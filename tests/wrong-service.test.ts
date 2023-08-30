@@ -1,3 +1,4 @@
+import { z } from 'zod'
 import { server } from 'zod-sdk/server'
 
 const service1 = server.makeService({
@@ -20,19 +21,13 @@ async function findMany<T extends 'foo' | 'bar'>(
   ]
 }
 
-findMany.parameters = server.makeSchemas<Parameters<typeof findMany>>((z) =>
-  z.tuple([z.enum(['foo', 'bar']), z.date()])
-)
-
-findMany.payload = server.makeSchemas<Awaited<ReturnType<typeof findMany>>>(
-  (z) =>
-    z.array(
-      z.object({
-        date: z.date(),
-        discriminator: z.enum(['foo', 'bar']),
-        hello: z.literal('world'),
-      })
-    )
+findMany.parameters = z.tuple([z.enum(['foo', 'bar']), z.date()])
+findMany.payload = z.array(
+  z.object({
+    date: z.date(),
+    discriminator: z.enum(['foo', 'bar']),
+    hello: z.literal('world'),
+  })
 )
 
 describe('wrong service', () => {

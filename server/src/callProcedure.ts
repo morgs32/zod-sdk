@@ -2,7 +2,15 @@ import { asyncLocalStorage } from './asyncLocalStorage'
 import { parseBody } from './parseBody'
 import { makeJsonSchema } from 'zod-sdk/schemas'
 import { IProcedure, IRequestType, IResult } from './types'
-import z from 'zod'
+import z, {
+  ZodArray,
+  ZodDate,
+  ZodObject,
+  ZodOptional,
+  ZodSchema,
+  ZodTuple,
+  ZodTypeAny,
+} from 'zod'
 
 export async function callProcedure(
   procedure: IProcedure,
@@ -69,10 +77,8 @@ async function main(
         }
       }
       if (procedure.fn.parameters) {
-        const _z = Object.assign({}, z, {
-          date: z.coerce.date,
-        })
-        input = procedure.fn.parameters(_z).parse(input)
+        const schema = coerceAllDates(procedure.fn.parameters)
+        input = schema.parse(input)
       }
       const payload = await procedure.fn.call(
         {
@@ -85,9 +91,36 @@ async function main(
       }
       return {
         payload,
-        schema: procedure.fn.payload && makeJsonSchema(procedure.fn.payload(z)),
+        schema: procedure.fn.payload && makeJsonSchema(procedure.fn.payload),
         included: [],
       }
     }
   )
+}
+
+function coerceAllDates(schema: ZodTypeAny): ZodTypeAny {
+  if (schema instanceof ZodDate) {
+    return z.coerce.date()
+  }
+  if (schema instanceof ZodTuple) {
+    return z.tuple(schema.items.map((item: ZodSchema) => coerceAllDates(item)))
+  }
+  if (schema instanceof ZodObject) {
+    const newObj: any = {}
+    Object.keys(schema.shape).forEach((key) => {
+      newObj[key as keyof typeof newObj] = coerceAllDates(
+        schema.shape[key as keyof typeof schema.shape]
+      )
+    })
+    return z.object(newObj)
+  }
+  if (schema instanceof ZodOptional) {
+    // eslint-disable-next-line no-underscore-dangle
+    return coerceAllDates(schema._def.innerType)
+  }
+  if (schema instanceof ZodArray) {
+    return coerceAllDates(schema.element)
+  }
+
+  return schema
 }

@@ -9,10 +9,9 @@ import {
   ICompleteRPC,
 } from 'zod-sdk/server'
 import { ZodType } from 'zod'
-import { IZod } from 'server/src/makeSchemas'
 
 export type IMaybeJsonified<F extends IFunc, R> = F extends {
-  payload: (z: IZod) => ZodType<Awaited<ReturnType<F>>>
+  payload: ZodType<Awaited<ReturnType<F>>>
 }
   ? R
   : Jsonify<R>
