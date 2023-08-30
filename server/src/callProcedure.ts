@@ -9,7 +9,21 @@ export async function callProcedure(
   req: IRequestType
 ): Promise<IResult | Response> {
   if (procedure.middleware) {
-    return procedure.middleware(req, () => main(procedure, req))
+    let nextCalled = 0
+    return procedure
+      .middleware(req, () => {
+        if (nextCalled > 0) {
+          throw new Error('next() called more than once')
+        }
+        nextCalled++
+        return main(procedure, req)
+      })
+      .then((result: any) => {
+        if (nextCalled === 0) {
+          return main(procedure, req)
+        }
+        return result
+      })
   }
   return main(procedure, req)
 }
@@ -18,13 +32,7 @@ async function main(
   procedure: IProcedure,
   req: IRequestType
 ): Promise<IResult | Response> {
-  let context: any
-  try {
-    context = procedure.makeContext && (await procedure.makeContext(req))
-  } catch (e) {
-    throw e
-  }
-
+  const context = procedure.makeContext && (await procedure.makeContext(req))
   return await asyncLocalStorage.run(
     context,
     async (): Promise<IResult | Response> => {
