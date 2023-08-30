@@ -1,3 +1,4 @@
+import { vi } from 'vitest'
 import { server } from 'zod-sdk/server'
 import { callProcedure } from 'server/src/callProcedure'
 import { makeFetchArgs } from 'internal/src/makeFetchArgs'
@@ -41,5 +42,38 @@ describe('callProcedure', () => {
         "schema": undefined,
       }
     `)
+  })
+
+  it('calls middleware and makeContext', async () => {
+    const middlewareSpy = vi.fn()
+    const makeContextSpy = vi.fn()
+    const service = server.makeService({
+      middleware: async () => {
+        middlewareSpy()
+      },
+      makeContext: async () => {
+        makeContextSpy()
+        return {
+          foo: 'bar',
+        }
+      },
+    })
+
+    const query = service.makeQuery(async () => {
+      return 'hello'
+    })
+    await callProcedure(
+      query,
+      new Request(
+        ...makeFetchArgs({
+          input: [],
+          type: 'query',
+          baseUrl: 'https://www.example.com',
+          path: [],
+        })
+      )
+    )
+    expect(makeContextSpy).toHaveBeenCalled()
+    expect(middlewareSpy).toHaveBeenCalled()
   })
 })
