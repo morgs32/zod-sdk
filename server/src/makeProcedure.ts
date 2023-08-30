@@ -1,7 +1,6 @@
 import { JsonValue } from 'type-fest'
 import { IFunc, IProcedure, IRPCType } from './types'
 import { ZodType } from 'zod'
-import { IZod } from './makeSchemas'
 
 /**
  * If you don't pass schemas to makeQuery or makeComment,
@@ -13,7 +12,7 @@ export interface MustMakeProcedureWithService {}
 type CheckJson<F extends IFunc> = Parameters<F> extends JsonValue[]
   ? 1
   : F extends {
-      parameters: (z: IZod) => ZodType<Parameters<F>>
+      parameters: ZodType<Parameters<F>>
     }
   ? 1
   : 'Non Json Values used in params without schemas to parse them'
