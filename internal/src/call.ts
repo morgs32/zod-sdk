@@ -15,7 +15,7 @@ export type IMaybeJsonified<F extends IFunc, R> = F extends {
   payload: (z: IZod) => ZodType<Awaited<ReturnType<F>>>
 }
   ? R
-  : Promise<Jsonify<R>>
+  : Jsonify<R>
 
 export function call<
   F extends IFunc,
