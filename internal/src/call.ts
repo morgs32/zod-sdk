@@ -43,5 +43,5 @@ export function call<
       return
     },
   }) as ICompleteRPC
-  return callRPC(rpc, options) as IMaybeJsonified<F, R>
+  return callRPC(rpc, options) as Promise<IMaybeJsonified<F, Awaited<R>>>
 }
