@@ -139,12 +139,6 @@ importers:
 
   server:
     dependencies:
-      buffer:
-        specifier: '*'
-        version: 2.1.1
-      raw-body:
-        specifier: '*'
-        version: 0.0.1
       zod-sdk:
         specifier: '*'
         version: link:..
@@ -1407,11 +1401,6 @@ packages:
     resolution: {integrity: sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw==}
     dev: true
 
-  /base64-js@0.0.8:
-    resolution: {integrity: sha512-3XSA2cR/h/73EzlXXdU6YNycmYI7+kicTxks4eJg2g39biHR84slg2+des+p7iHYhbRg/udIS4TD53WabcOUkw==}
-    engines: {node: '>= 0.4'}
-    dev: false
-
   /big-integer@1.6.51:
     resolution: {integrity: sha512-GPEid2Y9QU1Exl1rpO9B2IPJGHPSupF5GnVIP0blYvNOMer2bTvSWs1jGOUg04hTmu67nmLsQ9TBo1puaotBHg==}
     engines: {node: '>=0.6'}
@@ -1447,14 +1436,6 @@ packages:
     dependencies:
       fill-range: 7.0.1
     dev: true
-
-  /buffer@2.1.1:
-    resolution: {integrity: sha512-XsOtTDYX7Dw8YCun5y8JkJ6mL49iI95mX2fLHV9UbzXIZeHCfa0Ay9Ni33cO3eTa71GeFSaPgFuLHARyw8Ck4A==}
-    deprecated: This version of 'buffer' is out-of-date. You must update to v2.8.3 or newer
-    dependencies:
-      base64-js: 0.0.8
-      ieee754: 1.1.13
-    dev: false
 
   /builtin-modules@3.3.0:
     resolution: {integrity: sha512-zhaCDicdLuWN5UbN5IMnFqNMhNfo919sH85y2/ea+5Yg9TsTkeZxpL+JLbp6cgYFS4sRLp3YV4S6yDuqVWHYOw==}
@@ -2720,10 +2701,6 @@ packages:
       safer-buffer: 2.1.2
     dev: true
 
-  /ieee754@1.1.13:
-    resolution: {integrity: sha512-4vf7I2LYV/HaWerSo3XmlMkp5eZ83i+/CDluXi/IGTs/O1sejBNhTtnxzmRZfvOUqj7lZjqHkeTvpgSFDlWZTg==}
-    dev: false
-
   /ignore-walk@5.0.1:
     resolution: {integrity: sha512-yemi4pMf51WKT7khInJqAvsIGzoqYXblnsz0ql8tM+yi1EKYTY1evX4NAbJrLL/Aanr2HyZeluqU+Oi7MGHokw==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
@@ -3720,10 +3697,6 @@ packages:
   /queue-microtask@1.2.3:
     resolution: {integrity: sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==}
     dev: true
-
-  /raw-body@0.0.1:
-    resolution: {integrity: sha512-kol5HI/YtFQc3gHxfMVs9w0PpQmNBFzXJYCWXdXs/c3Whib1jg8G9QmlSkq1Zehuhx9YAseCMCDLs3yW0cKwNA==}
-    dev: false
 
   /react-dom@18.2.0(react@18.2.0):
     resolution: {integrity: sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g==}

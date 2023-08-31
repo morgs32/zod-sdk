@@ -16,10 +16,7 @@
     "build": "bunchee",
     "clean": "rimraf dist"
   },
-  "dependencies": {
-    "buffer": "*",
-    "raw-body": "*"
-  },
+  "dependencies": {},
   "peerDependencies": {
     "zod-sdk": "*"
   }
