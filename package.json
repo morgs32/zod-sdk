@@ -57,6 +57,7 @@
     "typecheck": "tsc",
     "test": "vitest",
     "lint": "eslint .",
+    "prepublish": "pnpm build",
     "size": "size-limit",
     "analyze": "size-limit --why"
   },
