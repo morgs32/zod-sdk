@@ -13,7 +13,13 @@ export async function parseRes(res: Response) {
     }
     throw new Error(`[${res.status}] at ${url.href} \n${message}`)
   }
-  const data = (await res.json()) as IResult
+  const data = await res.text().then((text) => {
+    try {
+      return JSON.parse(text) as IResult
+    } catch (e) {
+      throw new Error(`Invalid JSON at ${res.url}: \n${text}`)
+    }
+  })
   // TODO: Do something with include
 
   if (data.schema) {

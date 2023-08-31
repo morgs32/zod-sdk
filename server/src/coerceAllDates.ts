@@ -1,13 +1,6 @@
-import z, {
-  ZodArray,
-  ZodFirstPartySchemaTypes,
-  ZodObject,
-  ZodTuple,
-  ZodTypeAny,
-  ZodUnion,
-} from 'zod'
+import z, { ZodArray, ZodObject, ZodTuple, ZodTypeAny, ZodUnion } from 'zod'
 
-export function coerceAllDates(schema: ZodFirstPartySchemaTypes): ZodTypeAny {
+export function coerceAllDates(schema: ZodTypeAny): ZodTypeAny {
   switch (schema._def.typeName) {
     case 'ZodDate':
       return z.coerce.date()
