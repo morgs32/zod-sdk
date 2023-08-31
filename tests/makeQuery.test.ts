@@ -2,14 +2,41 @@ import { z } from 'zod'
 import { server } from 'zod-sdk/server'
 import { makeServer } from './listen'
 
-async function findMany(props: { discriminator: 'foo' | 'bar'; date?: Date }) {
+export const ZCurveDefinitionId = z.enum([
+  'henryHubNymexLd',
+  'wtiNymexApo',
+
+  // ICE
+  'brentIceCma',
+
+  // OPIS
+  'montBelvieuEthaneCma',
+  'conwayButaneCma',
+  'montBelvieuIsobutaneCma',
+  'montBelvieuNaturalGasolineCma',
+  'montBelvieuNaturalGasolineNonTetCma',
+
+  // ??
+  'llsArgusCma',
+  'wtiFormulaBasisArgusTma',
+  'wtiMidlandArgusTma',
+  'socalCitygateCma',
+  'socalBorderCma',
+])
+
+export type ICurveDefinitionId = z.infer<typeof ZCurveDefinitionId>
+
+interface IProps {
+  discriminator: ICurveDefinitionId
+}
+
+async function findMany(props: IProps) {
   return props
 }
 
 findMany.parameters = z.tuple([
   z.object({
-    discriminator: z.enum(['foo', 'bar']),
-    date: z.date().optional(),
+    discriminator: ZCurveDefinitionId,
   }),
 ])
 
@@ -27,15 +54,13 @@ describe('makeQuery', () => {
       })
       const result = await server.call(sdk.widgets.findMany, (procedure) =>
         procedure.query({
-          discriminator: 'foo',
-          date: new Date('2023-01-01'),
+          discriminator: 'socalBorderCma',
         })
       )
       // Check the type on result
       expect(result).toMatchInlineSnapshot(`
         {
-          "date": "2023-01-01T00:00:00.000Z",
-          "discriminator": "foo",
+          "discriminator": "socalBorderCma",
         }
       `)
     })
