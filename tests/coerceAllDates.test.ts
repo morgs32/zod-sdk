@@ -56,4 +56,39 @@ describe('coerceAllDates', () => {
       }
     `)
   })
+
+  it('z.optional()', async () => {
+    const schema = z.tuple([
+      z.union([
+        z.object({
+          asOfDate: z.date().optional(),
+          string: z.string(),
+        }),
+        z.object({
+          asOfDate: z.date().optional(),
+          number: z.number(),
+        }),
+      ]),
+    ])
+
+    const coerced = coerceAllDates(schema) as typeof schema
+    expect(coerced.items[0].options[1].shape.asOfDate._def.innerType._def)
+      .toMatchInlineSnapshot(`
+        {
+          "checks": [],
+          "coerce": true,
+          "description": undefined,
+          "errorMap": [Function],
+          "typeName": "ZodDate",
+        }
+      `)
+    expect(() =>
+      coerced.parse([
+        {
+          asOfDate: '2023-08-31T00:00:00.000Z',
+          string: 'wtiNymexApo',
+        },
+      ])
+    ).not.toThrow()
+  })
 })

@@ -69,8 +69,8 @@ async function main(
         }
       }
       if (procedure.fn.parameters) {
-        const schema = coerceAllDates(procedure.fn.parameters)
-        input = schema.parse(input)
+        const coerced = coerceAllDates(procedure.fn.parameters)
+        input = coerced.parse(input)
       }
       const payload = await procedure.fn.call(
         {
