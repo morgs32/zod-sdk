@@ -25,10 +25,12 @@ export class Service<
     } = {}
   ) {}
   public makeQuery<F extends IFunc<C>>(fn: F): IProcedure<F, 'query', C, R> {
+    const bound = fn.bind({
+      useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
+    }) as F
+    Object.assign(bound, fn) // Because bind wipes off properties https://stackoverflow.com/questions/64383695/using-function-prototype-bind-causes-the-original-properties-to-be-lost
     return {
-      fn: fn.bind({
-        useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
-      }) as F,
+      fn: bound,
       type: 'query',
       ...this.options,
     }
@@ -36,10 +38,12 @@ export class Service<
   public makeCommand<F extends IFunc<C>>(
     fn: F
   ): IProcedure<F, 'command', C, R> {
+    const bound = fn.bind({
+      useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
+    }) as F
+    Object.assign(bound, fn)
     return {
-      fn: fn.bind({
-        useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
-      }) as F,
+      fn: bound,
       type: 'command',
       ...this.options,
     }
