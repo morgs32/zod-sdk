@@ -1,11 +1,6 @@
 import { asyncLocalStorage } from './asyncLocalStorage'
-import {
-  IRequestType,
-  IMiddlewareFn,
-  IContextFn,
-  IProcedure,
-  IFunc,
-} from './types'
+import { Check } from './makeProcedure'
+import { IRequestType, IMiddlewareFn, IContextFn, IFunc } from './types'
 
 export type inferThis<S extends Service<any, any>> = S extends Service<
   any,
@@ -24,7 +19,7 @@ export class Service<
       makeContext?: IContextFn<R, C>
     } = {}
   ) {}
-  public makeQuery<F extends IFunc<C>>(fn: F): IProcedure<F, 'query', C, R> {
+  public makeQuery<F extends IFunc<C>>(fn: F) {
     const bound = fn.bind({
       useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
     }) as F
@@ -33,11 +28,9 @@ export class Service<
       fn: bound,
       type: 'query',
       ...this.options,
-    }
+    } as any as Check<F, 'query', C, R>
   }
-  public makeCommand<F extends IFunc<C>>(
-    fn: F
-  ): IProcedure<F, 'command', C, R> {
+  public makeCommand<F extends IFunc<C>>(fn: F) {
     const bound = fn.bind({
       useCtx: () => asyncLocalStorage.getStore() as Awaited<C>,
     }) as F
@@ -46,7 +39,7 @@ export class Service<
       fn: bound,
       type: 'command',
       ...this.options,
-    }
+    } as any as Check<F, 'command', C, R>
   }
 }
 

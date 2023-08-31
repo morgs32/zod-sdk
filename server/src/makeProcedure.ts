@@ -1,5 +1,5 @@
 import { JsonValue } from 'type-fest'
-import { IFunc, IProcedure, IRPCType } from './types'
+import { IFunc, IProcedure, IRPCType, IRequestType } from './types'
 import { ZodType } from 'zod'
 
 /**
@@ -9,25 +9,51 @@ import { ZodType } from 'zod'
 export interface ValidJsonOrSchemasRequired {}
 export interface MustMakeProcedureWithService {}
 
-type CheckJson<F extends IFunc> = Parameters<F> extends JsonValue[]
+export type inferZodType<T = any> = {
+  parameters: ZodType<T>
+}
+
+export type CheckParameters<F extends IFunc> = F extends inferZodType<infer Z>
+  ? Parameters<F> extends Z
+    ? 1
+    : 'Parameters do not match schema'
+  : 1
+
+export type CheckJson<F extends IFunc> = Parameters<F> extends JsonValue[]
   ? 1
-  : F extends {
-      parameters: ZodType<Parameters<F>>
-    }
+  : F extends inferZodType
   ? 1
   : 'Non Json Values used in params without schemas to parse them'
 
-type CheckThis<F extends IFunc> = Awaited<
+export type inferCtx<F extends IFunc> = Awaited<
   ReturnType<ThisParameterType<F>['useCtx']>
-> extends {}
-  ? 'Function with this param must be called with service.makeQuery/Command'
+>
+
+export type CheckThis<
+  F extends IFunc,
+  C extends any = undefined,
+> = inferCtx<F> extends C
+  ? 1
+  : inferCtx<F> extends {
+      [key: string]: any
+    }
+  ? C extends undefined
+    ? 'Function with this param must be called with service.makeQuery/Command'
+    : 'This parameter uses a different service'
   : 1
 
-type Check<F extends IFunc, T extends IRPCType> = CheckJson<F> extends string
+export type Check<
+  F extends IFunc,
+  T extends IRPCType,
+  C extends any = any,
+  R extends IRequestType = any,
+> = CheckParameters<F> extends string
+  ? CheckParameters<F>
+  : CheckJson<F> extends string
   ? CheckJson<F>
-  : CheckThis<F> extends string
-  ? CheckThis<F>
-  : IProcedure<F, T>
+  : CheckThis<F, C> extends string
+  ? CheckThis<F, C>
+  : IProcedure<F, T, C, R>
 
 export function makeQuery<F extends IFunc>(fn: F) {
   return {
