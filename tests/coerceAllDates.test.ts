@@ -1,10 +1,10 @@
 import { z } from 'zod'
-import { coerceAllDates } from 'server/src/coerceAllDates'
+import { zutils } from 'zod-utils'
 
 describe('coerceAllDates', () => {
   it('z.date()', async () => {
     const schema = z.date()
-    const coerced = coerceAllDates(schema)
+    const coerced = zutils.coerceAllDates(schema)
     expect(() => schema.parse('2020-01-01'))
       .toThrowErrorMatchingInlineSnapshot(`
       "[
@@ -46,7 +46,8 @@ describe('coerceAllDates', () => {
       }
     `)
     // @ts-ignore
-    expect(coerceAllDates(schema).options[0]._def).toMatchInlineSnapshot(`
+    expect(zutils.coerceAllDates(schema).options[0]._def)
+      .toMatchInlineSnapshot(`
       {
         "checks": [],
         "coerce": true,
@@ -71,7 +72,7 @@ describe('coerceAllDates', () => {
       ]),
     ])
 
-    const coerced = coerceAllDates(schema) as typeof schema
+    const coerced = zutils.coerceAllDates(schema) as typeof schema
     expect(coerced.items[0].options[1].shape.asOfDate._def.innerType._def)
       .toMatchInlineSnapshot(`
         {

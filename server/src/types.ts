@@ -1,5 +1,5 @@
 import { IncomingMessage } from 'http'
-import z, { ZodType } from 'zod'
+import z, { ZodTypeAny } from 'zod'
 
 export type IResult = {
   payload: any
@@ -26,8 +26,8 @@ export interface IContextFn<R extends IRequestType = IRequestType, C = any> {
 
 export type IFunc<C extends any = any, A extends any[] = any[]> = {
   (this: { useCtx: () => Awaited<C> }, ...args: A): Promise<any>
-  parameters?: ZodType<any>
-  payload?: ZodType<any>
+  parameters?: ZodTypeAny
+  payload?: ZodTypeAny
 }
 
 export interface ISchemas<A, R> {
