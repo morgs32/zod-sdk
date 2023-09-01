@@ -2,7 +2,7 @@ import { asyncLocalStorage } from './asyncLocalStorage'
 import { parseBody } from './parseBody'
 import { makeJsonSchema } from 'zod-sdk/schemas'
 import { IProcedure, IRequestType, IResult } from './types'
-import { coerceAllDates } from './coerceAllDates'
+import { zutils } from 'zod-utils'
 
 export async function callProcedure(
   procedure: IProcedure,
@@ -69,7 +69,7 @@ async function main(
         }
       }
       if (procedure.fn.parameters) {
-        const coerced = coerceAllDates(procedure.fn.parameters)
+        const coerced = zutils.coerceAllDates(procedure.fn.parameters)
         input = coerced.parse(input)
       }
       const payload = await procedure.fn.call(

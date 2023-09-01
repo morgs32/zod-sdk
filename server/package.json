@@ -16,7 +16,9 @@
     "build": "bunchee",
     "clean": "rimraf dist"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zod-utils": "^0.1.37"
+  },
   "peerDependencies": {
     "zod-sdk": "*"
   }
