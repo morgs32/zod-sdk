@@ -40,13 +40,24 @@ export type IHandlePartialTuples<T extends any> = T extends any[]
  * ====================
  */
 
+// This came from https://github.com/garronej/tsafe/blob/main/src/tools/Unite.ts
+export type Unite<T> = T extends { [key: string]: any }
+  ? { [K in keyof T]: Unite<T[K]> }
+  : T
+
 export type CheckParameters<F extends IFunc> = F extends inferZodType<infer Z>
   ? Parameters<F> extends IHandlePartialTuples<Z>
     ? 1
     : 'Parameters do not match schema'
   : 1
 
-export type CheckJson<F extends IFunc> = Parameters<F> extends JsonValue[]
+export type IUniteParams<T> = {
+  [P in keyof T]: Unite<T[P]>
+}
+
+export type CheckJson<F extends IFunc> = IUniteParams<
+  Parameters<F>
+> extends Partial<JsonValue[]>
   ? 1
   : F extends inferZodType
   ? 1
