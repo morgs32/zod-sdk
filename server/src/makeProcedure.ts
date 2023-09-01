@@ -13,8 +13,35 @@ export type inferZodType<T = any> = {
   parameters: ZodType<T>
 }
 
+/**
+ * ====================
+ * The below is copied from zod-utils/check
+ * ====================
+ */
+export type IOptional<T> = {
+  [P in keyof T]: T[P] | undefined
+}
+
+export type IOptionalSchemas<
+  T extends any[],
+  U extends any[] = [],
+> = IOptional<T> extends T
+  ? [...U, ...Partial<Required<T>>]
+  : T extends [infer F, ...infer R]
+  ? IOptionalSchemas<R, [...U, F]>
+  : U
+
+export type IHandlePartialTuples<T extends any> = T extends any[]
+  ? IOptionalSchemas<T>
+  : T
+/**
+ * ====================
+ * End section from zod-utils/check
+ * ====================
+ */
+
 export type CheckParameters<F extends IFunc> = F extends inferZodType<infer Z>
-  ? Parameters<F> extends Z
+  ? Parameters<F> extends IHandlePartialTuples<Z>
     ? 1
     : 'Parameters do not match schema'
   : 1
