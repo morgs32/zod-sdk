@@ -30,14 +30,16 @@ interface IProps {
   discriminator: ICurveDefinitionId
 }
 
-async function findMany(props: IProps) {
+async function findMany(props?: IProps) {
   return props
 }
 
 findMany.parameters = z.tuple([
-  z.object({
-    discriminator: ZCurveDefinitionId,
-  }),
+  z
+    .object({
+      discriminator: ZCurveDefinitionId,
+    })
+    .optional(),
 ])
 
 const router = server.makeRouter({
