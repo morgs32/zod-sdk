@@ -58,13 +58,13 @@ export interface IRoutes {
   [key: string]: IProcedure | IRoutes
 }
 
-export interface IBaseRPC<I extends any = any> {
+export interface IBaseRPC<I extends any[] = any[]> {
   path: string[]
   input: I
   baseUrl: string
 }
 
-export interface ICompleteRPC<I extends any = any> extends IBaseRPC<I> {
+export interface ICompleteRPC<I extends any[] = any[]> extends IBaseRPC<I> {
   type: IRPCType
 }
 

@@ -45,6 +45,7 @@ async function main(
           )
           input = query.input
           if (!input) {
+            input = []
             break
           }
           input = JSON.parse(input)

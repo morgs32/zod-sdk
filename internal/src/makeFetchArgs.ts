@@ -5,7 +5,6 @@ export function makeFetchArgs(
   options?: IRequestOptions
 ): [string, IRequestOptions] {
   const { baseUrl, input, path, type } = rpc
-
   const routePath = path.join('.')
 
   switch (type) {
@@ -13,7 +12,7 @@ export function makeFetchArgs(
       return [
         `${baseUrl}/${
           routePath +
-          (input !== undefined ? `?input=${JSON.stringify(input)}` : '')
+          (input.length > 0 ? `?input=${JSON.stringify(input)}` : '')
         }`,
         {
           ...options,
@@ -31,7 +30,7 @@ export function makeFetchArgs(
             'Content-Type': 'application/json',
           },
           body:
-            input !== undefined
+            input.length > 0
               ? JSON.stringify({
                   input,
                 })

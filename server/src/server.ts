@@ -1,4 +1,6 @@
 export * from './makeRouter'
 export * from './makeService'
 export * from './makeProcedure'
+export * from './makeParameters'
+export * from './makePayload'
 export { makeInterface, call } from 'zod-sdk/internal'

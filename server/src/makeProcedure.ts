@@ -9,7 +9,7 @@ import { ZodType } from 'zod'
 export interface ValidJsonOrSchemasRequired {}
 export interface MustMakeProcedureWithService {}
 
-export type inferZodType<T = any> = {
+export type inferParameters<T = any> = {
   parameters: ZodType<T>
 }
 
@@ -45,7 +45,9 @@ export type Unite<T> = T extends { [key: string]: any }
   ? { [K in keyof T]: Unite<T[K]> }
   : T
 
-export type CheckParameters<F extends IFunc> = F extends inferZodType<infer Z>
+export type CheckParameters<F extends IFunc> = F extends inferParameters<
+  infer Z
+>
   ? Parameters<F> extends IHandlePartialTuples<Z>
     ? 1
     : 'Parameters do not match schema'
@@ -59,7 +61,7 @@ export type CheckJson<F extends IFunc> = IUniteParams<
   Parameters<F>
 > extends Partial<JsonValue[]>
   ? 1
-  : F extends inferZodType
+  : F extends inferParameters
   ? 1
   : 'Non Json Values used in params without schemas to parse them'
 
