@@ -54,16 +54,17 @@ async function main(
         case 'POST': {
           let body: any
           if (req instanceof Request) {
-            body = await req.json()
+            body = await req.text()
+            try {
+              body = JSON.parse(body)
+            } catch (e) {
+              throw new Error(`Error parsing body: ${body}`)
+            }
           } else {
             body = await parseBody(req)
           }
-          try {
-            input = JSON.parse(body.input)
-            break
-          } catch (err) {
-            throw new Error(`Error deserializing input: ${body.input}`)
-          }
+          input = body.input || []
+          break
         }
         default: {
           throw new Error(`Method not supported: ${method}`)

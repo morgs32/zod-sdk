@@ -3,7 +3,7 @@ import { IncomingMessage } from 'http'
 export async function parseBody(req: IncomingMessage): Promise<any> {
   return new Promise((resolve, reject) => {
     let data = ''
-    req.on('readable', (text: string) => (data += text))
+    req.on('data', (text: string) => (data += text))
     req.on('end', () => {
       try {
         const json = JSON.parse(data)
