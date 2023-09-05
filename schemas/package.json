@@ -23,7 +23,7 @@
     "vitest": "^0.32.2"
   },
   "peerDependencies": {
-    "zod": "^3.21.4",
+    "zod": "npm:@morgs32/zod@3.22.3",
     "zod-to-json-schema": "^3.21.4"
   }
 }
