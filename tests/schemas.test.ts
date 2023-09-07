@@ -50,13 +50,20 @@ describe('results', () => {
       const sdk = server.makeInterface<typeof router.routes>({
         baseUrl: url,
       })
-      await expect(() => {
-        try {
-          return server.call(sdk.widgets.addYear, ({ query }) => query())
-        } catch (e) {
-          console.log(e)
-        }
-      }).rejects.toThrowError()
+      expect(
+        await server
+          .call(sdk.widgets.addYear, ({ query }) => query())
+          .catch((e) => e.message.replace(url, 'http://www.example.com'))
+      ).toMatchInlineSnapshot(`
+        "Invalid response at http://www.example.com/widgets.addYear: 
+        [
+          {
+            \\"code\\": \\"invalid_date\\",
+            \\"path\\": [],
+            \\"message\\": \\"Invalid date\\"
+          }
+        ]"
+      `)
     })
   })
 })
