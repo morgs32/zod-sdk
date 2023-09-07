@@ -23,7 +23,13 @@ export async function parseRes(res: Response) {
   // TODO: Do something with include
 
   if (data.schema) {
-    return parseJsonSchema(data.schema).parse(data.payload)
+    const parsed = parseJsonSchema(data.schema).safeParse(data.payload)
+    if (!parsed.success) {
+      throw new Error(
+        `Invalid response at ${res.url}: \n${parsed.error.message}`
+      )
+    }
+    return parsed.data
   }
   return data.payload
 }
